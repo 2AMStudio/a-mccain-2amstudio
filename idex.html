@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Architecture Portfolio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: #222;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .video-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 2rem auto;
+            background-color: #ddd;
+            aspect-ratio: 16/9;
+        }
+        
+        video {
+            width: 100%;
+            display: block;
+        }
+        
+        .fallback-message {
+            padding: 2rem;
+            text-align: center;
+            background-color: #eee;
+        }
+        
+        footer {
+            background-color: #222;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>My Architecture Portfolio</h1>
+        <p>Innovative designs for modern spaces</p>
+    </header>
+    
+    <div class="container">
+        <h2>Featured Project</h2>
+        
+        <div class="video-container">
+            <!-- Video element with multiple fallbacks -->
+            <video controls poster="placeholder.jpg" preload="metadata">
+                <source src="videos/portfolio-showcase.mp4" type="video/mp4">
+                <source src="videos/portfolio-showcase.webm" type="video/webm">
+                <p class="fallback-message">
+                    Your browser doesn't support HTML5 video. 
+                    <a href="videos/portfolio-showcase.mp4">Download the video</a> instead.
+                </p>
+            </video>
+        </div>
+        
+        <p>This project demonstrates my approach to sustainable urban design...</p>
+    </div>
+    
+    <footer>
+        <p>&copy; 2023 My Architecture Portfolio. All rights reserved.</p>
+    </footer>
+</body>
+</html>
