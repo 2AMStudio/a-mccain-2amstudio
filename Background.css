@@ -9,12 +9,14 @@ body {
 }
 .image-container {
     display: flex;
-    justify-content: center; /* Horizontal centering */
-    align-items: center;    /* Vertical centering (optional) */
-    margin: 2rem auto;      /* Maintains vertical spacing */
+    justify-content: center;
+    align-items: center;
+    height: 50vh; /* 50% of viewport height */
+    margin: 0 auto;
 }
 
 .image-container img {
-    max-width: 100%;
-    height: auto;
+    max-width: 80%;
+    max-height: 80%;
+    object-fit: contain;
 }
