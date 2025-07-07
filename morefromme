@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>More From Me | My Portfolio</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/backgrounds.css">
+</head>
+<body class="project1">
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="recentnews.html">Recent News</a></li>
+            <li><a href="photography.html">Photography</a></li>
+            <li><a href="pastprojects.html">Past Projects</a></li>
+            <li><a href="morefromme.html">More From Me</a></li>
+        </ul>
+    </nav>
+    
+    <header>
+        <h1>Urban Renewal Project</h1>
+        <p>Transforming industrial spaces into community hubs</p>
+    </header>
+
+    <div class="container">
+        <h2>Concept Development</h2>
+        
+        <div class="media-container">
+            <img src="images/project1/concept.jpg" alt="Concept Sketches">
+        </div>
+        
+        <div class="media-container">
+            <video controls>
+                <source src="videos/project1/walkthrough.mp4" type="video/mp4">
+            </video>
+        </div>
+    </div>
+</body>
+</html>
