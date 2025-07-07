@@ -1,79 +1,8 @@
-<!DOCTYPE html><script>
-    const timeline = document.getElementById('timeline');
-    const container = document.querySelector('.timeline-container');
-    let currentPosition = 0;
-    let isAnimating = false;
-    const itemHeight = 170; // Height of each timeline item
-    const centerIndex = 3; // Index of the "present" item (2023)
-    const scrollSpeed = 0.5; // Slower, more controlled scrolling
-    
-    // Center timeline on present day initially
-    window.onload = function() {
-        centerTimeline();
-    };
-    
-    function moveTimeline(direction) {
-        if (isAnimating) return;
-        isAnimating = true;
-        
-        // Calculate new position with easing
-        const targetPosition = currentPosition + (direction * itemHeight * scrollSpeed);
-        
-        // Calculate scroll limits
-        const containerHeight = container.clientHeight;
-        const timelineHeight = timeline.clientHeight;
-        const maxScroll = timelineHeight - containerHeight;
-        const minScroll = 0;
-        
-        // Apply boundaries
-        currentPosition = Math.max(minScroll, Math.min(maxScroll, targetPosition));
-        
-        // Smooth animation
-        timeline.style.transition = 'transform 0.4s ease-out';
-        timeline.style.transform = `translateY(${-currentPosition}px)`;
-        
-        // Reset animation lock
-        setTimeout(() => {
-            isAnimating = false;
-            timeline.style.transition = '';
-        }, 400);
-    }
-    
-    function centerTimeline() {
-        const containerHeight = container.clientHeight;
-        const timelineHeight = timeline.clientHeight;
-        const presentItemPosition = centerIndex * itemHeight;
-        currentPosition = Math.max(0, presentItemPosition - (containerHeight/2) + (itemHeight/2));
-        
-        timeline.style.transition = 'transform 0.6s ease-out';
-        timeline.style.transform = `translateY(${-currentPosition}px)`;
-    }
-    
-    // Improved wheel handling
-    container.addEventListener('wheel', function(e) {
-        e.preventDefault();
-        moveTimeline(e.deltaY * 0.1); // Slower, more controlled scrolling
-    });
-    
-    // Handle mobile touch events
-    let touchStartY = 0;
-    container.addEventListener('touchstart', (e) => {
-        touchStartY = e.touches[0].clientY;
-    }, {passive: false});
-    
-    container.addEventListener('touchmove', (e) => {
-        e.preventDefault();
-        const touchY = e.touches[0].clientY;
-        const deltaY = touchStartY - touchY; // Inverted for natural feeling
-        moveTimeline(deltaY * 0.3);
-        touchStartY = touchY;
-    }, {passive: false});
-</script>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>My Architecture Portfolio</title>
-    <link rel="stylesheet" href="Background.css">
     <style>
         * {
             margin: 0;
@@ -134,7 +63,7 @@
         
         /* Vertical Timeline Styles */
         .timeline-container {
-            height: 50vh; /* 50% of viewport height */
+            height: 50vh;
             max-height: 600px;
             margin: 3rem auto;
             position: relative;
@@ -148,21 +77,23 @@
             display: flex;
             flex-direction: column;
             width: 100%;
-            height: max-content;
-            transition: transform 0.5s ease;
-            position: relative;
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
             padding: 20px 0;
+            transition: transform 0.5s ease;
         }
         
         .timeline-center {
-            position: absolute;
+            position: fixed;
             top: 50%;
             left: 0;
             width: 100%;
             height: 2px;
             background-color: #4CAF50;
             z-index: 2;
-            transform: translateY(-50%);
+            pointer-events: none;
         }
         
         .timeline-center::after {
@@ -437,42 +368,84 @@
         const timeline = document.getElementById('timeline');
         const container = document.querySelector('.timeline-container');
         let currentPosition = 0;
-        const itemHeight = 170; // Approximate height of each timeline item
-        const centerIndex = 3; // Index of the "present" item (2023)
+        let isAnimating = false;
+        const itemHeight = 170;
+        const centerIndex = 3;
         
-        // Center timeline on present day initially
-        window.onload = function() {
-            centerTimeline();
-        };
-        
-        function moveTimeline(direction) {
-            // Calculate new position
-            currentPosition += direction * itemHeight;
-            
-            // Calculate maximum and minimum scroll positions
+        // Initialize timeline position
+        function initTimeline() {
             const containerHeight = container.clientHeight;
             const timelineHeight = timeline.clientHeight;
-            const maxPosition = (timelineHeight - containerHeight) / 2 + (timeline.children.length - centerIndex - 1) * itemHeight;
-            const minPosition = -((timelineHeight - containerHeight) / 2 + centerIndex * itemHeight);
-            
-            // Limit scrolling to available content
-            currentPosition = Math.max(minPosition, Math.min(maxPosition, currentPosition));
-            
-            timeline.style.transform = `translateY(calc(50% - ${itemHeight/2}px + ${-currentPosition}px))`;
+            const presentItemPos = (centerIndex * itemHeight) + (itemHeight/2);
+            currentPosition = presentItemPos - (containerHeight/2);
+            updateTimelinePosition();
         }
         
+        // Update timeline visual position
+        function updateTimelinePosition() {
+            timeline.style.transform = `translateY(calc(-50% + ${-currentPosition}px))`;
+        }
+        
+        // Handle timeline movement
+        function moveTimeline(direction) {
+            if (isAnimating) return;
+            
+            const containerHeight = container.clientHeight;
+            const timelineHeight = timeline.clientHeight;
+            const maxPosition = timelineHeight - containerHeight;
+            
+            currentPosition += direction * itemHeight;
+            currentPosition = Math.max(0, Math.min(maxPosition, currentPosition));
+            
+            isAnimating = true;
+            timeline.style.transition = 'transform 0.4s ease-out';
+            updateTimelinePosition();
+            
+            setTimeout(() => {
+                isAnimating = false;
+                timeline.style.transition = '';
+            }, 400);
+        }
+        
+        // Center on present item
         function centerTimeline() {
             const containerHeight = container.clientHeight;
-            const timelineHeight = timeline.clientHeight;
-            currentPosition = (timelineHeight - containerHeight) / 2;
-            timeline.style.transform = `translateY(calc(50% - ${itemHeight/2}px - ${currentPosition}px))`;
+            const presentItemPos = (centerIndex * itemHeight) + (itemHeight/2);
+            currentPosition = presentItemPos - (containerHeight/2);
+            
+            isAnimating = true;
+            timeline.style.transition = 'transform 0.6s ease-out';
+            updateTimelinePosition();
+            
+            setTimeout(() => {
+                isAnimating = false;
+                timeline.style.transition = '';
+            }, 600);
         }
         
-        // Add mouse wheel scrolling
-        container.addEventListener('wheel', function(e) {
+        // Mouse wheel handling
+        container.addEventListener('wheel', (e) => {
             e.preventDefault();
             moveTimeline(e.deltaY > 0 ? 1 : -1);
-        });
+        }, { passive: false });
+        
+        // Touch handling for mobile
+        let touchStartY = 0;
+        container.addEventListener('touchstart', (e) => {
+            touchStartY = e.touches[0].clientY;
+        }, { passive: false });
+        
+        container.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            const touchY = e.touches[0].clientY;
+            const deltaY = touchStartY - touchY;
+            moveTimeline(deltaY * 0.02);
+            touchStartY = touchY;
+        }, { passive: false });
+        
+        // Initialize on load
+        window.addEventListener('load', initTimeline);
+        window.addEventListener('resize', initTimeline);
     </script>
 </body>
 </html>
