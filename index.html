@@ -388,110 +388,117 @@
         <p>&copy; 2025 My Architecture Portfolio | <a href="mailto:contact@myportfolio.com" style="color: #4CAF50;">Contact</a></p>
     </footer>
 
-    <script>
-        // Timeline functionality
-        const timeline = document.getElementById('timeline');
-        const container = document.querySelector('.timeline-container');
-        let currentPosition = 0;
-        let isAnimating = false;
-        const itemHeight = 170;
-        const centerIndex = 3;
+  <script>
+    // Timeline functionality
+    const timeline = document.getElementById('timeline');
+    const container = document.querySelector('.timeline-container');
+    let currentPosition = 0;
+    let isAnimating = false;
+    const itemHeight = 170; // Height of each timeline item
+    
+    // Get current year item
+    function getCurrentYearItem() {
+        const currentYear = new Date().getFullYear();
+        const items = Array.from(timeline.querySelectorAll('.timeline-item'));
         
-        // Initialize timeline position
-        function initTimeline() {
-            const containerHeight = container.clientHeight;
-            const timelineHeight = timeline.clientHeight;
-            const presentItemPos = (centerIndex * itemHeight) + (itemHeight/2);
-            currentPosition = presentItemPos - (containerHeight/2);
-            updateTimelinePosition();
-        }
-        
-        // Update timeline visual position
-        function updateTimelinePosition() {
-            timeline.style.transform = `translateY(${-currentPosition}px)`;
-        }
-        
-        // Handle timeline movement
-        function moveTimeline(direction) {
-            if (isAnimating) return;
-            
-            const containerHeight = container.clientHeight;
-            const timelineHeight = timeline.clientHeight;
-            const maxPosition = timelineHeight - containerHeight;
-            
-            currentPosition += direction * itemHeight;
-            currentPosition = Math.max(0, Math.min(maxPosition, currentPosition));
-            
-            isAnimating = true;
-            timeline.style.transition = 'transform 0.4s ease-out';
-            updateTimelinePosition();
-            
-            setTimeout(() => {
-                isAnimating = false;
-                timeline.style.transition = '';
-            }, 400);
-        }
-        
-        // Center on present item
-        function centerTimeline() {
-            const containerHeight = container.clientHeight;
-            const presentItemPos = (centerIndex * itemHeight) + (itemHeight/2);
-            currentPosition = presentItemPos - (containerHeight/2);
-            
-            isAnimating = true;
-            timeline.style.transition = 'transform 0.6s ease-out';
-            updateTimelinePosition();
-            
-            setTimeout(() => {
-                isAnimating = false;
-                timeline.style.transition = '';
-            }, 600);
-        }
-        
-        // Mouse wheel handling
-        container.addEventListener('wheel', (e) => {
-            e.preventDefault();
-            moveTimeline(e.deltaY > 0 ? 1 : -1);
-        }, { passive: false });
-        
-        // Touch handling for mobile
-        let touchStartY = 0;
-        container.addEventListener('touchstart', (e) => {
-            touchStartY = e.touches[0].clientY;
-        }, { passive: false });
-        
-        container.addEventListener('touchmove', (e) => {
-            e.preventDefault();
-            const touchY = e.touches[0].clientY;
-            const deltaY = touchStartY - touchY;
-            moveTimeline(deltaY * 0.02);
-            touchStartY = touchY;
-        }, { passive: false });
-        
-        // Live Date/Time Display
-        function updateDateTime() {
-            const now = new Date();
-            const options = { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-                hour12: true
-            };
-            document.getElementById('liveDateTime').textContent = now.toLocaleDateString('en-US', options);
-        }
-        
-        // Initialize everything
-        window.addEventListener('load', () => {
-            initTimeline();
-            updateDateTime();
-            setInterval(updateDateTime, 1000);
+        // Try to find exact year match
+        let presentItem = items.find(item => {
+            const yearText = item.querySelector('.date').textContent;
+            return parseInt(yearText) === currentYear;
         });
         
-        window.addEventListener('resize', initTimeline);
-    </script>
+        // If no exact match, find closest year
+        if (!presentItem) {
+            presentItem = items.reduce((closest, item) => {
+                const year = parseInt(item.querySelector('.date').textContent);
+                return (!closest || Math.abs(year - currentYear) < Math.abs(parseInt(closest.querySelector('.date').textContent) - currentYear)) 
+                    ? item : closest;
+            });
+        }
+        
+        return presentItem || items[Math.floor(items.length / 2)]; // Fallback to middle
+    }
+    
+    // Initialize timeline position
+    function initTimeline() {
+        const containerHeight = container.clientHeight;
+        const presentItem = getCurrentYearItem();
+        const presentItemPos = presentItem.offsetTop + (presentItem.offsetHeight / 2);
+        currentPosition = presentItemPos - (containerHeight / 2);
+        updateTimelinePosition();
+        
+        // Update present label with current year
+        const currentYear = new Date().getFullYear();
+        document.querySelector('.timeline-center-label').textContent = `Present (${currentYear})`;
+    }
+    
+    // Update timeline position
+    function updateTimelinePosition() {
+        timeline.style.transform = `translateY(${-currentPosition}px)`;
+    }
+    
+    // Handle timeline movement
+    function moveTimeline(direction) {
+        if (isAnimating) return;
+        
+        const containerHeight = container.clientHeight;
+        const timelineHeight = timeline.scrollHeight;
+        const maxPosition = timelineHeight - containerHeight;
+        
+        currentPosition += direction * itemHeight;
+        currentPosition = Math.max(0, Math.min(maxPosition, currentPosition));
+        
+        isAnimating = true;
+        timeline.style.transition = 'transform 0.4s ease-out';
+        updateTimelinePosition();
+        
+        setTimeout(() => {
+            isAnimating = false;
+            timeline.style.transition = '';
+        }, 400);
+    }
+    
+    // Center on present item
+    function centerTimeline() {
+        const containerHeight = container.clientHeight;
+        const presentItem = getCurrentYearItem();
+        const presentItemPos = presentItem.offsetTop + (presentItem.offsetHeight / 2);
+        currentPosition = presentItemPos - (containerHeight / 2);
+        
+        isAnimating = true;
+        timeline.style.transition = 'transform 0.6s ease-out';
+        updateTimelinePosition();
+        
+        setTimeout(() => {
+            isAnimating = false;
+            timeline.style.transition = '';
+        }, 600);
+    }
+    
+    // Live Date/Time Display
+    function updateDateTime() {
+        const now = new Date();
+        const options = { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: true
+        };
+        document.getElementById('liveDateTime').textContent = now.toLocaleDateString('en-US', options);
+    }
+    
+    // Initialize everything
+    window.addEventListener('load', () => {
+        initTimeline();
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+    });
+    
+    window.addEventListener('resize', initTimeline);
+</script>
 </body>
 </html>
