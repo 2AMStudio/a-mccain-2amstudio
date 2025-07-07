@@ -1,22 +1,63 @@
-body {
-    background-image: url('Background2.png');
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center bottom;
-    background-attachment: fixed;
+/* Base styles for all pages */
+* {
     margin: 0;
-    min-height: 100vh;
-}
-.image-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 50vh; /* 50% of viewport height */
-    margin: 0 auto;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
 }
 
-.image-container img {
-    max-width: 80%;
-    max-height: 80%;
-    object-fit: contain;
+body {
+    color: #333;
+    line-height: 1.6;
+}
+
+header {
+    background-color: rgba(34, 34, 34, 0.9);
+    color: white;
+    padding: 2rem;
+    text-align: center;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: rgba(245, 245, 245, 0.85);
+    border-radius: 8px;
+}
+
+/* Navigation */
+nav {
+    background-color: #222;
+    padding: 1rem;
+}
+
+nav ul {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+}
+
+nav li {
+    margin: 0 1rem;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* Media containers */
+.media-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 2rem auto;
+}
+
+.media-container img, 
+.media-container video {
+    width: 100%;
+    display: block;
+    border-radius: 4px;
 }
