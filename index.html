@@ -1,4 +1,74 @@
-<!DOCTYPE html>
+<!DOCTYPE html><script>
+    const timeline = document.getElementById('timeline');
+    const container = document.querySelector('.timeline-container');
+    let currentPosition = 0;
+    let isAnimating = false;
+    const itemHeight = 170; // Height of each timeline item
+    const centerIndex = 3; // Index of the "present" item (2023)
+    const scrollSpeed = 0.5; // Slower, more controlled scrolling
+    
+    // Center timeline on present day initially
+    window.onload = function() {
+        centerTimeline();
+    };
+    
+    function moveTimeline(direction) {
+        if (isAnimating) return;
+        isAnimating = true;
+        
+        // Calculate new position with easing
+        const targetPosition = currentPosition + (direction * itemHeight * scrollSpeed);
+        
+        // Calculate scroll limits
+        const containerHeight = container.clientHeight;
+        const timelineHeight = timeline.clientHeight;
+        const maxScroll = timelineHeight - containerHeight;
+        const minScroll = 0;
+        
+        // Apply boundaries
+        currentPosition = Math.max(minScroll, Math.min(maxScroll, targetPosition));
+        
+        // Smooth animation
+        timeline.style.transition = 'transform 0.4s ease-out';
+        timeline.style.transform = `translateY(${-currentPosition}px)`;
+        
+        // Reset animation lock
+        setTimeout(() => {
+            isAnimating = false;
+            timeline.style.transition = '';
+        }, 400);
+    }
+    
+    function centerTimeline() {
+        const containerHeight = container.clientHeight;
+        const timelineHeight = timeline.clientHeight;
+        const presentItemPosition = centerIndex * itemHeight;
+        currentPosition = Math.max(0, presentItemPosition - (containerHeight/2) + (itemHeight/2));
+        
+        timeline.style.transition = 'transform 0.6s ease-out';
+        timeline.style.transform = `translateY(${-currentPosition}px)`;
+    }
+    
+    // Improved wheel handling
+    container.addEventListener('wheel', function(e) {
+        e.preventDefault();
+        moveTimeline(e.deltaY * 0.1); // Slower, more controlled scrolling
+    });
+    
+    // Handle mobile touch events
+    let touchStartY = 0;
+    container.addEventListener('touchstart', (e) => {
+        touchStartY = e.touches[0].clientY;
+    }, {passive: false});
+    
+    container.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        const touchY = e.touches[0].clientY;
+        const deltaY = touchStartY - touchY; // Inverted for natural feeling
+        moveTimeline(deltaY * 0.3);
+        touchStartY = touchY;
+    }, {passive: false});
+</script>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
