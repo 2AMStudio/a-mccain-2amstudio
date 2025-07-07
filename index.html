@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>My Architecture Portfolio</title>
     <link rel="stylesheet" href="Background.css">
     <style>
@@ -11,10 +12,38 @@
             font-family: 'Arial', sans-serif;
         }
         
-        /* Remove the background-color from here to allow your image to show */
         body {
             color: #333;
             line-height: 1.6;
+        }
+        
+        /* Navigation */
+        nav {
+            background-color: #222;
+            padding: 1rem;
+        }
+        
+        nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+        
+        nav li {
+            margin: 0 1rem;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 0.5rem;
+            transition: color 0.3s;
+        }
+        
+        nav a:hover {
+            color: #4CAF50;
         }
         
         header {
@@ -28,20 +57,34 @@
             max-width: 1200px;
             margin: 0 auto;
             padding: 2rem;
-            background-color: rgba(245, 245, 245, 0.8); /* Semi-transparent background for readability */
+            background-color: rgba(245, 245, 245, 0.8);
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
         }
         
-        .video-container {
+        .video-container, .image-container {
             width: 100%;
             max-width: 800px;
             margin: 2rem auto;
             background-color: #ddd;
-            aspect-ratio: 1/1.4141;
+            border-radius: 4px;
+            overflow: hidden;
         }
         
         video {
             width: 100%;
             display: block;
+        }
+        
+        .image-container img {
+            width: 100%;
+            display: block;
+            margin: 0 auto;
+            transition: transform 0.3s;
+        }
+        
+        .image-container img:hover {
+            transform: scale(1.02);
         }
         
         .fallback-message {
@@ -54,12 +97,36 @@
             background-color: #222;
             color: white;
             text-align: center;
-            padding: 1rem;
+            padding: 1.5rem;
             margin-top: 2rem;
+        }
+        
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .project-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
     </style>
 </head>
 <body>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="recentnews.html">Recent News</a></li>
+            <li><a href="photography.html">Photography</a></li>
+            <li><a href="pastprojects.html">Past Projects</a></li>
+            <li><a href="morefromme.html">More From Me</a></li>
+        </ul>
+    </nav>
+    
     <header>
         <h1>My Architecture Portfolio</h1>
         <p>Sustainable designs for hybrid spaces</p>
@@ -78,16 +145,35 @@
             </video>
         </div>
         
-         <div class="image-container">
-                <img src="ThreePillarsOfConferencingCompressed.png" alt=expressionist floorplan with salt aggregating in three areas over the plans>
-                </p>
-            <img>
+        <div class="image-container">
+            <img src="ThreePillarsOfConferencingCompressed.png" alt="Expressionist floorplan with salt aggregating in three areas over the plans">
         </div>
+        
         <p>This project demonstrates my approach to reuse in urban design.</p>
+        
+        <h2>Featured Projects</h2>
+        <div class="project-grid">
+            <div class="project-card">
+                <h3><a href="recentnews.html">Recent News</a></h3>
+                <p>Latest updates and current works in progress</p>
+            </div>
+            <div class="project-card">
+                <h3><a href="photography.html">Architectural Photography</a></h3>
+                <p>Capturing spaces and structures through my lens</p>
+            </div>
+            <div class="project-card">
+                <h3><a href="pastprojects.html">Past Projects</a></h3>
+                <p>Archive of completed works and competitions</p>
+            </div>
+            <div class="project-card">
+                <h3><a href="morefromme.html">More From Me</a></h3>
+                <p>Essays, sketches, and experimental work</p>
+            </div>
+        </div>
     </div>
     
     <footer>
-        <p>&copy; 2025 My Architecture Portfolio.</p>
+        <p>&copy; 2025 My Architecture Portfolio | <a href="mailto:contact@myportfolio.com" style="color: #4CAF50;">Contact</a></p>
     </footer>
 </body>
 </html>
