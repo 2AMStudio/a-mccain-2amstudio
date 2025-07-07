@@ -61,3 +61,24 @@ nav a {
     display: block;
     border-radius: 4px;
 }
+.timeline-container {
+    height: 50vh;
+    overflow-y: scroll; /* Changed from hidden to scroll */
+    scrollbar-width: none; /* Hide scrollbar for cleaner look */
+    -ms-overflow-style: none;
+}
+
+.timeline-container::-webkit-scrollbar {
+    display: none; /* Hide scrollbar for Webkit browsers */
+}
+
+.timeline {
+    padding: calc(50vh - 85px) 0; /* Center the timeline vertically */
+    transform: none !important; /* Let native scrolling handle positioning */
+}
+
+.timeline-center {
+    position: sticky;
+    top: 50%;
+    transform: translateY(-50%);
+}
