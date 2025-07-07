@@ -62,6 +62,114 @@
             box-shadow: 0 0 15px rgba(0,0,0,0.1);
         }
         
+        /* Timeline Styles */
+        .timeline-container {
+            height: 40vh; /* 40% of viewport height */
+            max-height: 500px;
+            margin: 3rem auto;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #222;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        
+        .timeline {
+            display: flex;
+            height: 100%;
+            width: max-content;
+            transition: transform 0.5s ease;
+            position: relative;
+        }
+        
+        .timeline-center {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            height: 100%;
+            width: 2px;
+            background-color: #4CAF50;
+            z-index: 2;
+        }
+        
+        .timeline-center::after {
+            content: "Present";
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        
+        .timeline-item {
+            width: 300px;
+            height: 100%;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        
+        .timeline-item::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 15px;
+            height: 15px;
+            background-color: #222;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 3;
+        }
+        
+        .timeline-item img {
+            max-width: 100%;
+            max-height: 70%;
+            object-fit: contain;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .timeline-item .date {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #4CAF50;
+        }
+        
+        .timeline-item .description {
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        
+        .timeline-nav {
+            display: flex;
+            justify-content: center;
+            margin: 1rem 0;
+        }
+        
+        .timeline-nav button {
+            background-color: #222;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            margin: 0 0.5rem;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .timeline-nav button:hover {
+            background-color: #4CAF50;
+        }
+        
+        /* Existing styles */
         .video-container, .image-container {
             width: 100%;
             max-width: 800px;
@@ -133,6 +241,61 @@
     </header>
 
     <div class="container">
+        <h2>My Architectural Journey</h2>
+        
+        <!-- Timeline Section -->
+        <div class="timeline-container">
+            <div class="timeline-center"></div>
+            <div class="timeline" id="timeline">
+                <!-- Past Items -->
+                <div class="timeline-item">
+                    <div class="date">2018</div>
+                    <img src="images/timeline/graduation.jpg" alt="Architecture graduation">
+                    <div class="description">Graduated with honors from Architecture School</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="date">2019</div>
+                    <img src="images/timeline/first-project.jpg" alt="First professional project">
+                    <div class="description">First professional commission - Residential complex</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="date">2020</div>
+                    <img src="images/timeline/award.jpg" alt="Design award">
+                    <div class="description">Received Young Architect of the Year award</div>
+                </div>
+                
+                <!-- Present Item (centered by default) -->
+                <div class="timeline-item">
+                    <div class="date">2023</div>
+                    <img src="images/timeline/current-project.jpg" alt="Current project">
+                    <div class="description">DSCM632 Final Design Project in progress</div>
+                </div>
+                
+                <!-- Future Items -->
+                <div class="timeline-item">
+                    <div class="date">2024</div>
+                    <img src="images/timeline/future1.jpg" alt="Future project concept">
+                    <div class="description">Planned eco-village development</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="date">2025</div>
+                    <img src="images/timeline/future2.jpg" alt="Future exhibition">
+                    <div class="description">International architecture exhibition</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="date">2026</div>
+                    <img src="images/timeline/future3.jpg" alt="Future book">
+                    <div class="description">Publishing first design philosophy book</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="timeline-nav">
+            <button onclick="moveTimeline(-1)">◄ Past</button>
+            <button onclick="centerTimeline()">Present</button>
+            <button onclick="moveTimeline(1)">Future ►</button>
+        </div>
+        
         <h2>DSCM632 Final Design Project</h2>
         
         <div class="video-container">
@@ -175,5 +338,35 @@
     <footer>
         <p>&copy; 2025 My Architecture Portfolio | <a href="mailto:contact@myportfolio.com" style="color: #4CAF50;">Contact</a></p>
     </footer>
+
+    <script>
+        const timeline = document.getElementById('timeline');
+        let currentPosition = 0;
+        const itemWidth = 300; // Should match your timeline-item width
+        const centerIndex = 3; // Index of the "present" item (2023)
+        
+        // Center timeline on present day initially
+        window.onload = function() {
+            centerTimeline();
+        };
+        
+        function moveTimeline(direction) {
+            // Calculate new position
+            currentPosition += direction * itemWidth;
+            
+            // Limit scrolling to available content
+            const maxPosition = (timeline.children.length - centerIndex - 1) * itemWidth;
+            const minPosition = -centerIndex * itemWidth;
+            
+            currentPosition = Math.max(minPosition, Math.min(maxPosition, currentPosition));
+            
+            timeline.style.transform = `translateX(calc(50% - ${itemWidth/2}px + ${-currentPosition}px))`;
+        }
+        
+        function centerTimeline() {
+            currentPosition = 0;
+            timeline.style.transform = `translateX(calc(50% - ${itemWidth/2}px))`;
+        }
+    </script>
 </body>
 </html>
