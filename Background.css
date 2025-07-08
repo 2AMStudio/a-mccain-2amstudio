@@ -75,6 +75,10 @@ nav a::before {
 nav a:hover::before {
     left: 100%;
 }
+   /* Move bottom portal up by 20px */
+nav ul li:last-child {
+    margin-bottom: 200px;
+}
 
 /* Main Content Area - Takes 2/3 of screen */
 .main-content {
@@ -233,8 +237,4 @@ h2 {
         height: 60vh;
     }
 
-}
-   /* Move bottom portal up by 20px */
-nav ul li:last-child {
-    margin-bottom: 200px;
 }
