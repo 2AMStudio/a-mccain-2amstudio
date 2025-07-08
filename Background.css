@@ -232,4 +232,9 @@ h2 {
     .timeline-container {
         height: 60vh;
     }
+    /* Move bottom portal up by 20px */
+nav ul li:last-child {
+    margin-bottom: 20px;
+}
+
 }
