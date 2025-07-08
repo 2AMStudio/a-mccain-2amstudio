@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>My Architecture Portfolio</title>
     <style>
         * {
@@ -11,15 +11,16 @@
             box-sizing: border-box;
             font-family: 'Arial', sans-serif;
         }
-        
+
         body {
             display: flex;
             height: 100vh;
             overflow: hidden;
             color: #333;
             line-height: 1.6;
+            background-color: #fafafa;
         }
-        
+
         /* Vertical Navigation - Takes 1/3 of screen */
         nav {
             width: 33.33vw;
@@ -29,9 +30,9 @@
             flex-direction: column;
             justify-content: center;
             padding: 2rem;
-            box-shadow: 4px 0 15px rgba(0,0,0,0.2);
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.2);
         }
-        
+
         nav ul {
             list-style: none;
             height: 80vh;
@@ -39,11 +40,11 @@
             flex-direction: column;
             justify-content: space-around;
         }
-        
+
         nav li {
             margin: 1rem 0;
         }
-        
+
         nav a {
             color: white;
             text-decoration: none;
@@ -56,12 +57,12 @@
             position: relative;
             overflow: hidden;
         }
-        
+
         nav a:hover {
-            background-color: #4CAF50;
+            background-color: #4caf50;
             transform: translateX(10px);
         }
-        
+
         nav a::before {
             content: '';
             position: absolute;
@@ -69,14 +70,14 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
             transition: 0.5s;
         }
-        
+
         nav a:hover::before {
             left: 100%;
         }
-        
+
         /* Main Content Area */
         .main-content {
             width: 66.67vw;
@@ -85,356 +86,415 @@
             padding: 2rem;
             background-color: #f5f5f5;
         }
-        
+
         /* Content Styling */
         header {
             margin-bottom: 3rem;
             padding-bottom: 2rem;
-            border-bottom: 2px solid #4CAF50;
+            border-bottom: 2px solid #4caf50;
         }
-        
+
         h1 {
             font-size: 3rem;
             color: #222;
             margin-bottom: 1rem;
         }
-        
+
         h2 {
             font-size: 2rem;
-            color: #4CAF50;
+            color: #4caf50;
             margin: 2rem 0 1rem;
         }
-        
-        /* Timeline and other content styles would go here */
-        /* ... (keep your existing timeline and content styles) ... */
-        
+
+        /* Timeline and other content styles */
+        .timeline-container {
+            position: relative;
+            height: 500px;
+            overflow: hidden;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            padding: 1rem 0;
+        }
+
+        .timeline {
+            position: relative;
+            transition: transform 0.4s ease-out;
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem 2rem;
+            border-left: 3px solid #4caf50;
+            margin-bottom: 1rem;
+            background: #e8f5e9;
+            border-radius: 5px;
+            height: 150px;
+            box-sizing: border-box;
+        }
+
+        .timeline-item .date {
+            font-weight: bold;
+            color: #4caf50;
+            width: 80px;
+            flex-shrink: 0;
+            font-size: 1.2rem;
+        }
+
+        .timeline-item .timeline-content {
+            flex-grow: 1;
+            padding-left: 1rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .timeline-item .timeline-content img {
+            width: 120px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .timeline-item .description {
+            font-size: 1rem;
+            color: #333;
+            align-self: center;
+        }
+
+        /* Timeline center line */
+        .timeline-center {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            height: 100%;
+            width: 4px;
+            background-color: #4caf50;
+            z-index: 1;
+        }
+
+        .timeline-center-line {
+            width: 4px;
+            height: 100%;
+            background-color: #4caf50;
+            margin: 0 auto;
+        }
+
+        .timeline-center-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            background: #4caf50;
+            color: white;
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+        }
+
+        /* Timeline navigation buttons */
+        .timeline-nav {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .timeline-nav button {
+            background-color: #4caf50;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            color: white;
+            font-weight: bold;
+            margin: 0 1rem;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .timeline-nav button:hover {
+            background-color: #388e3c;
+        }
+
+        /* Video container */
+        .video-container {
+            margin: 2rem 0;
+        }
+
+        .video-container video {
+            width: 100%;
+            max-height: 400px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Image container */
+        .image-container {
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Project grid */
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .project-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .project-card:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .project-card h3 {
+            margin-bottom: 1rem;
+            color: #4caf50;
+        }
+
+        .project-card h3 a {
+            color: #4caf50;
+            text-decoration: none;
+        }
+
+        .project-card p {
+            color: #555;
+            font-size: 0.95rem;
+        }
+
         /* Responsive adjustments */
         @media (max-width: 1200px) {
             body {
                 flex-direction: column;
             }
-            
+
             nav {
                 width: 100%;
                 height: auto;
                 padding: 1rem;
             }
-            
+
             nav ul {
                 flex-direction: row;
                 flex-wrap: wrap;
                 height: auto;
                 justify-content: center;
             }
-            
+
             nav li {
                 margin: 0.5rem;
             }
-            
+
             nav a {
                 font-size: 1.5rem;
                 padding: 1rem;
             }
-            
+
             .main-content {
                 width: 100%;
                 height: auto;
+            }
+
+            .timeline-container {
+                height: 350px;
             }
         }
     </style>
 </head>
 <body>
-    
-  <nav>
-  <ul class="nav-top">
-    <li><a href="index.html">Home</a></li>
-    <li><a href="recentnews.html">Recent News</a></li>
-    <li><a href="photography.html">Photography</a></li>
-    <li><a href="pastprojects.html">Past Projects</a></li>
-  </ul>
-  <ul class="nav-bottom">
-    <li><a href="morefromme.html">More from Me</a></li>
-  </ul>
-</nav>
+    <nav>
+        <ul class="nav-top">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="recentnews.html">Recent News</a></li>
+            <li><a href="photography.html">Photography</a></li>
+            <li><a href="pastprojects.html">Past Projects</a></li>
+        </ul>
+        <ul class="nav-bottom">
+            <li><a href="morefromme.html">More from Me</a></li>
+        </ul>
+    </nav>
 
     <div class="main-content">
-    <header>
-        <h1>My Architecture Portfolio</h1>
-        <p>Sustainable designs for hybrid spaces</p>
-    </header>
+        <header>
+            <h1>My Architecture Portfolio</h1>
+            <p>Sustainable designs for hybrid spaces</p>
+        </header>
 
-    <div class="container">
-        <h2>My Architectural Journey</h2>
-        
-        <!-- Live Date/Time Display -->
-        <div class="live-datetime" id="liveDateTime">
-            Loading current date and time...
-        </div>
-        
-        <!-- Vertical Timeline Section -->
-        <div class="timeline-container">
-            <div class="timeline-center">
-                <div class="timeline-center-line"></div>
-                <div class="timeline-center-label">Present</div>
-            </div>
-            <div class="timeline" id="timeline">
-                <!-- Past Items -->
-                <div class="timeline-item">
-                    <div class="date">2018</div>
-                    <div class="timeline-content">
-                        <img src="images/timeline/graduation.jpg" alt="Architecture graduation">
-                        <div class="description">Graduated with honors from Architecture School, receiving the Dean's Award for Innovative Design</div>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="date">2019</div>
-                    <div class="timeline-content">
-                        <img src="images/timeline/first-project.jpg" alt="First professional project">
-                        <div class="description">First professional commission - Residential complex in downtown featuring sustainable materials</div>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="date">2020</div>
-                    <div class="timeline-content">
-                        <img src="images/timeline/award.jpg" alt="Design award">
-                        <div class="description">Received Young Architect of the Year award for innovative urban space design</div>
-                    </div>
-                </div>
-                
-                <!-- Present Item (centered by default) -->
-                <div class="timeline-item">
-                    <div class="date">2023</div>
-                    <div class="timeline-content">
-                        <img src="images/timeline/current-project.jpg" alt="Current project">
-                        <div class="description">DSCM632 Final Design Project in progress - Adaptive reuse of industrial buildings for community spaces</div>
-                    </div>
-                </div>
-                
-                <!-- Future Items -->
-                <div class="timeline-item">
-                    <div class="date">2024</div>
-                    <div class="timeline-content">
-                        <img src="images/timeline/future1.jpg" alt="Future project concept">
-                        <div class="description">Planned eco-village development featuring net-zero energy homes and communal farming spaces</div>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="date">2025</div>
-                    <div class="timeline-content">
-                        <img src="images/timeline/future2.jpg" alt="Future exhibition">
-                        <div class="description">International architecture exhibition showcasing hybrid space designs in Tokyo and Berlin</div>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="date">2026</div>
+        <div class="container">
+            <h2>My Architectural Journey</h2>
 
-                    <!-- In your timeline section, update the items like this: -->
-<div class="timeline" id="timeline">
-    <!-- Past Items -->
-    <div class="timeline-item">
-        <div class="date">2018</div>
-        <!-- content -->
-    </div>
-    <div class="timeline-item">
-        <div class="date">2019</div>
-        <!-- content -->
-    </div>
-    <div class="timeline-item">
-        <div class="date">2020</div>
-        <!-- content -->
-    </div>
-    <div class="timeline-item">
-        <div class="date">2023</div>
-        <!-- content -->
-    </div>
-    
-    <!-- Present Item (2025) -->
-    <div class="timeline-item present-year">
-        <div class="date">2025</div>
-        <div class="timeline-content">
-            <img src="images/timeline/current-project.jpg" alt="Current project">
-            <div class="description">Current architectural projects and exhibitions</div>
-        </div>
-    </div>
-    
-    <!-- Future Items -->
-    <div class="timeline-item">
-        <div class="date">2026</div>
-        <!-- content -->
-    </div>
-    <div class="timeline-item">
-        <div class="date">2027</div>
-        <!-- content -->
-    </div>
-</div>
-                    <div class="timeline-content">
-                        <img src="images/timeline/future3.jpg" alt="Future book">
-                        <div class="description">Publishing first design philosophy book: "Sustainable Spaces for Hybrid Living"</div>
+            <!-- Live Date/Time Display -->
+            <div class="live-datetime" id="liveDateTime">
+                Loading current date and time...
+            </div>
+
+            <!-- Vertical Timeline Section -->
+            <div class="timeline-container">
+                <div class="timeline-center">
+                    <div class="timeline-center-line"></div>
+                    <div class="timeline-center-label">Present</div>
+                </div>
+                <div class="timeline" id="timeline">
+                    <div class="timeline-item">
+                        <div class="date">2018</div>
+                        <div class="timeline-content">
+                            <img src="images/timeline/graduation.jpg" alt="Architecture graduation" />
+                            <div class="description">
+                                Graduated with honors from Architecture School, receiving the Dean's Award for Innovative Design
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="date">2019</div>
+                        <div class="timeline-content">
+                            <img src="images/timeline/firstjob.jpg" alt="First architectural job" />
+                            <div class="description">
+                                Started first job at GreenBuild Architects, working on eco-friendly urban housing projects
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="date">2020</div>
+                        <div class="timeline-content">
+                            <img src="images/timeline/award.jpg" alt="Architecture award" />
+                            <div class="description">
+                                Won the National Architecture Award for Sustainable Public Spaces
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="date">2021</div>
+                        <div class="timeline-content">
+                            <img src="images/timeline/expansion.jpg" alt="Firm expansion" />
+                            <div class="description">
+                                Promoted to lead designer, managing a team of junior architects and expanding project scope
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="date">2022</div>
+                        <div class="timeline-content">
+                            <img src="images/timeline/award2.jpg" alt="Design award" />
+                            <div class="description">
+                                Featured in Architectural Digest and received the Innovative Green Design Award
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <div class="timeline-nav">
-            <button onclick="moveTimeline(-1)">▲ Past</button>
-            <button onclick="centerTimeline()">Present</button>
-            <button onclick="moveTimeline(1)">▼ Future</button>
-        </div>
-        
-        <h2>DSCM632 Final Design Project</h2>
-        
-        <div class="video-container">
-            <video controls autoplay loop muted playsinline>
-                <source src="Sequence 01_3_3.mp4" type="video/mp4">
-                <p class="fallback-message">
-                    Your browser doesn't support HTML5 video. 
-                    <a href="Sequence 01_3_3.mp4">Download the video</a> instead.
-                </p>
-            </video>
-        </div>
-        
-        <div class="image-container">
-            <img src="ThreePillarsOfConferencingCompressed.png" alt="Expressionist floorplan with salt aggregating in three areas over the plans">
-        </div>
-        
-        <p>This project demonstrates my approach to reuse in urban design.</p>
-        
-        <h2>Featured Projects</h2>
-        <div class="project-grid">
-            <div class="project-card">
-                <h3><a href="recentnews.html">Recent News</a></h3>
-                <p>Latest updates and current works in progress</p>
+
+            <!-- Timeline navigation buttons -->
+            <div class="timeline-nav">
+                <button id="scrollUp">Up</button>
+                <button id="scrollDown">Down</button>
             </div>
-            <div class="project-card">
-                <h3><a href="photography.html">Architectural Photography</a></h3>
-                <p>Capturing spaces and structures through my lens</p>
-            </div>
-            <div class="project-card">
-                <h3><a href="pastprojects.html">Past Projects</a></h3>
-                <p>Archive of completed works and competitions</p>
-            </div>
-            <div class="project-card">
-                <h3><a href="morefromme.html">More From Me</a></h3>
-                <p>Essays, sketches, and experimental work</p>
-            </div>
+
+            <!-- Video Section -->
+            <section>
+                <h2>My Presentation</h2>
+                <div class="video-container">
+                    <video controls>
+                        <source src="video/presentation.mp4" type="video/mp4" />
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </section>
+
+            <!-- Image Section -->
+            <section>
+                <h2>Featured Projects</h2>
+                <div class="image-container">
+                    <img src="images/projects/featured1.jpg" alt="Featured project" />
+                </div>
+            </section>
+
+            <!-- Projects Grid -->
+            <section>
+                <h2>Past Projects</h2>
+                <div class="project-grid">
+                    <div class="project-card">
+                        <h3><a href="project1.html">Eco City Center</a></h3>
+                        <p>A large urban development focused on sustainability and green spaces.</p>
+                    </div>
+                    <div class="project-card">
+                        <h3><a href="project2.html">Modern Art Museum</a></h3>
+                        <p>Renovation of an iconic art museum with an eco-friendly approach.</p>
+                    </div>
+                    <div class="project-card">
+                        <h3><a href="project3.html">Community Library</a></h3>
+                        <p>A modern library design with natural light and sustainable materials.</p>
+                    </div>
+                    <div class="project-card">
+                        <h3><a href="project4.html">Riverside Apartments</a></h3>
+                        <p>Residential buildings integrating green terraces and energy-saving systems.</p>
+                    </div>
+                </div>
+            </section>
         </div>
     </div>
-    
-    <footer>
-        <p>&copy; 2025 My Architecture Portfolio | <a href="mailto:contact@myportfolio.com" style="color: #4CAF50;">Contact</a></p>
-    </footer>
 
-  <script>
-    // Timeline functionality
-    const timeline = document.getElementById('timeline');
-    const container = document.querySelector('.timeline-container');
-    let currentPosition = 0;
-    let isAnimating = false;
-    const itemHeight = 170; // Height of each timeline item
-    
-    // Get current year item
-    function getCurrentYearItem() {
-        const currentYear = new Date().getFullYear();
-        const items = Array.from(timeline.querySelectorAll('.timeline-item'));
-        
-        // Try to find exact year match
-        let presentItem = items.find(item => {
-            const yearText = item.querySelector('.date').textContent;
-            return parseInt(yearText) === currentYear;
-        });
-        
-        // If no exact match, find closest year
-        if (!presentItem) {
-            presentItem = items.reduce((closest, item) => {
-                const year = parseInt(item.querySelector('.date').textContent);
-                return (!closest || Math.abs(year - currentYear) < Math.abs(parseInt(closest.querySelector('.date').textContent) - currentYear)) 
-                    ? item : closest;
-            });
+    <script>
+        // Live Date/Time display
+        function updateDateTime() {
+            const now = new Date();
+            const options = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false,
+                timeZoneName: 'short'
+            };
+            const formatted = now.toLocaleString('en-US', options);
+            document.getElementById('liveDateTime').textContent = formatted;
         }
-        
-        return presentItem || items[Math.floor(items.length / 2)]; // Fallback to middle
-    }
-    
-    // Initialize timeline position
-    function initTimeline() {
-        const containerHeight = container.clientHeight;
-        const presentItem = getCurrentYearItem();
-        const presentItemPos = presentItem.offsetTop + (presentItem.offsetHeight / 2);
-        currentPosition = presentItemPos - (containerHeight / 2);
-        updateTimelinePosition();
-        
-        // Update present label with current year
-        const currentYear = new Date().getFullYear();
-        document.querySelector('.timeline-center-label').textContent = `Present (${currentYear})`;
-    }
-    
-    // Update timeline position
-    function updateTimelinePosition() {
-        timeline.style.transform = `translateY(${-currentPosition}px)`;
-    }
-    
-    // Handle timeline movement
-    function moveTimeline(direction) {
-        if (isAnimating) return;
-        
-        const containerHeight = container.clientHeight;
-        const timelineHeight = timeline.scrollHeight;
-        const maxPosition = timelineHeight - containerHeight;
-        
-        currentPosition += direction * itemHeight;
-        currentPosition = Math.max(0, Math.min(maxPosition, currentPosition));
-        
-        isAnimating = true;
-        timeline.style.transition = 'transform 0.4s ease-out';
-        updateTimelinePosition();
-        
-        setTimeout(() => {
-            isAnimating = false;
-            timeline.style.transition = '';
-        }, 400);
-    }
-    
-    // Center on present item
-    function centerTimeline() {
-        const containerHeight = container.clientHeight;
-        const presentItem = getCurrentYearItem();
-        const presentItemPos = presentItem.offsetTop + (presentItem.offsetHeight / 2);
-        currentPosition = presentItemPos - (containerHeight / 2);
-        
-        isAnimating = true;
-        timeline.style.transition = 'transform 0.6s ease-out';
-        updateTimelinePosition();
-        
-        setTimeout(() => {
-            isAnimating = false;
-            timeline.style.transition = '';
-        }, 600);
-    }
-    
-    // Live Date/Time Display
-    function updateDateTime() {
-        const now = new Date();
-        const options = { 
-            weekday: 'long', 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            hour12: true
-        };
-        document.getElementById('liveDateTime').textContent = now.toLocaleDateString('en-GB', options);
-    }
-    
-    // Initialize everything
-    window.addEventListener('load', () => {
-        initTimeline();
-        updateDateTime();
+
         setInterval(updateDateTime, 1000);
-    });
-    
-    window.addEventListener('resize', initTimeline);
-</script>
+        updateDateTime();
+
+        // Timeline scrolling logic
+        const timeline = document.getElementById('timeline');
+        const scrollUpBtn = document.getElementById('scrollUp');
+        const scrollDownBtn = document.getElementById('scrollDown');
+
+        let currentTranslateY = 0;
+        const itemHeight = 160; // Approximate height including margin
+        const visibleItems = 3; // How many items are visible at once
+        const totalItems = timeline.children.length;
+        const maxTranslateY = -(itemHeight * (totalItems - visibleItems));
+
+        scrollUpBtn.addEventListener('click', () => {
+            currentTranslateY += itemHeight;
+            if (currentTranslateY > 0) currentTranslateY = 0;
+            timeline.style.transform = `translateY(${currentTranslateY}px)`;
+        });
+
+        scrollDownBtn.addEventListener('click', () => {
+            currentTranslateY -= itemHeight;
+            if (currentTranslateY < maxTranslateY) currentTranslateY = maxTranslateY;
+            timeline.style.transform = `translateY(${currentTranslateY}px)`;
+        });
+    </script>
 </body>
 </html>
