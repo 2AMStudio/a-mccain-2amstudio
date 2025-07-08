@@ -1,18 +1,3 @@
-/* Reset and base styles */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f8f9fa;
-  color: #333;
-  display: flex;
-  min-height: 100vh;
-}
-
 /* NAVIGATION */
 nav {
   width: 200px;
@@ -29,22 +14,31 @@ nav {
   list-style: none;
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
-  height: 100%;
   padding: 0;
   margin: 0;
+  flex: 1; /* This makes both sections take equal space */
+}
+
+.nav-top {
+  justify-content: flex-start; /* Align items to the top */
+}
+
+.nav-bottom {
+  justify-content: flex-end; /* Align items to the bottom */
 }
 
 .nav-top li,
 .nav-bottom li {
-  flex-grow: 1;
+  flex: 1; /* This makes all list items equal height */
+  min-height: 60px; /* Set a minimum height for each button */
+  display: flex;
 }
 
 nav a {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100%;
+  width: 100%;
   color: white;
   text-decoration: none;
   padding: 1em;
@@ -55,100 +49,8 @@ nav a:hover {
   background-color: #33334d;
 }
 
-/* MAIN CONTENT */
-.main-content {
-  flex: 1;
-  padding: 2em;
-  overflow-x: hidden;
-}
-
-/* TIMELINE */
-.timeline-container {
-  margin-top: 2em;
-  overflow: hidden;
-}
-
-.timeline-horizontal {
-  position: relative;
-  overflow-x: auto;
-  white-space: nowrap;
-  padding: 1em 0;
-}
-
-.timeline {
-  display: flex;
-  gap: 2em;
-}
-
-.timeline-item {
-  min-width: 250px;
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  padding: 1em;
-  text-align: center;
-}
-
-.timeline-item img {
-  width: 100%;
-  border-radius: 8px;
-  margin-bottom: 0.5em;
-}
-
-.timeline-item .date {
-  font-weight: bold;
-  margin-bottom: 0.5em;
-}
-
-.timeline-nav {
-  margin-top: 1em;
-  display: flex;
-  justify-content: center;
-  gap: 1em;
-}
-
-.timeline-nav button {
-  padding: 0.5em 1em;
-  font-size: 1rem;
-  cursor: pointer;
-}
-
-/* VIDEO & PROJECT SECTIONS */
-.video-container {
-  margin: 2em 0;
-}
-
-.video-container video {
-  width: 100%;
-  max-width: 800px;
-  display: block;
-  margin: auto;
-}
-
-.image-container img {
-  width: 100%;
-  max-width: 800px;
-  display: block;
-  margin: auto;
-}
-
-.project-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1em;
-  margin-top: 1em;
-}
-
-.project-card {
-  background-color: #fff;
-  padding: 1em;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-/* Live Date and Time */
-.live-datetime {
-  font-size: 1rem;
-  color: #555;
-  margin: 1em 0;
+/* If you want equal spacing between items */
+.nav-top li:not(:last-child),
+.nav-bottom li:not(:last-child) {
+  margin-bottom: 0; /* Remove any extra spacing */
 }
