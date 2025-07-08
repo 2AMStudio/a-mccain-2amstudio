@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>My Architecture Portfolio</title>
-    <link rel="stylesheet" href="Background.css" />
+    <link rel="stylesheet" href="style.css" />
 </head>
 <body>
     <nav>
@@ -19,13 +19,13 @@
         </ul>
     </nav>
 
-    <div class="main-content">
+    <main class="main-content">
         <header>
             <h1>My Architecture Portfolio</h1>
             <p>Sustainable designs for hybrid spaces</p>
         </header>
 
-        <div class="container">
+        <section class="container">
             <h2>My Architectural Journey</h2>
 
             <div class="live-datetime" id="liveDateTime">
@@ -94,50 +94,52 @@
                 <button id="scrollLeft">← Left</button>
                 <button id="scrollRight">Right →</button>
             </div>
+        </section>
 
-            <!-- Video Section -->
-            <section>
-                <h2>My Presentation</h2>
-                <div class="video-container">
-                    <video controls>
-                        <source src="video/presentation.mp4" type="video/mp4" />
-                        Your browser does not support the video tag.
-                    </video>
-                </div>
-            </section>
+        <!-- Video Section -->
+        <section class="container">
+            <h2>My Presentation</h2>
+            <div class="video-container">
+                <video controls>
+                    <source src="video/presentation.mp4" type="video/mp4" />
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </section>
 
-            <!-- Projects -->
-            <section>
-                <h2>Featured Projects</h2>
-                <div class="image-container">
-                    <img src="images/projects/featured1.jpg" alt="Featured project" />
-                </div>
-            </section>
+        <!-- Featured Projects -->
+        <section class="container">
+            <h2>Featured Projects</h2>
+            <div class="image-container">
+                <img src="images/projects/featured1.jpg" alt="Featured project" />
+            </div>
+        </section>
 
-            <section>
-                <h2>Past Projects</h2>
-                <div class="project-grid">
-                    <div class="project-card">
-                        <h3><a href="project1.html">Eco City Center</a></h3>
-                        <p>A sustainable urban development.</p>
-                    </div>
-                    <div class="project-card">
-                        <h3><a href="project2.html">Modern Art Museum</a></h3>
-                        <p>Eco-conscious museum renovation.</p>
-                    </div>
-                    <div class="project-card">
-                        <h3><a href="project3.html">Community Library</a></h3>
-                        <p>Library design with natural light.</p>
-                    </div>
-                    <div class="project-card">
-                        <h3><a href="project4.html">Riverside Apartments</a></h3>
-                        <p>Green terraces and energy-saving tech.</p>
-                    </div>
+        <!-- Past Projects Grid -->
+        <section class="container">
+            <h2>Past Projects</h2>
+            <div class="project-grid">
+                <div class="project-card">
+                    <h3><a href="project1.html">Eco City Center</a></h3>
+                    <p>A sustainable urban development.</p>
                 </div>
-            </section>
-        </div>
-    </div>
+                <div class="project-card">
+                    <h3><a href="project2.html">Modern Art Museum</a></h3>
+                    <p>Eco-conscious museum renovation.</p>
+                </div>
+                <div class="project-card">
+                    <h3><a href="project3.html">Community Library</a></h3>
+                    <p>Library design with natural light.</p>
+                </div>
+                <div class="project-card">
+                    <h3><a href="project4.html">Riverside Apartments</a></h3>
+                    <p>Green terraces and energy-saving tech.</p>
+                </div>
+            </div>
+        </section>
+    </main>
 
     <script src="script.js"></script>
 </body>
 </html>
+
