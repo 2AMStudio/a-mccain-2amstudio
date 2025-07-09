@@ -1,36 +1,34 @@
 /* NAVIGATION SIDEBAR */
 nav {
-  width: 33.33vw; /* 1/3 of the viewport width */
+  width: 33.33vw;
   background-color: #4E9D64;
   color: black;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
   height: 100vh;
-  position: fixed; /* Keep it fixed on scroll */
+  position: fixed;
   top: 0;
   left: 0;
   z-index: 1000;
   overflow: hidden;
-}
-
-.nav-top,
-.nav-bottom {
-  list-style: none;
   display: flex;
   flex-direction: column;
-  padding: 0;
-  margin: 0;
-  flex: 1;
 }
 
-.nav-top li,
-.nav-bottom li {
-  flex: 1; /* Equal height for each item */
+/* Use Grid to evenly space buttons */
+.nav-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  height: 100%;
+  grid-template-rows: repeat(5, 1fr); /* 5 equal-height rows */
+}
+
+/* Ensure all buttons take full space of their grid row */
+.nav-grid li {
   display: flex;
 }
 
-nav a {
+.nav-grid a {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -41,20 +39,11 @@ nav a {
   font-weight: bold;
   font-size: 1.2rem;
   text-align: center;
-  padding: 1em;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-nav a:hover {
+.nav-grid a:hover {
   background-color: #33334d;
   color: white;
 }
 
-/* OPTIONAL: Add divider between sections */
-.nav-top::after {
-  content: "";
-  display: block;
-  height: 2px;
-  background-color: rgba(0, 0, 0, 0.2);
-  margin: 0.5em 0;
-}
