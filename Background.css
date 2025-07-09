@@ -194,60 +194,47 @@ nav {
     object-fit: contain;
 }
 
-/* A3 Video Container - Centered 1/3 of screen */
+/* A3 Video Frame (1080x1528 exact pixel ratio) */
 .a3-video-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 2rem auto;
-    width: 33.33vw; /* 1/3 of viewport width */
-    height: calc(33.33vw * 1.414); /* Maintain A3 ratio */
-    max-width: 400px; /* Prevent becoming too large */
-    max-height: calc(400px * 1.414); /* Maintain ratio for max-width */
-    background: #f5f5f5;
-    box-shadow: 0 0 20px rgba(0,0,0,0.1);
-    overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 2rem auto;
+  width: min(1080px, 33.33vw); /* Never exceeds 1080px or 1/3 viewport */
+  height: min(1528px, calc(33.33vw * 1.414)); /* Maintains exact ratio */
+  background: #f5f5f5;
+  box-shadow: 0 0 20px rgba(0,0,0,0.1);
+  overflow: hidden;
+  aspect-ratio: 1080/1528; /* Ensures exact ratio even during resizing */
 }
 
 .a3-video-container video {
-    width: 100%;
-    height: 100%;
-    object-fit: contain; /* Preserve video aspect ratio */
-    background: #000; /* For letterboxing/pillarboxing */
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
 }
 
-/* Responsive adjustments */
-@media (max-width: 1200px) {
-    .a3-video-container {
-        width: 40vw;
-        height: calc(40vw * 1.414);
-    }
+/* Responsive Scaling */
+@media (max-width: 1620px) {
+  .a3-video-container {
+    width: min(1080px, 50vw);
+    height: min(1528px, calc(50vw * 1.414));
+  }
 }
 
-@media (max-width: 768px) {
-    .a3-video-container {
-        width: 80vw;
-        height: calc(80vw * 1.414);
-        max-width: none;
-    }
+@media (max-width: 1080px) {
+  .a3-video-container {
+    width: min(1080px, 80vw);
+    height: min(1528px, calc(80vw * 1.414));
+  }
 }
 
-/* Print styles (unchanged) */
+/* Print Styles */
 @media print {
-    .a3-video-container {
-        width: 297mm;
-        height: 420mm;
-        margin: 0 auto;
-        page-break-inside: avoid;
-    }
-    
-    /* Hide non-essential elements */
-    nav, .timeline-wrapper {
-        display: none;
-    }
-    
-    .main-content {
-        width: 100%;
-        float: none;
-    }
+  .a3-video-container {
+    width: 297mm;
+    height: 420mm;
+    margin: 0 auto;
+  }
 }
