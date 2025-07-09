@@ -198,7 +198,7 @@ nav {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 2rem 0 2rem auto; /* This does the right alignment */
+  margin: 2rem 1rem 2rem auto; /* This does the right alignment */
   width: min(1080px, 33.33vw);
   height: min(1528px, calc(33.33vw * 1.414));
   aspect-ratio: 1080/1528;
