@@ -126,3 +126,9 @@ body, html {
   font-size: 0.95rem;
   color: #333;
 }
+.rescaled-image {
+  width: 150px;       /* or any width you want */
+  height: auto;       /* maintain aspect ratio */
+  object-fit: contain; /* optional */
+  border-radius: 4px; /* if you want */
+}
