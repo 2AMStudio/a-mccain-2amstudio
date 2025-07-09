@@ -5,13 +5,13 @@ body, html {
   height: 100%;
   font-family: Arial, sans-serif;
   display: grid;
-  grid-template-columns: 20vw auto 20vw; /* Slimmer side columns */
+  grid-template-columns: 33.33vw 33.33vw 33.33vw;
 }
 
 /* Left Navigation */
 nav {
   grid-column: 1;
-  width: 20vw;
+  width: 33.33vw;
   height: 100vh;
   background-color: #4E9D64;
   position: fixed;
@@ -21,7 +21,6 @@ nav {
   align-items: stretch;
   justify-content: center;
   container-type: size;
-  z-index: 2;
 }
 
 .nav-buttons {
@@ -45,12 +44,12 @@ nav {
   text-align: center;
   width: 100%;
   height: 100%;
-  font-size: clamp(1rem, 8cqw, 1.5rem); /* Slightly smaller max font */
+  font-size: clamp(1rem, 8cqw, 2rem);
   font-weight: bold;
   color: black;
   text-decoration: none;
-  transition: all 0.3s ease;
-  padding: 0 0.5rem; /* Reduced padding */
+  transition: background-color 0.3s ease, color 0.3s ease;
+  padding: 0 1rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -59,29 +58,27 @@ nav {
 .nav-buttons a:hover {
   background-color: #33334d;
   color: white;
-  transform: scale(1.02);
 }
 
-/* Central Content - Full Visibility */
+/* Central Content (Middle Third) */
 .main-content {
   grid-column: 2;
-  width: 100%;
+  width: 33.33vw;
   padding: 2rem;
   box-sizing: border-box;
   min-height: 100vh;
   overflow-y: auto;
-  z-index: 1;
-  scroll-behavior: smooth;
+  margin-left: 33.33vw;
 }
 
 /* Right Timeline */
 .timeline-wrapper {
   grid-column: 3;
-  width: 20vw;
-  height: 100vh;
   position: fixed;
   top: 0;
   right: 0;
+  width: 33.33vw;
+  height: 100vh;
   background-color: #f5f5f5;
   border-left: 2px solid #ccc;
   display: flex;
@@ -89,29 +86,78 @@ nav {
   align-items: center;
   padding: 1rem 0;
   box-sizing: border-box;
-  z-index: 2;
 }
 
-/* A3 Video Container - Centered and Responsive */
+.timeline-nav-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.timeline-nav-vertical button {
+  padding: 0.5rem 1rem;
+  font-size: 1.2rem;
+  cursor: pointer;
+  width: 80px;
+}
+
+.timeline-container-vertical {
+  flex: 1;
+  width: 90%;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  padding-right: 0.5rem;
+}
+
+.timeline-item {
+  margin-bottom: 2rem;
+  border-left: 4px solid #4E9D64;
+  padding-left: 1rem;
+  position: relative;
+}
+
+.timeline-item .date {
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  color: #4E9D64;
+}
+
+.timeline-content img {
+  width: 100%;
+  max-height: 150px;
+  object-fit: cover;
+  margin-bottom: 0.5rem;
+  border-radius: 4px;
+}
+
+.description {
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.rescaled-image {
+  width: 150px;
+  height: auto;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
 .a3-video-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 2rem auto;
-  width: 90%;
-  max-width: 800px;
+  margin: 2rem auto; /* Centered horizontally */
+  width: 100%; /* Fills available width in middle third */
+  max-width: 100%; /* Prevents overflow */
   height: auto;
-  aspect-ratio: 1/1.414;
+  aspect-ratio: 1/1.414; /* A3 proportion */
   background: #f5f5f5;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.1);
   overflow: hidden;
-  transition: transform 0.3s ease;
-}
-
-.a3-video-container:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
 }
 
 .a3-video-container video {
@@ -120,20 +166,20 @@ nav {
   object-fit: contain;
   background: #000;
 }
-
 /* Responsive Adjustments */
 @media (max-width: 1200px) {
   body {
-    grid-template-columns: 25vw auto;
-  }
-  nav {
-    width: 25vw;
+    grid-template-columns: 40vw 60vw;
   }
   .timeline-wrapper {
     display: none;
   }
+  .main-content {
+    grid-column: 2;
+    width: 60vw;
+  }
   .a3-video-container {
-    aspect-ratio: 1/1.414;
+    width: 100%;
   }
 }
 
@@ -143,25 +189,17 @@ nav {
     grid-template-rows: auto 1fr;
   }
   nav {
-    position: sticky;
+    position: relative;
     width: 100vw;
     height: auto;
-    min-height: 60px;
-  }
-  .nav-buttons {
-    grid-template-rows: 1fr;
-    grid-template-columns: repeat(5, 1fr);
   }
   .main-content {
-    padding: 1rem;
+    grid-column: 1;
+    width: 100vw;
+    margin-left: 0;
   }
   .a3-video-container {
-    aspect-ratio: 16/9;
-    width: 95%;
-    margin: 1rem auto;
-  }
-  .timeline-wrapper {
-    display: none;
+    aspect-ratio: 16/9; /* More mobile-friendly ratio */
   }
 }
 
@@ -171,13 +209,12 @@ nav {
     width: 297mm;
     height: 420mm;
     margin: 0 auto;
-    break-inside: avoid;
   }
   nav, .timeline-wrapper {
     display: none;
   }
   .main-content {
     width: 100%;
-    padding: 0;
+    margin-left: 0;
   }
 }
