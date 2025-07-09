@@ -23,20 +23,16 @@ nav {
 .nav-buttons li {
   display: flex;
 }
-
-.nav-buttons a {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  width: 100%;
-  height: 100%;
-  font-size: 14rem;
-  font-weight: bold;
-  color: black;
-  text-decoration: none;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
+align-items: center;
+justify-content: center;
+text-align: center;
+width: 100%;
+height: 100%;
+font-size: clamp(1rem, 10vw, 14rem);
+font-weight: bold;
+color: black;
+text-decoration: none;
+transition: background-color 0.3s ease, color 0.3s ease;
 
 .nav-buttons a:hover {
   background-color: #33334d;
