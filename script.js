@@ -1,25 +1,24 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // Live Date & Time
-    function updateDateTime() {
-        const now = new Date();
-        document.getElementById("liveDateTime").textContent = now.toLocaleString();
-    }
-    setInterval(updateDateTime, 1000);
-    updateDateTime();
+  // Live Date & Time Update
+  function updateDateTime() {
+    const now = new Date();
+    document.getElementById("liveDateTime").textContent = now.toLocaleString();
+  }
+  setInterval(updateDateTime, 1000);
+  updateDateTime();
 
-    // Timeline scrolling
-    const scrollLeftBtn = document.getElementById("scrollLeft");
-    const scrollRightBtn = document.getElementById("scrollRight");
-    const timeline = document.getElementById("timeline");
+  // Vertical Timeline Scrolling
+  const scrollUpBtn = document.getElementById("scrollUp");
+  const scrollDownBtn = document.getElementById("scrollDown");
+  const timeline = document.getElementById("timeline");
 
-    if (scrollLeftBtn && scrollRightBtn && timeline) {
-        scrollLeftBtn.addEventListener("click", () => {
-            timeline.scrollBy({ left: -300, behavior: "smooth" });
-        });
+  if (scrollUpBtn && scrollDownBtn && timeline) {
+    scrollUpBtn.addEventListener("click", () => {
+      timeline.scrollBy({ top: -150, behavior: "smooth" });
+    });
 
-        scrollRightBtn.addEventListener("click", () => {
-            timeline.scrollBy({ left: 300, behavior: "smooth" });
-        });
-    }
+    scrollDownBtn.addEventListener("click", () => {
+      timeline.scrollBy({ top: 150, behavior: "smooth" });
+    });
+  }
 });
-
