@@ -194,18 +194,20 @@ nav {
     object-fit: contain;
 }
 
-/* A3 Video Frame (1080x1528 exact pixel ratio) */
+/* Right-aligned A3 Video Frame (1080x1528) */
 .a3-video-container {
   display: flex;
-  justify-content: center;
+  justify-content: center; /* Keeps content centered INSIDE the container */
   align-items: center;
-  margin: 2rem auto;
-  width: min(1080px, 33.33vw); /* Never exceeds 1080px or 1/3 viewport */
-  height: min(1528px, calc(33.33vw * 1.414)); /* Maintains exact ratio */
+  margin: 2rem 0 2rem auto; /* Pushes container to right with auto left margin */
+  width: min(1080px, 33.33vw);
+  height: min(1528px, calc(33.33vw * 1.414));
   background: #f5f5f5;
   box-shadow: 0 0 20px rgba(0,0,0,0.1);
   overflow: hidden;
-  aspect-ratio: 1080/1528; /* Ensures exact ratio even during resizing */
+  aspect-ratio: 1080/1528;
+  float: right; /* Alternative right-alignment method */
+  /* OR use margin-left: auto instead of float */
 }
 
 .a3-video-container video {
