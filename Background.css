@@ -1,4 +1,4 @@
-/* ===== BASE STRUCTURE ===== */
+/* Base Styles */
 * {
   margin: 0;
   padding: 0;
@@ -11,54 +11,98 @@ html, body {
   overflow-x: hidden;
 }
 
+/* Layout Wrapper */
 body {
   display: flex;
-  min-height: 100vh;
+  flex-direction: row;
 }
 
-/* ===== LEFT NAVIGATION (UNCHANGED) ===== */
+/* Left Navigation */
 nav {
   width: 33.33vw;
   min-width: 250px;
   height: 100vh;
   background-color: #4E9D64;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
   position: fixed;
-  left: 0;
   top: 0;
+  left: 0;
   z-index: 10;
 }
 
-/* ===== CENTRAL CONTENT - ENHANCED ===== */
+.nav-buttons {
+  display: grid;
+  grid-template-rows: repeat(5, 1fr);
+  list-style: none;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-buttons li {
+  display: flex;
+}
+
+.nav-buttons a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+  font-size: clamp(1rem, 8cqw, 2rem);
+  font-weight: bold;
+  color: black;
+  text-decoration: none;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  padding: 0 1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nav-buttons a:hover {
+  background-color: #33334d;
+  color: white;
+}
+
+/* Central Content */
 .main-content {
   margin-left: 33.33vw;
   margin-right: 33.33vw;
-  width: 33.33vw; /* Explicit width for central third */
+  width: calc(100vw - 66.66vw);
+  padding: 2rem;
   min-height: 100vh;
-  padding: 0; /* Remove padding to maximize space */
+  overflow-y: auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* Slideshow Styles (Updated) */
+.portfolio-hero {
+  width: 100%;
+  margin: 2rem 0;
   position: relative;
 }
 
-/* ===== SUPERCHARGED SLIDESHOW CONTAINER ===== */
-.portfolio-hero {
-  position: fixed; /* Lock in place */
-  left: 33.33vw;
-  width: 33.33vw;
-  height: 100vh;
-  margin: 0;
-  z-index: 5;
-}
-
 .hero-container {
-  position: absolute;
+  position: relative;
   width: 100%;
-  height: 100%;
+  height: 60vh; /* Responsive height */
+  min-height: 400px;
   overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
 }
 
 .hero-slideshow {
   position: absolute;
   width: 100%;
   height: 100%;
+  z-index: 1;
 }
 
 .slide-video {
@@ -68,8 +112,8 @@ nav {
   object-fit: cover;
   object-position: center;
   opacity: 0;
-  transition: opacity 0.8s cubic-bezier(0.65, 0, 0.35, 1);
-  background: #000;
+  transition: opacity 1s ease-in-out;
+  background-color: #000;
 }
 
 .slide-video.active {
@@ -81,83 +125,208 @@ nav {
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 3rem 2rem; /* Increased padding */
-  background: linear-gradient(
-    to top, 
-    rgba(0,0,0,0.9) 0%, 
-    rgba(0,0,0,0.5) 60%, 
-    transparent 100%
-  );
+  padding: 2rem;
+  background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.3) 70%, transparent 100%);
   color: white;
-  z-index: 10;
+  z-index: 2;
 }
 
 .project-title {
-  font-size: 2.2rem; /* Larger text */
-  margin-bottom: 1rem;
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
 }
 
 .project-description {
-  font-size: 1.2rem; /* Larger text */
-  line-height: 1.6;
+  font-size: 1rem;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+  opacity: 0.9;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
 }
 
 .hero-buttons {
   display: flex;
-  gap: 1.5rem;
-  margin-top: 1.5rem;
+  gap: 1rem;
 }
 
 .cta-button, .secondary-button {
-  padding: 1rem 2rem; /* Larger buttons */
-  font-size: 1.1rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-/* ===== TIMELINE COLUMN (UNCHANGED) ===== */
+.cta-button {
+  background: #3a86ff;
+  color: white;
+  border: none;
+}
+
+.secondary-button {
+  background: transparent;
+  color: white;
+  border: 2px solid white;
+}
+
+/* Timeline (Right Column) */
 .timeline-wrapper {
   width: 33.33vw;
+  min-width: 250px;
   height: 100vh;
+  background-color: #f5f5f5;
+  border-left: 2px solid #ccc;
   position: fixed;
-  right: 0;
   top: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem 0;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
-/* ===== RESPONSIVE ADJUSTMENTS ===== */
+.timeline-nav-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.timeline-nav-vertical button {
+  padding: 0.5rem 1rem;
+  font-size: 1.2rem;
+  cursor: pointer;
+  width: 80px;
+}
+
+.timeline-container-vertical {
+  flex: 1;
+  width: 90%;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  padding-right: 0.5rem;
+}
+
+.timeline-item {
+  margin-bottom: 2rem;
+  border-left: 4px solid #4E9D64;
+  padding-left: 1rem;
+  position: relative;
+}
+
+.timeline-item .date {
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  color: #4E9D64;
+}
+
+.timeline-content img {
+  width: 100%;
+  max-height: 150px;
+  object-fit: cover;
+  margin-bottom: 0.5rem;
+  border-radius: 4px;
+}
+
+.rescaled-image {
+  width: 150px;
+  height: auto;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.description {
+  font-size: 0.95rem;
+  color: #333;
+}
+
+/* A3 Video Presentation */
+.a3-video-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 2rem auto;
+  width: 100%;
+  max-width: 100%;
+  aspect-ratio: 1/1.414;
+  min-height: 300px;
+  background: #f5f5f5;
+  box-shadow: 0 0 20px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+
+.a3-video-container video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
+}
+
+/* Responsive Styles */
 @media (max-width: 1200px) {
   .timeline-wrapper {
     display: none;
   }
-  
-  .main-content, .portfolio-hero {
-    width: 66.66vw;
-    left: 33.33vw;
+
+  .main-content {
+    margin-right: 0;
+    width: calc(100vw - 33.33vw);
   }
 }
 
 @media (max-width: 768px) {
   body {
     flex-direction: column;
-    overflow-y: auto;
   }
 
-  nav, .portfolio-hero, .timeline-wrapper {
+  nav {
     position: relative;
     width: 100vw;
     height: auto;
+    min-height: auto;
   }
 
   .main-content {
-    margin: 0;
-    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    width: 100vw;
+    padding: 1rem;
   }
 
   .portfolio-hero {
-    left: 0;
-    height: 100vw; /* Square aspect ratio */
-    min-height: 400px;
+    width: 100%;
   }
 
-  .hero-content {
-    padding: 2rem;
+  .hero-container {
+    height: 50vh;
+    min-height: 300px;
+  }
+
+  .a3-video-container {
+    aspect-ratio: 16/9;
+  }
+}
+
+/* Print Styles */
+@media print {
+  nav, .timeline-wrapper {
+    display: none;
+  }
+
+  .main-content {
+    width: 100%;
+    margin: 0;
+  }
+
+  .a3-video-container {
+    width: 297mm;
+    height: 420mm;
+    margin: 0 auto;
   }
 }
