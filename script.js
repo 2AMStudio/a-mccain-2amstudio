@@ -3,21 +3,23 @@ document.addEventListener('DOMContentLoaded', function() {
     const captionTitle = document.querySelector('.caption-title');
     const captionDescription = document.querySelector('.caption-description');
     
-    // Array of slides with captions
+    // Array of video slides with captions
     const slides = [
         { 
             type: 'video', 
             src: 'Group_8_Video.mp4', 
             alt: 'Project 1',
             title: 'Eco Urban Complex',
-            description: 'Sustainable mixed-use development in downtown'
+            description: 'Sustainable mixed-use development in downtown',
+            poster: 'images/video-poster1.jpg'
         },
         { 
             type: 'video', 
             src: 'Group_8_Video_1.mp4', 
             alt: 'Project 2',
             title: 'Modern Art Pavilion',
-            description: 'Glass and steel structure with passive cooling'
+            description: 'Glass and steel structure with passive cooling',
+            poster: 'images/video-poster2.jpg'
         },
         { 
             type: 'video', 
@@ -25,52 +27,42 @@ document.addEventListener('DOMContentLoaded', function() {
             alt: 'Project Video',
             title: 'Design Process',
             description: 'Watch our creative workflow from concept to completion',
-            poster: 'images/video-poster.jpg'
-        },
-        { 
-            type: 'image', 
-            src: 'images/slideshow/image3.jpg', 
-            alt: 'Project 3',
-            title: 'Riverside Residence',
-            description: 'Flood-resistant home with panoramic views'
+            poster: 'images/video-poster3.jpg'
         }
     ];
     
-    // Create slide elements
+    // Create video elements
     slides.forEach((slide, index) => {
-        let mediaElement;
-        
-        if (slide.type === 'video') {
-            mediaElement = document.createElement('video');
-            mediaElement.src = slide.src;
-            mediaElement.alt = slide.alt;
-            mediaElement.muted = true;
-            mediaElement.playsinline = true;
-            mediaElement.loop = true;
-            if (slide.poster) {
-                mediaElement.poster = slide.poster;
-            }
-        } else {
-            mediaElement = document.createElement('img');
-            mediaElement.src = slide.src;
-            mediaElement.alt = slide.alt;
-        }
+        const videoElement = document.createElement('video');
+        videoElement.src = slide.src;
+        videoElement.alt = slide.alt;
+        videoElement.muted = true;
+        videoElement.playsinline = true;
+        videoElement.loop = true;
+        videoElement.poster = slide.poster;
+        videoElement.classList.add('video-slide');
         
         if (index === 0) {
-            mediaElement.classList.add('active');
+            videoElement.classList.add('active');
             updateCaption(slides[0]);
-            if (slide.type === 'video') {
-                mediaElement.autoplay = true;
-                mediaElement.play().catch(e => console.log('Autoplay prevented:', e));
+            // Attempt autoplay for first video
+            videoElement.autoplay = true;
+            const playPromise = videoElement.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.log('Autoplay prevented:', error);
+                    // Fallback: Show play button or handle error
+                });
             }
         }
         
-        slideshow.appendChild(mediaElement);
+        slideshow.appendChild(videoElement);
     });
     
-    // Auto-rotate slides every 7 seconds
+    // Auto-rotate videos every 7 seconds
     let currentIndex = 0;
-    const mediaElements = slideshow.querySelectorAll('img, video');
+    const videoElements = slideshow.querySelectorAll('.video-slide');
     let slideInterval;
     
     function updateCaption(slide) {
@@ -79,26 +71,25 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function rotateSlides() {
-        // Pause current video if it exists
-        if (mediaElements[currentIndex].tagName === 'VIDEO') {
-            mediaElements[currentIndex].pause();
-        }
+        // Pause current video
+        videoElements[currentIndex].pause();
+        videoElements[currentIndex].classList.remove('active');
         
-        // Hide current slide
-        mediaElements[currentIndex].classList.remove('active');
+        // Move to next video
+        currentIndex = (currentIndex + 1) % videoElements.length;
         
-        // Move to next slide
-        currentIndex = (currentIndex + 1) % mediaElements.length;
-        
-        // Show new slide and update caption
-        mediaElements[currentIndex].classList.add('active');
+        // Show new video and update caption
+        videoElements[currentIndex].classList.add('active');
         updateCaption(slides[currentIndex]);
         
-        // Handle video autoplay
-        if (mediaElements[currentIndex].tagName === 'VIDEO') {
-            const video = mediaElements[currentIndex];
-            video.currentTime = 0;
-            video.play().catch(e => console.log('Video play prevented:', e));
+        // Play new video
+        videoElements[currentIndex].currentTime = 0;
+        const playPromise = videoElements[currentIndex].play();
+        
+        if (playPromise !== undefined) {
+            playPromise.catch(error => {
+                console.log('Video play prevented:', error);
+            });
         }
     }
     
@@ -112,15 +103,30 @@ document.addEventListener('DOMContentLoaded', function() {
     // Pause on hover
     slideshow.addEventListener('mouseenter', () => {
         clearInterval(slideInterval);
-        if (mediaElements[currentIndex].tagName === 'VIDEO') {
-            mediaElements[currentIndex].pause();
-        }
+        videoElements[currentIndex].pause();
     });
     
     slideshow.addEventListener('mouseleave', () => {
-        if (mediaElements[currentIndex].tagName === 'VIDEO') {
-            mediaElements[currentIndex].play().catch(e => console.log('Video resume prevented:', e));
+        const playPromise = videoElements[currentIndex].play();
+        if (playPromise !== undefined) {
+            playPromise.catch(error => {
+                console.log('Video resume prevented:', error);
+            });
         }
         startSlideshow();
+    });
+    
+    // Handle tab visibility changes
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) {
+            const playPromise = videoElements[currentIndex].play();
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.log('Tab visibility change prevented play:', error);
+                });
+            }
+        } else {
+            videoElements[currentIndex].pause();
+        }
     });
 });
