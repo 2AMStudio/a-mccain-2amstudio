@@ -17,6 +17,12 @@ document.addEventListener('DOMContentLoaded', function() {
       description: 'Rainwater collection and ritual shared space',
       poster: 'images/video-poster1.jpg'
     },
+     { 
+      src: 'Sequence 01_3_3.mp4',
+      title: 'Saline Threshold',
+      description: 'Rainwater collection and ritual shared space',
+      poster: 'images/video-poster1.jpg'
+    }, 
     // ... other slides ...
   ];
 
