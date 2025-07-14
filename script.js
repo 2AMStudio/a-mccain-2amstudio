@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Array of slides - can mix images and videos
     const slides = [
         { type: 'video', src: 'Group_8_Video.mp4', alt: 'Project Video' }, 
-        { type: 'image', src: 'images/slideshow/image2.jpg', alt: 'Project 2' },
+        { type: 'video', src: 'Group_8_Video_1.mp4', alt: 'Project 2' },
         { type: 'video', src: 'Sequence 01_3_3.mp4', alt: 'Project Video' }, // Your MP4 video
         { type: 'image', src: 'images/slideshow/image3.jpg', alt: 'Project 3' }
     ];
