@@ -22,3 +22,86 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+document.addEventListener('DOMContentLoaded', function() {
+    const slideshow = document.querySelector('.slideshow');
+    
+    // Array of slides - can mix images and videos
+    const slides = [
+        { type: 'image', src: 'images/slideshow/image1.jpg', alt: 'Project 1' },
+        { type: 'image', src: 'images/slideshow/image2.jpg', alt: 'Project 2' },
+        { type: 'video', src: 'videos/presentation.mp4', alt: 'Project Video' }, // Your MP4 video
+        { type: 'image', src: 'images/slideshow/image3.jpg', alt: 'Project 3' }
+    ];
+    
+    // Create slide elements
+    slides.forEach((slide, index) => {
+        let mediaElement;
+        
+        if (slide.type === 'video') {
+            mediaElement = document.createElement('video');
+            mediaElement.src = slide.src;
+            mediaElement.alt = slide.alt;
+            mediaElement.autoplay = true;
+            mediaElement.muted = true;
+            mediaElement.loop = true;
+            mediaElement.playsinline = true;
+        } else {
+            mediaElement = document.createElement('img');
+            mediaElement.src = slide.src;
+            mediaElement.alt = slide.alt;
+        }
+        
+        if (index === 0) {
+            mediaElement.classList.add('active');
+            if (slide.type === 'video') mediaElement.play();
+        }
+        
+        slideshow.appendChild(mediaElement);
+    });
+    
+    // Auto-rotate slides every 7 seconds
+    let currentIndex = 0;
+    const mediaElements = slideshow.querySelectorAll('img, video');
+    
+    function rotateSlides() {
+        // Pause current video if it exists
+        if (mediaElements[currentIndex].tagName === 'VIDEO') {
+            mediaElements[currentIndex].pause();
+        }
+        
+        // Hide current slide
+        mediaElements[currentIndex].classList.remove('active');
+        
+        // Move to next slide
+        currentIndex = (currentIndex + 1) % mediaElements.length;
+        
+        // Show new slide
+        mediaElements[currentIndex].classList.add('active');
+        
+        // Play video if it exists
+        if (mediaElements[currentIndex].tagName === 'VIDEO') {
+            mediaElements[currentIndex].currentTime = 0;
+            mediaElements[currentIndex].play();
+        }
+    }
+    
+    // Start rotation
+    let slideInterval = setInterval(rotateSlides, 7000);
+    
+    // Pause on hover
+    slideshow.addEventListener('mouseenter', () => {
+        clearInterval(slideInterval);
+        // Also pause video if currently showing
+        if (mediaElements[currentIndex].tagName === 'VIDEO') {
+            mediaElements[currentIndex].pause();
+        }
+    });
+    
+    slideshow.addEventListener('mouseleave', () => {
+        // Resume video if it's the current slide
+        if (mediaElements[currentIndex].tagName === 'VIDEO') {
+            mediaElements[currentIndex].play();
+        }
+        slideInterval = setInterval(rotateSlides, 7000);
+    });
+});
