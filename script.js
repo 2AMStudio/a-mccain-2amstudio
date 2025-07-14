@@ -1,36 +1,39 @@
-document.addEventListener("DOMContentLoaded", () => {
-  // Live Date & Time Update
-  function updateDateTime() {
-    const now = new Date();
-    document.getElementById("liveDateTime").textContent = now.toLocaleString();
-  }
-  setInterval(updateDateTime, 1000);
-  updateDateTime();
-
-  // Vertical Timeline Scrolling
-  const scrollUpBtn = document.getElementById("scrollUp");
-  const scrollDownBtn = document.getElementById("scrollDown");
-  const timeline = document.getElementById("timeline");
-
-  if (scrollUpBtn && scrollDownBtn && timeline) {
-    scrollUpBtn.addEventListener("click", () => {
-      timeline.scrollBy({ top: -150, behavior: "smooth" });
-    });
-
-    scrollDownBtn.addEventListener("click", () => {
-      timeline.scrollBy({ top: 150, behavior: "smooth" });
-    });
-  }
-});
 document.addEventListener('DOMContentLoaded', function() {
     const slideshow = document.querySelector('.slideshow');
+    const captionTitle = document.querySelector('.caption-title');
+    const captionDescription = document.querySelector('.caption-description');
     
-    // Array of slides - can mix images and videos
+    // Array of slides with captions
     const slides = [
-        { type: 'video', src: 'Group_8_Video.mp4', alt: 'Project Video' }, 
-        { type: 'video', src: 'Group_8_Video_1.mp4', alt: 'Project 2' },
-        { type: 'video', src: 'Sequence 01_3_3.mp4', alt: 'Project Video' }, // Your MP4 video
-        { type: 'image', src: 'images/slideshow/image3.jpg', alt: 'Project 3' }
+        { 
+            type: 'video', 
+            src: 'Group_8_Video.mp4', 
+            alt: 'Project 1',
+            title: 'Eco Urban Complex',
+            description: 'Sustainable mixed-use development in downtown'
+        },
+        { 
+            type: 'video', 
+            src: 'Group_8_Video_1.mp4', 
+            alt: 'Project 2',
+            title: 'Modern Art Pavilion',
+            description: 'Glass and steel structure with passive cooling'
+        },
+        { 
+            type: 'video', 
+            src: 'Sequence 01_3_3.mp4', 
+            alt: 'Project Video',
+            title: 'Design Process',
+            description: 'Watch our creative workflow from concept to completion',
+            poster: 'images/video-poster.jpg'
+        },
+        { 
+            type: 'image', 
+            src: 'images/slideshow/image3.jpg', 
+            alt: 'Project 3',
+            title: 'Riverside Residence',
+            description: 'Flood-resistant home with panoramic views'
+        }
     ];
     
     // Create slide elements
@@ -41,10 +44,12 @@ document.addEventListener('DOMContentLoaded', function() {
             mediaElement = document.createElement('video');
             mediaElement.src = slide.src;
             mediaElement.alt = slide.alt;
-            mediaElement.autoplay = true;
             mediaElement.muted = true;
-            mediaElement.loop = true;
             mediaElement.playsinline = true;
+            mediaElement.loop = true;
+            if (slide.poster) {
+                mediaElement.poster = slide.poster;
+            }
         } else {
             mediaElement = document.createElement('img');
             mediaElement.src = slide.src;
@@ -53,7 +58,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (index === 0) {
             mediaElement.classList.add('active');
-            if (slide.type === 'video') mediaElement.play();
+            updateCaption(slides[0]);
+            if (slide.type === 'video') {
+                mediaElement.autoplay = true;
+                mediaElement.play().catch(e => console.log('Autoplay prevented:', e));
+            }
         }
         
         slideshow.appendChild(mediaElement);
@@ -62,6 +71,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Auto-rotate slides every 7 seconds
     let currentIndex = 0;
     const mediaElements = slideshow.querySelectorAll('img, video');
+    let slideInterval;
+    
+    function updateCaption(slide) {
+        captionTitle.textContent = slide.title;
+        captionDescription.textContent = slide.description;
+    }
     
     function rotateSlides() {
         // Pause current video if it exists
@@ -75,33 +90,37 @@ document.addEventListener('DOMContentLoaded', function() {
         // Move to next slide
         currentIndex = (currentIndex + 1) % mediaElements.length;
         
-        // Show new slide
+        // Show new slide and update caption
         mediaElements[currentIndex].classList.add('active');
+        updateCaption(slides[currentIndex]);
         
-        // Play video if it exists
+        // Handle video autoplay
         if (mediaElements[currentIndex].tagName === 'VIDEO') {
-            mediaElements[currentIndex].currentTime = 0;
-            mediaElements[currentIndex].play();
+            const video = mediaElements[currentIndex];
+            video.currentTime = 0;
+            video.play().catch(e => console.log('Video play prevented:', e));
         }
     }
     
+    function startSlideshow() {
+        slideInterval = setInterval(rotateSlides, 7000);
+    }
+    
     // Start rotation
-    let slideInterval = setInterval(rotateSlides, 7000);
+    startSlideshow();
     
     // Pause on hover
     slideshow.addEventListener('mouseenter', () => {
         clearInterval(slideInterval);
-        // Also pause video if currently showing
         if (mediaElements[currentIndex].tagName === 'VIDEO') {
             mediaElements[currentIndex].pause();
         }
     });
     
     slideshow.addEventListener('mouseleave', () => {
-        // Resume video if it's the current slide
         if (mediaElements[currentIndex].tagName === 'VIDEO') {
-            mediaElements[currentIndex].play();
+            mediaElements[currentIndex].play().catch(e => console.log('Video resume prevented:', e));
         }
-        slideInterval = setInterval(rotateSlides, 7000);
+        startSlideshow();
     });
 });
