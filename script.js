@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const slides = [
         { type: 'image', src: 'images/slideshow/image1.jpg', alt: 'Project 1' },
         { type: 'image', src: 'images/slideshow/image2.jpg', alt: 'Project 2' },
-        { type: 'video', src: 'videos/presentation.mp4', alt: 'Project Video' }, // Your MP4 video
+        { type: 'video', src: 'Sequence 01_3_3.mp4', alt: 'Project Video' }, // Your MP4 video
         { type: 'image', src: 'images/slideshow/image3.jpg', alt: 'Project 3' }
     ];
     
