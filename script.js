@@ -1,23 +1,3 @@
-// Add these iOS-specific enhancements at the top of your existing script
-const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-
-function enableIOSVideoPlayback() {
-  if (!isIOS) return;
-  
-  const slideshow = document.querySelector('.hero-slideshow');
-  slideshow.style.cursor = 'pointer';
-  
-  const playVideos = () => {
-    document.querySelectorAll('.slide-video').forEach(video => {
-      video.play().catch(e => console.log('iOS playback error:', e));
-    });
-    slideshow.style.cursor = '';
-    slideshow.removeEventListener('click', playVideos);
-  };
-  
-  slideshow.addEventListener('click', playVideos, { once: true });
-}
-
 // Initialize when DOM loads
 document.addEventListener('DOMContentLoaded', function() {
   enableIOSVideoPlayback();
