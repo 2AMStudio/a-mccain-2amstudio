@@ -11,6 +11,12 @@ document.addEventListener('DOMContentLoaded', function() {
       description: 'A community driven urban planning device',
       poster: 'images/video-poster1.jpg'
     },
+      { 
+      src: 'Group_8_Video_1.mp4',
+      title: 'Saline Threshold',
+      description: 'Rainwater collection and ritual shared space',
+      poster: 'images/video-poster1.jpg'
+    },
     // ... other slides ...
   ];
 
