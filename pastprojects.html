@@ -13,16 +13,25 @@
         }
         
         body {
-            overflow-x: hidden;
+            overflow: hidden;
+            height: 100vh;
         }
         
         #video-background {
             position: fixed;
-            right: 0;
-            bottom: 0;
-            min-width: 100%;
-            min-height: 100%;
+            width: 100%;
+            height: auto;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
             z-index: -1;
+        }
+        
+        @media (max-aspect-ratio: 16/9) {
+            #video-background {
+                width: auto;
+                height: 100%;
+            }
         }
         
         nav {
@@ -32,130 +41,162 @@
             width: 33.33%;
             height: 100vh;
             display: flex;
-            align-items: center;
-            padding-left: 2rem;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 2rem;
         }
         
         .nav-buttons {
             list-style: none;
             width: 100%;
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
         
         .nav-buttons li {
-            margin: 1.5rem 0;
-            position: relative;
+            flex: 1;
+            margin: 0.5rem 0;
+            display: flex;
+            align-items: center;
         }
         
         .nav-buttons li a {
-            display: block;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            height: 100%;
             color: white;
             text-decoration: none;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             font-weight: bold;
-            padding: 1rem 1.5rem;
+            padding: 0 2rem;
             background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px) brightness(1.2);
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            transform: perspective(500px) rotateY(-10deg);
-            transition: all 0.3s ease;
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(12px) brightness(1.2);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            transform: perspective(500px) rotateY(-15deg);
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
         }
         
         .nav-buttons li a:hover {
-            background: rgba(255, 255, 255, 0.25);
-            transform: perspective(500px) rotateY(-5deg) scale(1.05);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            background: rgba(255, 255, 255, 0.3);
+            transform: perspective(500px) rotateY(-8deg) scale(1.03);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
         }
         
         .nav-buttons li a::before {
             content: '';
             position: absolute;
             top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
             background: linear-gradient(
-                135deg,
-                rgba(255, 255, 255, 0.1) 0%,
-                rgba(255, 255, 255, 0) 50%,
-                rgba(255, 255, 255, 0.1) 100%
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.2),
+                transparent
             );
-            border-radius: 8px;
-            pointer-events: none;
+            transition: 0.5s;
+        }
+        
+        .nav-buttons li a:hover::before {
+            left: 100%;
+        }
+        
+        .nav-buttons li a span {
+            position: relative;
+            z-index: 1;
         }
         
         main {
             margin-left: 33.33%;
-            padding: 2rem;
+            padding: 3rem;
             color: white;
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.4);
             min-height: 100vh;
+            backdrop-filter: blur(5px);
         }
         
         h1 {
-            font-size: 3rem;
+            font-size: 3.5rem;
             margin-bottom: 2rem;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
         }
         
         p {
-            font-size: 1.2rem;
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+            line-height: 1.7;
+            margin-bottom: 2rem;
             max-width: 800px;
         }
     </style>
 </head>
 <body>
-    <video autoplay muted loop playsinline id="video-background">
-        <source src="Group_8_Video.mp4" type="video/mp4">
+    <video autoplay muted loop id="video-background">
+        <source src="background.mp4" type="video/mp4">
         Your browser does not support HTML5 video.
     </video>
     
     <nav>
         <ul class="nav-buttons">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="recentnews.html">Recent News</a></li>
-            <li><a href="photography.html">Photography</a></li>
-            <li><a href="pastprojects.html">Past Projects</a></li>
-            <li><a href="morefromme.html">More From Me</a></li>
+            <li><a href="index.html"><span>Home</span></a></li>
+            <li><a href="recentnews.html"><span>Recent News</span></a></li>
+            <li><a href="photography.html"><span>Photography</span></a></li>
+            <li><a href="pastprojects.html"><span>Past Projects</span></a></li>
+            <li><a href="morefromme.html"><span>More From Me</span></a></li>
         </ul>
     </nav>
     
     <main>
         <h1>Architecture Portfolio</h1>
-        <p>Welcome to my portfolio website. The navigation on the left features glass-like buttons with a subtle distortion effect, creating an immersive experience against the video background.</p>
-        <p>This design combines modern aesthetics with functional navigation, showcasing content in an elegant way.</p>
+        <p>Welcome to my portfolio website. The navigation on the left features vertically-stretched glass panels that fill the screen height, creating a striking visual effect against the full-width video background.</p>
+        <p>Each glass panel has an animated sheen effect on hover, with subtle perspective distortion that enhances the three-dimensional quality of the interface.</p>
     </main>
     
     <script>
-        // Add some subtle animation to the glass blocks
+        // Enhanced animations
         document.querySelectorAll('.nav-buttons li a').forEach((link, index) => {
             // Random slight variations in the glass effect
-            const hue = Math.floor(Math.random() * 20) - 10; // -10 to 10 degree variation
-            link.style.filter = `hue-rotate(${hue}deg)`;
+            const hue = Math.floor(Math.random() * 30) - 15; // -15 to 15 degree variation
+            const saturation = 100 + Math.floor(Math.random() * 30); // 100-130%
+            link.style.filter = `hue-rotate(${hue}deg) saturate(${saturation}%)`;
             
             // Staggered animation on load
             link.style.opacity = '0';
-            link.style.transform = 'perspective(500px) rotateY(-20deg) translateX(-20px)';
+            link.style.transform = 'perspective(500px) rotateY(-30deg) translateX(-30px)';
+            link.style.transition = 'none';
             
             setTimeout(() => {
-                link.style.transition = 'opacity 0.5s ease, transform 0.5s ease, background 0.3s ease';
+                link.style.transition = 'opacity 0.6s ease, transform 0.6s ease, background 0.4s ease, box-shadow 0.4s ease';
+                link.style.transitionDelay = `${index * 0.1}s`;
                 link.style.opacity = '1';
-                link.style.transform = 'perspective(500px) rotateY(-10deg)';
-            }, 200 * index);
+                link.style.transform = 'perspective(500px) rotateY(-15deg)';
+            }, 100);
         });
         
-        // Make sure video plays on mobile
+        // Video handling
         document.addEventListener('DOMContentLoaded', () => {
             const video = document.getElementById('video-background');
-            video.play().catch(e => {
-                // Fallback for browsers that don't allow autoplay
-                video.muted = true;
-                video.play();
-            });
+            
+            // Try to play video (with fallback for mobile)
+            const playVideo = () => {
+                video.play().catch(e => {
+                    video.muted = true;
+                    video.play();
+                });
+            };
+            
+            // Some mobile browsers require user interaction
+            document.body.addEventListener('click', playVideo, { once: true });
+            
+            // Also try to play immediately
+            playVideo();
         });
     </script>
 </body>
