@@ -2,13 +2,120 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Past Projects | My Portfolio</title>
-    <link rel="stylesheet" href="styles/main.css">
-    <link rel="stylesheet" href="styles/backgrounds.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glass Navigation Portfolio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            overflow-x: hidden;
+        }
+        
+        #video-background {
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            min-width: 100%;
+            min-height: 100%;
+            z-index: -1;
+        }
+        
+        nav {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 33.33%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            padding-left: 2rem;
+        }
+        
+        .nav-buttons {
+            list-style: none;
+            width: 100%;
+        }
+        
+        .nav-buttons li {
+            margin: 1.5rem 0;
+            position: relative;
+        }
+        
+        .nav-buttons li a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            font-size: 1.5rem;
+            font-weight: bold;
+            padding: 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px) brightness(1.2);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transform: perspective(500px) rotateY(-10deg);
+            transition: all 0.3s ease;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        }
+        
+        .nav-buttons li a:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: perspective(500px) rotateY(-5deg) scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .nav-buttons li a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                135deg,
+                rgba(255, 255, 255, 0.1) 0%,
+                rgba(255, 255, 255, 0) 50%,
+                rgba(255, 255, 255, 0.1) 100%
+            );
+            border-radius: 8px;
+            pointer-events: none;
+        }
+        
+        main {
+            margin-left: 33.33%;
+            padding: 2rem;
+            color: white;
+            background: rgba(0, 0, 0, 0.3);
+            min-height: 100vh;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            max-width: 800px;
+        }
+    </style>
 </head>
-<body class="project1">
+<body>
+    <video autoplay muted loop playsinline id="video-background">
+        <source src="Group_8_Video.mp4" type="video/mp4">
+        Your browser does not support HTML5 video.
+    </video>
+    
     <nav>
-        <ul>
+        <ul class="nav-buttons">
             <li><a href="index.html">Home</a></li>
             <li><a href="recentnews.html">Recent News</a></li>
             <li><a href="photography.html">Photography</a></li>
@@ -17,23 +124,39 @@
         </ul>
     </nav>
     
-    <header>
-        <h1>Urban Renewal Project</h1>
-        <p>Transforming industrial spaces into community hubs</p>
-    </header>
-
-    <div class="container">
-        <h2>Concept Development</h2>
+    <main>
+        <h1>Architecture Portfolio</h1>
+        <p>Welcome to my portfolio website. The navigation on the left features glass-like buttons with a subtle distortion effect, creating an immersive experience against the video background.</p>
+        <p>This design combines modern aesthetics with functional navigation, showcasing content in an elegant way.</p>
+    </main>
+    
+    <script>
+        // Add some subtle animation to the glass blocks
+        document.querySelectorAll('.nav-buttons li a').forEach((link, index) => {
+            // Random slight variations in the glass effect
+            const hue = Math.floor(Math.random() * 20) - 10; // -10 to 10 degree variation
+            link.style.filter = `hue-rotate(${hue}deg)`;
+            
+            // Staggered animation on load
+            link.style.opacity = '0';
+            link.style.transform = 'perspective(500px) rotateY(-20deg) translateX(-20px)';
+            
+            setTimeout(() => {
+                link.style.transition = 'opacity 0.5s ease, transform 0.5s ease, background 0.3s ease';
+                link.style.opacity = '1';
+                link.style.transform = 'perspective(500px) rotateY(-10deg)';
+            }, 200 * index);
+        });
         
-        <div class="media-container">
-            <img src="images/project1/concept.jpg" alt="Concept Sketches">
-        </div>
-        
-        <div class="media-container">
-            <video controls>
-                <source src="videos/project1/walkthrough.mp4" type="video/mp4">
-            </video>
-        </div>
-    </div>
+        // Make sure video plays on mobile
+        document.addEventListener('DOMContentLoaded', () => {
+            const video = document.getElementById('video-background');
+            video.play().catch(e => {
+                // Fallback for browsers that don't allow autoplay
+                video.muted = true;
+                video.play();
+            });
+        });
+    </script>
 </body>
 </html>
