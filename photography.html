@@ -10,7 +10,7 @@
             padding: 0;
             font-family: Arial, sans-serif;
             display: flex;
-            overflow-x: hidden; /* Prevent horizontal scroll */
+            overflow-x: hidden;
         }
 
         /* Left sidebar (1/3 of page) */
@@ -46,7 +46,7 @@
             border-radius: 4px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             transition: all 0.3s ease;
-            background: #000; /* Black background instead of white */
+            background: #000;
         }
 
         .gallery-item img {
@@ -59,24 +59,18 @@
         /* Hover effect */
         .gallery-item:hover {
             z-index: 100;
-            transform: scale(2.5); /* Much larger scale */
+            transform: scale(2.5);
             box-shadow: 0 10px 25px rgba(0,0,0,0.5);
         }
 
         /* Maintain aspect ratio on hover */
         .gallery-item:hover img {
             object-fit: contain;
-            background: #000; /* Black background to match border */
+            background: #000;
         }
 
-        /* Edge protection - ensures expanded images stay visible */
-        .gallery-item:nth-child(3n+1):hover { /* First column */
-            transform-origin: left center;
-        }
-        .gallery-item:nth-child(3n):hover { /* Last column */
-            transform-origin: right center;
-        }
-        .gallery-item:nth-child(3n+2):hover { /* Middle column */
+        /* Edge protection - dynamic transform origin */
+        .gallery-item {
             transform-origin: center center;
         }
 
@@ -90,7 +84,7 @@
                 height: auto;
             }
             .gallery-item:hover {
-                transform: scale(2); /* Slightly smaller scale on mobile */
+                transform: scale(2);
             }
         }
     </style>
@@ -126,6 +120,13 @@
         const gallery = document.getElementById('gallery');
         const imageCount = document.getElementById('image-count');
 
+        // Calculate number of columns
+        const calculateColumns = () => {
+            const itemWidth = 150; // minmax value from CSS
+            const galleryWidth = gallery.clientWidth;
+            return Math.floor(galleryWidth / (itemWidth + 10)); // itemWidth + gap
+        };
+
         // Create gallery items
         images.forEach((image, index) => {
             const item = document.createElement('div');
@@ -135,20 +136,47 @@
             img.src = image.url;
             img.alt = `Image ${index + 1} (Aspect ratio: ${image.aspect})`;
             
-            // Preload images to prevent layout shift
             img.onload = function() {
-                // Calculate actual aspect ratio
                 const aspect = img.naturalWidth / img.naturalHeight;
                 item.dataset.aspect = aspect;
                 
-                // For edge images, set appropriate transform origin
-                const colPosition = (index % 3) + 1;
-                if (colPosition === 1) item.style.transformOrigin = 'left center';
-                if (colPosition === 3) item.style.transformOrigin = 'right center';
+                const columns = calculateColumns();
+                const row = Math.floor(index / columns);
+                const col = index % columns;
+                
+                // Set transform origin based on position
+                let originX = 'center';
+                let originY = 'center';
+                
+                if (col === 0) originX = 'left';
+                if (col === columns - 1) originX = 'right';
+                if (row === 0) originY = 'top';
+                
+                item.style.transformOrigin = `${originX} ${originY}`;
             };
             
             item.appendChild(img);
             gallery.appendChild(item);
+        });
+
+        // Recalculate positions on resize
+        window.addEventListener('resize', () => {
+            const items = document.querySelectorAll('.gallery-item');
+            const columns = calculateColumns();
+            
+            items.forEach((item, index) => {
+                const row = Math.floor(index / columns);
+                const col = index % columns;
+                
+                let originX = 'center';
+                let originY = 'center';
+                
+                if (col === 0) originX = 'left';
+                if (col === columns - 1) originX = 'right';
+                if (row === 0) originY = 'top';
+                
+                item.style.transformOrigin = `${originX} ${originY}`;
+            });
         });
 
         // Update image count
