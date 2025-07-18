@@ -2,38 +2,127 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Photography & Travel | My Portfolio</title>
-    <link rel="stylesheet" href="styles/main.css">
-    <link rel="stylesheet" href="styles/backgrounds.css">
-</head>
-<body class="project1">
-    <nav>
-        <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="recentnews.html">Recent News</a></li>
-            <li><a href="photography.html">Photography</a></li>
-            <li><a href="pastprojects.html">Past Projects</a></li>
-            <li><a href="morefromme.html">More From Me</a></li>
-        </ul>
-    </nav>
-    
-    <header>
-        <h1>Urban Renewal Project</h1>
-        <p>Transforming industrial spaces into community hubs</p>
-    </header>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Image Gallery</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+        }
 
-    <div class="container">
-        <h2>Concept Development</h2>
-        
-        <div class="media-container">
-            <img src="images/project1/concept.jpg" alt="Concept Sketches">
-        </div>
-        
-        <div class="media-container">
-            <video controls>
-                <source src="videos/project1/walkthrough.mp4" type="video/mp4">
-            </video>
-        </div>
+        /* Left sidebar (1/3 of page) */
+        .sidebar {
+            width: 33.33%;
+            height: 100vh;
+            background: #f5f5f5;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* Gallery container (2/3 of page) */
+        .gallery {
+            width: 66.66%;
+            height: 100vh;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            grid-auto-rows: 150px;
+            gap: 15px;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            background: #fff;
+        }
+
+        /* Gallery item styles */
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            background: #eee;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.3s ease;
+        }
+
+        /* Hover effect */
+        .gallery-item:hover {
+            z-index: 10;
+            transform: scale(1.5);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        /* Maintain aspect ratio on hover */
+        .gallery-item:hover img {
+            object-fit: contain;
+            background: white;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            .sidebar, .gallery {
+                width: 100%;
+                height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h1>Image Gallery</h1>
+        <p>Hover over thumbnails to view images in their original aspect ratio.</p>
+        <p>Total images: <span id="image-count">0</span></p>
     </div>
+
+    <div class="gallery" id="gallery">
+        <!-- Images will be added here by JavaScript -->
+    </div>
+
+    <script>
+        // Sample image data (replace with your own images)
+        const images = [
+            { url: 'https://source.unsplash.com/random/800x600', aspect: '800:600' },
+            { url: 'https://source.unsplash.com/random/600x800', aspect: '600:800' },
+            { url: 'https://source.unsplash.com/random/1000x500', aspect: '1000:500' },
+            { url: 'https://source.unsplash.com/random/500x1000', aspect: '500:1000' },
+            { url: 'https://source.unsplash.com/random/800x800', aspect: '800:800' },
+            { url: 'https://source.unsplash.com/random/1200x600', aspect: '1200:600' },
+            { url: 'https://source.unsplash.com/random/600x1200', aspect: '600:1200' },
+            { url: 'https://source.unsplash.com/random/900x900', aspect: '900:900' },
+            { url: 'https://source.unsplash.com/random/700x500', aspect: '700:500' },
+            { url: 'https://source.unsplash.com/random/500x700', aspect: '500:700' },
+            { url: 'https://source.unsplash.com/random/1000x800', aspect: '1000:800' },
+            { url: 'https://source.unsplash.com/random/800x1000', aspect: '800:1000' },
+        ];
+
+        const gallery = document.getElementById('gallery');
+        const imageCount = document.getElementById('image-count');
+
+        // Create gallery items
+        images.forEach((image, index) => {
+            const item = document.createElement('div');
+            item.className = 'gallery-item';
+            
+            const img = document.createElement('img');
+            img.src = image.url;
+            img.alt = `Image ${index + 1} (Aspect ratio: ${image.aspect})`;
+            
+            item.appendChild(img);
+            gallery.appendChild(item);
+        });
+
+        // Update image count
+        imageCount.textContent = images.length;
+    </script>
 </body>
 </html>
