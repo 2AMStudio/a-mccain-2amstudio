@@ -11,7 +11,6 @@
             font-family: Arial, sans-serif;
             display: flex;
             overflow-x: hidden;
-            background: #000; /* Black background for seamless expansion */
         }
 
         /* Left sidebar (1/3 of page) */
@@ -22,7 +21,7 @@
             padding: 20px;
             box-sizing: border-box;
             position: relative;
-            z-index: 2; /* Higher than gallery items */
+            z-index: 1;
         }
 
         /* Gallery container (2/3 of page) */
@@ -32,11 +31,11 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             grid-auto-rows: 150px;
-            gap: 0; /* No gap for true edge-to-edge */
-            padding: 0;
+            gap: 10px;
+            padding: 10px;
             box-sizing: border-box;
             overflow-y: auto;
-            background: #000;
+            background: #fff;
             position: relative;
         }
 
@@ -44,9 +43,10 @@
         .gallery-item {
             position: relative;
             overflow: hidden;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             transition: all 0.3s ease;
             background: #000;
-            margin: 1px; /* Tiny margin for visibility */
         }
 
         .gallery-item img {
@@ -59,18 +59,19 @@
         /* Hover effect */
         .gallery-item:hover {
             z-index: 100;
-            transform: scale(3); /* More dramatic expansion */
-            box-shadow: none; /* Remove shadow for cleaner look */
-            margin: 0; /* Remove margin during hover */
+            transform: scale(2.5);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
         }
 
-        /* Perfect aspect ratio on hover */
+        /* Maintain aspect ratio on hover */
         .gallery-item:hover img {
-            object-fit: scale-down; /* Better than contain for no borders */
-            width: auto;
-            height: auto;
-            max-width: 100vw;
-            max-height: 100vh;
+            object-fit: contain;
+            background: #000;
+        }
+
+        /* Edge protection - dynamic transform origin */
+        .gallery-item {
+            transform-origin: center center;
         }
 
         /* Responsive adjustments */
@@ -83,7 +84,7 @@
                 height: auto;
             }
             .gallery-item:hover {
-                transform: scale(2.5);
+                transform: scale(2);
             }
         }
     </style>
@@ -102,7 +103,7 @@
     <script>
         // Sample image data (replace with your own images)
         const images = [
-            { url: 'JAPAN_0184.JPG', aspect: '800:600' },
+            { url: 'JAPAN_0184.JPG', aspect: '1000:1334' },
             { url: 'https://source.unsplash.com/random/600x800', aspect: '600:800' },
             { url: 'https://source.unsplash.com/random/1000x500', aspect: '1000:500' },
             { url: 'https://source.unsplash.com/random/500x1000', aspect: '500:1000' },
@@ -119,29 +120,11 @@
         const gallery = document.getElementById('gallery');
         const imageCount = document.getElementById('image-count');
 
-        // Calculate dynamic transform origin
-        const setTransformOrigin = (item, index) => {
-            const rect = item.getBoundingClientRect();
-            const galleryRect = gallery.getBoundingClientRect();
-            
-            // Calculate position relative to gallery
-            const relativeLeft = rect.left - galleryRect.left;
-            const relativeTop = rect.top - galleryRect.top;
-            
-            // Determine if near edges
-            const nearLeft = relativeLeft < galleryRect.width * 0.25;
-            const nearRight = relativeLeft > galleryRect.width * 0.75;
-            const nearTop = relativeTop < galleryRect.height * 0.25;
-            
-            // Set transform origin
-            let originX = 'center';
-            let originY = 'center';
-            
-            if (nearLeft) originX = 'left';
-            if (nearRight) originX = 'right';
-            if (nearTop) originY = 'top';
-            
-            item.style.transformOrigin = `${originX} ${originY}`;
+        // Calculate number of columns
+        const calculateColumns = () => {
+            const itemWidth = 150; // minmax value from CSS
+            const galleryWidth = gallery.clientWidth;
+            return Math.floor(galleryWidth / (itemWidth + 10)); // itemWidth + gap
         };
 
         // Create gallery items
@@ -154,32 +137,47 @@
             img.alt = `Image ${index + 1} (Aspect ratio: ${image.aspect})`;
             
             img.onload = function() {
-                item.dataset.aspect = img.naturalWidth / img.naturalHeight;
-                setTransformOrigin(item, index);
+                const aspect = img.naturalWidth / img.naturalHeight;
+                item.dataset.aspect = aspect;
                 
-                // For portrait images, add vertical class
-                if (img.naturalHeight > img.naturalWidth) {
-                    item.classList.add('portrait');
-                }
-            };
-            
-            img.onerror = function() {
-                item.style.display = 'none'; // Hide broken images
+                const columns = calculateColumns();
+                const row = Math.floor(index / columns);
+                const col = index % columns;
+                
+                // Set transform origin based on position
+                let originX = 'center';
+                let originY = 'center';
+                
+                if (col === 0) originX = 'left';
+                if (col === columns - 1) originX = 'right';
+                if (row === 0) originY = 'top';
+                
+                item.style.transformOrigin = `${originX} ${originY}`;
             };
             
             item.appendChild(img);
             gallery.appendChild(item);
         });
 
-        // Recalculate positions on resize and scroll
-        const updateOrigins = () => {
-            document.querySelectorAll('.gallery-item').forEach((item, index) => {
-                setTransformOrigin(item, index);
+        // Recalculate positions on resize
+        window.addEventListener('resize', () => {
+            const items = document.querySelectorAll('.gallery-item');
+            const columns = calculateColumns();
+            
+            items.forEach((item, index) => {
+                const row = Math.floor(index / columns);
+                const col = index % columns;
+                
+                let originX = 'center';
+                let originY = 'center';
+                
+                if (col === 0) originX = 'left';
+                if (col === columns - 1) originX = 'right';
+                if (row === 0) originY = 'top';
+                
+                item.style.transformOrigin = `${originX} ${originY}`;
             });
-        };
-
-        window.addEventListener('resize', updateOrigins);
-        gallery.addEventListener('scroll', updateOrigins);
+        });
 
         // Update image count
         imageCount.textContent = images.length;
