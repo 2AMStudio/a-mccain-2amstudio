@@ -10,6 +10,7 @@
             padding: 0;
             font-family: Arial, sans-serif;
             display: flex;
+            overflow-x: hidden; /* Prevent horizontal scroll */
         }
 
         /* Left sidebar (1/3 of page) */
@@ -19,6 +20,8 @@
             background: #f5f5f5;
             padding: 20px;
             box-sizing: border-box;
+            position: relative;
+            z-index: 1;
         }
 
         /* Gallery container (2/3 of page) */
@@ -28,21 +31,22 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             grid-auto-rows: 150px;
-            gap: 15px;
-            padding: 20px;
+            gap: 10px;
+            padding: 10px;
             box-sizing: border-box;
             overflow-y: auto;
             background: #fff;
+            position: relative;
         }
 
         /* Gallery item styles */
         .gallery-item {
             position: relative;
             overflow: hidden;
-            border-radius: 8px;
+            border-radius: 4px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             transition: all 0.3s ease;
-            background: #eee;
+            background: #000; /* Black background instead of white */
         }
 
         .gallery-item img {
@@ -54,15 +58,26 @@
 
         /* Hover effect */
         .gallery-item:hover {
-            z-index: 10;
-            transform: scale(1.5);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            z-index: 100;
+            transform: scale(2.5); /* Much larger scale */
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
         }
 
         /* Maintain aspect ratio on hover */
         .gallery-item:hover img {
             object-fit: contain;
-            background: white;
+            background: #000; /* Black background to match border */
+        }
+
+        /* Edge protection - ensures expanded images stay visible */
+        .gallery-item:nth-child(3n+1):hover { /* First column */
+            transform-origin: left center;
+        }
+        .gallery-item:nth-child(3n):hover { /* Last column */
+            transform-origin: right center;
+        }
+        .gallery-item:nth-child(3n+2):hover { /* Middle column */
+            transform-origin: center center;
         }
 
         /* Responsive adjustments */
@@ -73,6 +88,9 @@
             .sidebar, .gallery {
                 width: 100%;
                 height: auto;
+            }
+            .gallery-item:hover {
+                transform: scale(2); /* Slightly smaller scale on mobile */
             }
         }
     </style>
@@ -116,6 +134,18 @@
             const img = document.createElement('img');
             img.src = image.url;
             img.alt = `Image ${index + 1} (Aspect ratio: ${image.aspect})`;
+            
+            // Preload images to prevent layout shift
+            img.onload = function() {
+                // Calculate actual aspect ratio
+                const aspect = img.naturalWidth / img.naturalHeight;
+                item.dataset.aspect = aspect;
+                
+                // For edge images, set appropriate transform origin
+                const colPosition = (index % 3) + 1;
+                if (colPosition === 1) item.style.transformOrigin = 'left center';
+                if (colPosition === 3) item.style.transformOrigin = 'right center';
+            };
             
             item.appendChild(img);
             gallery.appendChild(item);
