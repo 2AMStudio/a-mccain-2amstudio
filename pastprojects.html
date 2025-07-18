@@ -12,20 +12,25 @@
       font-family: 'Arial', sans-serif;
     }
 
-    body {
-      height: 100vh;
+    html, body {
+      width: 100%;
+      height: 100%;
       overflow: hidden;
-      display: flex;
     }
 
     #video-background {
       position: fixed;
       top: 0;
-      left: 33.33%;
-      width: 66.67%;
-      height: 100%;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
       object-fit: cover;
       z-index: -1;
+    }
+
+    body {
+      display: flex;
+      flex-direction: row;
     }
 
     nav {
@@ -67,7 +72,7 @@
       font-weight: bold;
       font-size: clamp(1rem, 2.5vw, 2.5rem);
       background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px) brightness(1.2);
+      backdrop-filter: blur(12px) brightness(1.2);
       border: 1px solid rgba(255, 255, 255, 0.25);
       border-radius: 10px;
       transition: all 0.3s ease;
@@ -81,9 +86,6 @@
     }
 
     main {
-      position: absolute;
-      top: 0;
-      left: 33.33%;
       width: 66.67%;
       height: 100vh;
       padding: 3rem;
@@ -129,7 +131,7 @@
   <main>
     <h1>Architecture Portfolio</h1>
     <p>Welcome to my portfolio website.</p>
-    <p>The video on the right plays an immersive urban planning consultation experience.</p>
+    <p>The video background provides a dynamic and immersive setting for this content, while the navigation on the left remains clear and interactive through its glassmorphic styling.</p>
   </main>
 </body>
 </html>
