@@ -68,7 +68,12 @@
             object-fit: contain;
             background: transparent;
         }
-
+        
+        .gallery-item:hover {
+        background: transparent; /* Makes the container transparent when hovered */
+        box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+        
         /* Edge protection - dynamic transform origin */
         .gallery-item {
             transform-origin: center center;
