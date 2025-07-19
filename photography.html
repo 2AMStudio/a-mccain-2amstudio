@@ -11,9 +11,9 @@
             font-family: Arial, sans-serif;
             display: flex;
             overflow-x: hidden;
+            background: #fff; /* Ensure consistent background */
         }
 
-        /* Left sidebar (1/3 of page) */
         .sidebar {
             width: 33.33%;
             height: 100vh;
@@ -24,7 +24,6 @@
             z-index: 1;
         }
 
-        /* Gallery container (2/3 of page) */
         .gallery {
             width: 66.66%;
             height: 100vh;
@@ -36,17 +35,15 @@
             box-sizing: border-box;
             overflow-y: auto;
             background: #fff;
-            position: relative;
         }
 
-        /* Gallery item styles */
         .gallery-item {
             position: relative;
             overflow: hidden;
             border-radius: 4px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             transition: all 0.3s ease;
-            background: #000;
+            background: transparent; /* Changed from black to transparent */
         }
 
         .gallery-item img {
@@ -56,30 +53,18 @@
             transition: all 0.3s ease;
         }
 
-        /* Hover effect */
+        /* New hover styles */
         .gallery-item:hover {
             z-index: 100;
-            transform: scale(2.5);
             box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            transform: none !important; /* Override JavaScript transforms */
         }
 
-        /* Maintain aspect ratio on hover */
         .gallery-item:hover img {
             object-fit: contain;
             background: transparent;
         }
-        
-        .gallery-item:hover {
-        background: transparent; /* Makes the container transparent when hovered */
-        box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-        }
-        
-        /* Edge protection - dynamic transform origin */
-        .gallery-item {
-            transform-origin: center center;
-        }
 
-        /* Responsive adjustments */
         @media (max-width: 768px) {
             body {
                 flex-direction: column;
@@ -87,9 +72,6 @@
             .sidebar, .gallery {
                 width: 100%;
                 height: auto;
-            }
-            .gallery-item:hover {
-                transform: scale(2);
             }
         }
     </style>
@@ -106,7 +88,6 @@
     </div>
 
     <script>
-        // Sample image data (replace with your own images)
         const images = [
             { url: 'JAPAN_0184.JPG', aspect: '1000:1334' },
             { url: 'IMG_0322.JPG', aspect: '600:800' },
@@ -125,13 +106,6 @@
         const gallery = document.getElementById('gallery');
         const imageCount = document.getElementById('image-count');
 
-        // Calculate number of columns
-        const calculateColumns = () => {
-            const itemWidth = 150; // minmax value from CSS
-            const galleryWidth = gallery.clientWidth;
-            return Math.floor(galleryWidth / (itemWidth + 10)); // itemWidth + gap
-        };
-
         // Create gallery items
         images.forEach((image, index) => {
             const item = document.createElement('div');
@@ -139,49 +113,61 @@
             
             const img = document.createElement('img');
             img.src = image.url;
-            img.alt = `Image ${index + 1} (Aspect ratio: ${image.aspect})`;
+            img.alt = `Image ${index + 1}`;
             
             img.onload = function() {
-                const aspect = img.naturalWidth / img.naturalHeight;
-                item.dataset.aspect = aspect;
+                const aspectRatio = img.naturalWidth / img.naturalHeight;
                 
-                const columns = calculateColumns();
-                const row = Math.floor(index / columns);
-                const col = index % columns;
+                // Store natural dimensions
+                item.dataset.width = img.naturalWidth;
+                item.dataset.height = img.naturalHeight;
+                item.dataset.aspect = aspectRatio;
                 
-                // Set transform origin based on position
-                let originX = 'center';
-                let originY = 'center';
+                // Set hover dimensions
+                item.addEventListener('mouseenter', function() {
+                    const maxWidth = gallery.clientWidth * 0.8;
+                    const maxHeight = gallery.clientHeight * 0.8;
+                    
+                    let displayWidth = img.naturalWidth;
+                    let displayHeight = img.naturalHeight;
+                    
+                    // Scale down if too large
+                    if (displayWidth > maxWidth) {
+                        const ratio = maxWidth / displayWidth;
+                        displayWidth = maxWidth;
+                        displayHeight = displayHeight * ratio;
+                    }
+                    
+                    if (displayHeight > maxHeight) {
+                        const ratio = maxHeight / displayHeight;
+                        displayHeight = maxHeight;
+                        displayWidth = displayWidth * ratio;
+                    }
+                    
+                    // Apply dynamic sizing
+                    item.style.width = `${displayWidth}px`;
+                    item.style.height = `${displayHeight}px`;
+                    item.style.position = 'absolute';
+                    item.style.left = '50%';
+                    item.style.top = '50%';
+                    item.style.transform = 'translate(-50%, -50%)';
+                    item.style.zIndex = '100';
+                });
                 
-                if (col === 0) originX = 'left';
-                if (col === columns - 1) originX = 'right';
-                if (row === 0) originY = 'top';
-                
-                item.style.transformOrigin = `${originX} ${originY}`;
+                // Reset on mouse leave
+                item.addEventListener('mouseleave', function() {
+                    item.style.width = '';
+                    item.style.height = '';
+                    item.style.position = '';
+                    item.style.left = '';
+                    item.style.top = '';
+                    item.style.transform = '';
+                    item.style.zIndex = '';
+                });
             };
             
             item.appendChild(img);
             gallery.appendChild(item);
-        });
-
-        // Recalculate positions on resize
-        window.addEventListener('resize', () => {
-            const items = document.querySelectorAll('.gallery-item');
-            const columns = calculateColumns();
-            
-            items.forEach((item, index) => {
-                const row = Math.floor(index / columns);
-                const col = index % columns;
-                
-                let originX = 'center';
-                let originY = 'center';
-                
-                if (col === 0) originX = 'left';
-                if (col === columns - 1) originX = 'right';
-                if (row === 0) originY = 'top';
-                
-                item.style.transformOrigin = `${originX} ${originY}`;
-            });
         });
 
         // Update image count
