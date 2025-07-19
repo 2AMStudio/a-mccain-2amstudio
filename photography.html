@@ -11,7 +11,7 @@
             font-family: Arial, sans-serif;
             display: flex;
             overflow-x: hidden;
-            background: #fff; /* Ensure consistent background */
+            background: #fff;
         }
 
         .sidebar {
@@ -35,6 +35,7 @@
             box-sizing: border-box;
             overflow-y: auto;
             background: #fff;
+            position: relative;
         }
 
         .gallery-item {
@@ -43,7 +44,8 @@
             border-radius: 4px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             transition: all 0.3s ease;
-            background: transparent; /* Changed from black to transparent */
+            background: transparent;
+            cursor: pointer;
         }
 
         .gallery-item img {
@@ -53,16 +55,33 @@
             transition: all 0.3s ease;
         }
 
-        /* New hover styles */
-        .gallery-item:hover {
-            z-index: 100;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            transform: none !important; /* Override JavaScript transforms */
+        /* Enlarged image container */
+        .enlarged-container {
+            position: fixed;
+            top: 0;
+            left: 33.33%;
+            width: 66.66%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 50;
+            pointer-events: none;
         }
 
-        .gallery-item:hover img {
+        .enlarged-image {
+            max-width: 90%;
+            max-height: 90%;
             object-fit: contain;
-            background: transparent;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Dim other thumbnails when one is hovered */
+        .gallery.dimmed .gallery-item:not(.active) {
+            opacity: 0.3;
+            transition: opacity 0.3s ease;
         }
 
         @media (max-width: 768px) {
@@ -72,6 +91,10 @@
             .sidebar, .gallery {
                 width: 100%;
                 height: auto;
+            }
+            .enlarged-container {
+                left: 0;
+                width: 100%;
             }
         }
     </style>
@@ -85,6 +108,11 @@
 
     <div class="gallery" id="gallery">
         <!-- Images will be added here by JavaScript -->
+    </div>
+
+    <!-- Container for enlarged image -->
+    <div class="enlarged-container">
+        <img class="enlarged-image" id="enlarged-image" src="" alt="">
     </div>
 
     <script>
@@ -105,6 +133,7 @@
 
         const gallery = document.getElementById('gallery');
         const imageCount = document.getElementById('image-count');
+        const enlargedImage = document.getElementById('enlarged-image');
 
         // Create gallery items
         images.forEach((image, index) => {
@@ -116,55 +145,38 @@
             img.alt = `Image ${index + 1}`;
             
             img.onload = function() {
-                const aspectRatio = img.naturalWidth / img.naturalHeight;
-                
                 // Store natural dimensions
                 item.dataset.width = img.naturalWidth;
                 item.dataset.height = img.naturalHeight;
-                item.dataset.aspect = aspectRatio;
-                
-                // Set hover dimensions
-                item.addEventListener('mouseenter', function() {
-                    const maxWidth = gallery.clientWidth * 0.8;
-                    const maxHeight = gallery.clientHeight * 0.8;
-                    
-                    let displayWidth = img.naturalWidth;
-                    let displayHeight = img.naturalHeight;
-                    
-                    // Scale down if too large
-                    if (displayWidth > maxWidth) {
-                        const ratio = maxWidth / displayWidth;
-                        displayWidth = maxWidth;
-                        displayHeight = displayHeight * ratio;
-                    }
-                    
-                    if (displayHeight > maxHeight) {
-                        const ratio = maxHeight / displayHeight;
-                        displayHeight = maxHeight;
-                        displayWidth = displayWidth * ratio;
-                    }
-                    
-                    // Apply dynamic sizing
-                    item.style.width = `${displayWidth}px`;
-                    item.style.height = `${displayHeight}px`;
-                    item.style.position = 'absolute';
-                    item.style.left = '50%';
-                    item.style.top = '50%';
-                    item.style.transform = 'translate(-50%, -50%)';
-                    item.style.zIndex = '100';
-                });
-                
-                // Reset on mouse leave
-                item.addEventListener('mouseleave', function() {
-                    item.style.width = '';
-                    item.style.height = '';
-                    item.style.position = '';
-                    item.style.left = '';
-                    item.style.top = '';
-                    item.style.transform = '';
-                    item.style.zIndex = '';
-                });
+                item.dataset.aspect = img.naturalWidth / img.naturalHeight;
             };
+            
+            // Thumbnail hover effect
+            item.addEventListener('mouseenter', function() {
+                // Set the enlarged image source
+                enlargedImage.src = image.url;
+                enlargedImage.alt = img.alt;
+                
+                // Show the enlarged image
+                enlargedImage.style.opacity = '1';
+                
+                // Add dimmed class to gallery
+                gallery.classList.add('dimmed');
+                
+                // Mark this item as active
+                item.classList.add('active');
+            });
+            
+            item.addEventListener('mouseleave', function() {
+                // Hide the enlarged image
+                enlargedImage.style.opacity = '0';
+                
+                // Remove dimmed class
+                gallery.classList.remove('dimmed');
+                
+                // Remove active class
+                item.classList.remove('active');
+            });
             
             item.appendChild(img);
             gallery.appendChild(item);
