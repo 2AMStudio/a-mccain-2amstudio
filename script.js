@@ -5,6 +5,18 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Video data with absolute paths
   const slides = [
+       { 
+      src: 'Sequence 01_3_3.mp4',
+      title: 'Saline Threshold',
+      description: 'Rainwater collection and ritual shared space',
+      poster: 'images/video-poster1.jpg'
+    }, 
+          { 
+      src: 'Group_8_Video_1.mp4',
+      title: 'Saline Threshold',
+      description: 'Rainwater collection and ritual shared space',
+      poster: 'images/video-poster1.jpg'
+    },
     { 
       src: 'Group_8_Video.mp4',
       title: 'CONSUL',
@@ -17,12 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
       description: 'Rainwater collection and ritual shared space',
       poster: 'images/video-poster1.jpg'
     },
-     { 
-      src: 'Sequence 01_3_3.mp4',
-      title: 'Saline Threshold',
-      description: 'Rainwater collection and ritual shared space',
-      poster: 'images/video-poster1.jpg'
-    }, 
+
     // ... other slides ...
   ];
 
