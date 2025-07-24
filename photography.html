@@ -6,57 +6,6 @@
     <title>Interactive Image Gallery</title>
     <style>
         body {
-                nav {
-      width: 33.33%;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-evenly;
-      align-items: center;
-      background: transparent;
-      z-index: 2;
-    }
-
-    .nav-buttons {
-      list-style: none;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-evenly;
-    }
-
-    .nav-buttons li {
-      height: 20vh; /* 1/5 of screen height */
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .nav-buttons li a {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-decoration: none;
-      color: white;
-      font-weight: bold;
-      font-size: clamp(1rem, 2.5vw, 2.5rem);
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(12px) brightness(1.2);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      border-radius: 10px;
-      transition: all 0.3s ease;
-      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
-    }
-
-    .nav-buttons li a:hover {
-      background: rgba(255, 255, 255, 0.25);
-      transform: scale(1.03);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-    }
             margin: 0;
             padding: 0;
             font-family: Arial, sans-serif;
@@ -65,16 +14,79 @@
             background: #fff;
         }
 
-        .sidebar {
+        /* Navigation Bar */
+        nav {
             width: 33.33%;
             height: 100vh;
-            background: #f5f5f5;
-            padding: 20px;
-            box-sizing: border-box;
-            position: relative;
-            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+            align-items: center;
+            background: transparent;
+            z-index: 2;
         }
 
+        .nav-buttons {
+            list-style: none;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+            padding: 0;
+            margin: 0;
+        }
+
+        .nav-buttons li {
+            height: 20vh;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .nav-buttons li a {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            font-size: clamp(1rem, 2.5vw, 2.5rem);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px) brightness(1.2);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-buttons li a:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: scale(1.03);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Sidebar - Replacing with nav */
+        .sidebar {
+            position: absolute;
+            width: 33.33%;
+            height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            background: linear-gradient(135deg, rgba(0,0,0,0.7), rgba(0,0,0,0.5));
+        }
+
+        /* Gallery Section */
         .gallery {
             width: 66.66%;
             height: 100vh;
@@ -139,7 +151,7 @@
             body {
                 flex-direction: column;
             }
-            .sidebar, .gallery {
+            nav, .sidebar, .gallery {
                 width: 100%;
                 height: auto;
             }
@@ -147,16 +159,30 @@
                 left: 0;
                 width: 100%;
             }
+            .nav-buttons {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            .nav-buttons li {
+                height: auto;
+                padding: 10px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="sidebar">
-        <h1>Image Gallery</h1>
-        <p>Hover over thumbnails to view images in their original aspect ratio.</p>
-        <p>Total images: <span id="image-count">0</span></p>
-    </div>
+    <!-- Navigation Bar -->
+    <nav>
+        <ul class="nav-buttons">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="recentnews.html">Recent News</a></li>
+            <li><a href="photography.html">Photography</a></li>
+            <li><a href="pastprojects.html">Past Projects</a></li>
+            <li><a href="morefromme.html">More From Me</a></li>
+        </ul>
+    </nav>
 
+    <!-- Gallery Section -->
     <div class="gallery" id="gallery">
         <!-- Images will be added here by JavaScript -->
     </div>
@@ -193,7 +219,6 @@
         ];
 
         const gallery = document.getElementById('gallery');
-        const imageCount = document.getElementById('image-count');
         const enlargedImage = document.getElementById('enlarged-image');
 
         // Create gallery items
@@ -242,9 +267,6 @@
             item.appendChild(img);
             gallery.appendChild(item);
         });
-
-        // Update image count
-        imageCount.textContent = images.length;
     </script>
 </body>
 </html>
