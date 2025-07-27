@@ -69,30 +69,13 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
         }
 
-        /* Sidebar - Replacing with nav */
-        .sidebar {
-            position: absolute;
-            width: 33.33%;
-            height: 100vh;
-            padding: 20px;
-            box-sizing: border-box;
-            z-index: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            color: white;
-            background: linear-gradient(135deg, rgba(0,0,0,0.7), rgba(0,0,0,0.5));
-        }
-
         /* Gallery Section */
         .gallery {
             width: 66.66%;
             height: 100vh;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            grid-auto-rows: 150px;
+            grid-template-columns: repeat(4, 1fr);
+            grid-auto-rows: minmax(0, 1fr);
             gap: 10px;
             padding: 10px;
             box-sizing: border-box;
@@ -151,21 +134,35 @@
             body {
                 flex-direction: column;
             }
-            nav, .sidebar, .gallery {
+            nav, .gallery {
                 width: 100%;
                 height: auto;
+            }
+            .nav-buttons {
+                flex-direction: row;
+                flex-wrap: wrap;
+                height: auto;
+                padding: 10px;
+            }
+            .nav-buttons li {
+                height: 60px;
+                padding: 5px;
+                flex: 1 0 45%;
+            }
+            .gallery {
+                grid-template-columns: repeat(2, 1fr);
+                height: auto;
+                min-height: 100vh;
             }
             .enlarged-container {
                 left: 0;
                 width: 100%;
             }
-            .nav-buttons {
-                flex-direction: row;
-                flex-wrap: wrap;
-            }
-            .nav-buttons li {
-                height: auto;
-                padding: 10px;
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .gallery {
+                grid-template-columns: repeat(3, 1fr);
             }
         }
     </style>
@@ -207,7 +204,6 @@
             { url: 'CM1_2092-2.png', aspect: '800:800' },
             { url: '20230909-IMG_0283.jpg', aspect: '1200:600' },
             { url: 'CM1_1743.png', aspect: '600:1200' },
-            { url: 'JAPAN_0159.jpg', aspect: '900:900' },
             { url: '20230909-IMG_0329Adjudicated.png', aspect: '700:500' },
             { url: 'CM1_2312.png', aspect: '500:700' },
             { url: 'SAM_1118.png', aspect: '1000:800' },
@@ -215,16 +211,32 @@
             { url: 'CM1_2088.png', aspect: '800:1000' },
             { url: '20230912-JAPAN_0212.png', aspect: '800:1000' },
             { url: 'CM1_2627.png', aspect: '800:1000' },
-            { url: 'JAPAN_0298.JPG', aspect: '800:1000' },
         ];
 
         const gallery = document.getElementById('gallery');
         const enlargedImage = document.getElementById('enlarged-image');
 
+        // Function to calculate grid row span based on aspect ratio
+        function getRowSpan(aspectRatio) {
+            if (aspectRatio > 1.5) return 1; // Wide images
+            if (aspectRatio < 0.7) return 2; // Tall images
+            return 1; // Square or moderately rectangular images
+        }
+
         // Create gallery items
         images.forEach((image, index) => {
             const item = document.createElement('div');
             item.className = 'gallery-item';
+            
+            // Calculate aspect ratio from the aspect string
+            const [width, height] = image.aspect.split(':').map(Number);
+            const aspectRatio = width / height;
+            
+            // Apply grid row span for desktop view
+            if (window.innerWidth > 768) {
+                const rowSpan = getRowSpan(aspectRatio);
+                item.style.gridRowEnd = `span ${rowSpan}`;
+            }
             
             const img = document.createElement('img');
             img.src = image.url;
@@ -266,6 +278,20 @@
             
             item.appendChild(img);
             gallery.appendChild(item);
+        });
+
+        // Handle window resize to adjust grid layout
+        window.addEventListener('resize', function() {
+            const items = document.querySelectorAll('.gallery-item');
+            items.forEach(item => {
+                const aspectRatio = parseFloat(item.dataset.aspect) || 1;
+                if (window.innerWidth > 768) {
+                    const rowSpan = getRowSpan(aspectRatio);
+                    item.style.gridRowEnd = `span ${rowSpan}`;
+                } else {
+                    item.style.gridRowEnd = '';
+                }
+            });
         });
     </script>
 </body>
