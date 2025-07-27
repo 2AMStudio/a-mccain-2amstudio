@@ -75,7 +75,7 @@
             height: 100vh;
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            grid-auto-rows: minmax(0, 1fr);
+            grid-auto-rows: calc(25vh - 15px);
             gap: 10px;
             padding: 10px;
             box-sizing: border-box;
@@ -151,8 +151,9 @@
             }
             .gallery {
                 grid-template-columns: repeat(2, 1fr);
+                grid-auto-rows: calc(50vw - 15px);
                 height: auto;
-                min-height: 100vh;
+                min-height: calc(100vh - 120px); /* Adjust for nav height */
             }
             .enlarged-container {
                 left: 0;
@@ -163,6 +164,7 @@
         @media (min-width: 769px) and (max-width: 1024px) {
             .gallery {
                 grid-template-columns: repeat(3, 1fr);
+                grid-auto-rows: calc(33.33vh - 15px);
             }
         }
     </style>
@@ -216,27 +218,10 @@
         const gallery = document.getElementById('gallery');
         const enlargedImage = document.getElementById('enlarged-image');
 
-        // Function to calculate grid row span based on aspect ratio
-        function getRowSpan(aspectRatio) {
-            if (aspectRatio > 1.5) return 1; // Wide images
-            if (aspectRatio < 0.7) return 2; // Tall images
-            return 1; // Square or moderately rectangular images
-        }
-
         // Create gallery items
         images.forEach((image, index) => {
             const item = document.createElement('div');
             item.className = 'gallery-item';
-            
-            // Calculate aspect ratio from the aspect string
-            const [width, height] = image.aspect.split(':').map(Number);
-            const aspectRatio = width / height;
-            
-            // Apply grid row span for desktop view
-            if (window.innerWidth > 768) {
-                const rowSpan = getRowSpan(aspectRatio);
-                item.style.gridRowEnd = `span ${rowSpan}`;
-            }
             
             const img = document.createElement('img');
             img.src = image.url;
@@ -278,20 +263,6 @@
             
             item.appendChild(img);
             gallery.appendChild(item);
-        });
-
-        // Handle window resize to adjust grid layout
-        window.addEventListener('resize', function() {
-            const items = document.querySelectorAll('.gallery-item');
-            items.forEach(item => {
-                const aspectRatio = parseFloat(item.dataset.aspect) || 1;
-                if (window.innerWidth > 768) {
-                    const rowSpan = getRowSpan(aspectRatio);
-                    item.style.gridRowEnd = `span ${rowSpan}`;
-                } else {
-                    item.style.gridRowEnd = '';
-                }
-            });
         });
     </script>
 </body>
