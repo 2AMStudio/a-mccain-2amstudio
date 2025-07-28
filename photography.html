@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600&display=swap" rel="stylesheet">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Interactive Image Gallery</title>
     <style>
         body {
@@ -102,6 +102,27 @@
             transition: all 0.3s ease;
         }
 
+        .image-title {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .gallery-item:hover .image-title {
+            opacity: 1;
+        }
+
         /* Enlarged image container */
         .enlarged-container {
             position: fixed;
@@ -183,94 +204,72 @@
     </nav>
 
     <!-- Gallery Section -->
-    <div class="gallery" id="gallery">
+    <div class="gallery">
         <!-- Images will be added here by JavaScript -->
     </div>
 
     <!-- Container for enlarged image -->
     <div class="enlarged-container">
-        <img class="enlarged-image" id="enlarged-image" src="" alt="">
+        <img class="enlarged-image" src="" alt="" />
     </div>
 
     <script>
-        const images = [
-            { url: 'CM1_1305_1.PNG', aspect: '800:1000', title: 'Monotony' },
-            { url: 'CM1_3452.png', aspect: '800:1000', title: 'Greatness is my Purpose' },
-            { url: 'CM1_1755.png', aspect: '800:1000', title: 'Labour' },
-            { url: 'CM1_3181.jpeg', aspect: '1000:1334', title: 'Homerton Great Hall' },
-            { url: 'CM1_3199.jpeg', aspect: '1000:1334', title: 'Homerton Great Hall' },
-            { url: 'CM1_1768.png', aspect: '1000:1334', title: 'Onwards' },
-            { url: 'JAPAN_0184.JPG', aspect: '1000:1334', title: 'Promotional Material' },
-            { url: 'IMG_0322.JPG', aspect: '600:800', title: 'Embrace' },
-            { url: 'JAPAN_0045.JPG', aspect: '1000:500', title: 'Urban Idol'},
-            { url: 'CM1_2078.png', aspect: '500:1000', title: 'Ingress'},
-            { url: 'CM1_2092-2.png', aspect: '800:800', title: 'Focal Point'},
-            { url: '20230909-IMG_0283.jpg', aspect: '1200:600', title: 'Social Alignment'},
-            { url: 'CM1_1743.png', aspect: '600:1200', title: 'Throwntogetherness' },
-            { url: '20230909-IMG_0329Adjudicated.png', aspect: '700:500', title: 'Rectilinear' },
-            { url: 'CM1_2312.png', aspect: '500:700', title: 'Follow the Leader'},
-            { url: 'SAM_1118.png', aspect: '1000:800', title: 'Temporal Insignificance'},
-            { url: '20230912-NIHON_0073.png', aspect: '800:1000', title: '255 km/h' },
-            { url: 'CM1_2088.png', aspect: '800:1000', title: 'Speed Limit' },
-            { url: '20230912-JAPAN_0212.png', aspect: '800:1000', title: 'Renewal'},
-            { url: 'CM1_2627.png', aspect: '800:1000', title: 'A-Spire'},
+        const galleryData = [
+          { title: "Monotony", src: "CM1_1305_1.PNG" },
+          { title: "Greatness is my Purpose", src: "CM1_3452.png" },
+          { title: "Labour", src: "CM1_1755.png" },
+          { title: "Homerton Great Hall", src: "CM1_3181.jpeg" },
+          { title: "Homerton Great Hall", src: "CM1_3199.jpeg" },
+          { title: "Onwards", src: "CM1_1768.png" },
+          { title: "Promotional Material", src: "JAPAN_0184.JPG" },
+          { title: "Embrace", src: "IMG_0322.JPG" },
+          { title: "Urban Idol", src: "JAPAN_0045.JPG" },
+          { title: "Ingress", src: "CM1_2078.png" },
+          { title: "Focal Point", src: "CM1_2092-2.png" },
+          { title: "Social Alignment", src: "20230909-IMG_0283.jpg" },
+          { title: "Throwntogetherness", src: "CM1_1743.png" },
+          { title: "Rectilinear", src: "20230909-IMG_0329Adjudicated.png" },
+          { title: "Follow the Leader", src: "CM1_2312.png" },
+          { title: "Temporal Insignificance", src: "SAM_1118.png" },
+          { title: "255 km/h", src: "20230912-NIHON_0073.png" },
+          { title: "Speed Limit", src: "CM1_2088.png" },
+          { title: "Renewal", src: "20230912-JAPAN_0212.png" },
+          { title: "A-Spire", src: "CM1_2627.png" },
         ];
 
-        const gallery = document.getElementById('gallery');
-        const enlargedImage = document.getElementById('enlarged-image');
+        const gallery = document.querySelector(".gallery");
+        const enlargedImage = document.querySelector(".enlarged-image");
 
-        // Create gallery items
-        images.forEach((image, index) => {
-            const item = document.createElement('div');
-            item.className = 'gallery-item';
-            
-            const img = document.createElement('img');
-            img.src = image.url;
-            img.alt = `Image ${index + 1}`;
-            
-            img.onload = function() {
-                // Store natural dimensions
-                item.dataset.width = img.naturalWidth;
-                item.dataset.height = img.naturalHeight;
-                item.dataset.aspect = img.naturalWidth / img.naturalHeight;
-            };
-            
-            // Thumbnail hover effect
-            item.addEventListener('mouseenter', function() {
-                // Set the enlarged image source
-                enlargedImage.src = image.url;
-                enlargedImage.alt = img.alt;
-                
-                // Show the enlarged image
-                enlargedImage.style.opacity = '1';
-                
-                // Add dimmed class to gallery
-                gallery.classList.add('dimmed');
-                
-                // Mark this item as active
-                item.classList.add('active');
-            });
-            
-            item.addEventListener('mouseleave', function() {
-                // Hide the enlarged image
-                enlargedImage.style.opacity = '0';
-                
-                // Remove dimmed class
-                gallery.classList.remove('dimmed');
-                
-                // Remove active class
-                item.classList.remove('active');
-            });
-            
-item.appendChild(img);
+        galleryData.forEach(({ title, src }) => {
+          const item = document.createElement("div");
+          item.className = "gallery-item";
 
-const titleDiv = document.createElement('div');
-titleDiv.className = 'image-title';
-titleDiv.textContent = image.title || ''; // fallback if no title
-item.appendChild(titleDiv);
+          const img = document.createElement("img");
+          img.src = src;
+          img.alt = title;
 
-gallery.appendChild(item);
+          const titleDiv = document.createElement("div");
+          titleDiv.className = "image-title";
+          titleDiv.textContent = title;
 
+          item.appendChild(img);
+          item.appendChild(titleDiv);
+          gallery.appendChild(item);
+
+          // Hover handlers to show enlarged image & dim others
+          item.addEventListener("mouseenter", () => {
+            enlargedImage.src = src;
+            enlargedImage.alt = title;
+            enlargedImage.style.opacity = "1";
+            gallery.classList.add("dimmed");
+            item.classList.add("active");
+          });
+
+          item.addEventListener("mouseleave", () => {
+            enlargedImage.style.opacity = "0";
+            gallery.classList.remove("dimmed");
+            item.classList.remove("active");
+          });
         });
     </script>
 </body>
