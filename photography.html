@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600&display=swap" rel="stylesheet" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Interactive Image Gallery</title>
@@ -131,19 +131,40 @@
             width: 66.66%;
             height: 100vh;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 50;
             pointer-events: none;
+            padding: 1rem;
+            box-sizing: border-box;
+            background: rgba(0,0,0,0.3);
         }
 
         .enlarged-image {
             max-width: 90%;
-            max-height: 90%;
+            max-height: 80%;
             object-fit: contain;
             box-shadow: 0 10px 25px rgba(0,0,0,0.5);
             opacity: 0;
             transition: opacity 0.3s ease;
+            user-select: none;
+            pointer-events: none;
+            border-radius: 8px;
+            background: white;
+        }
+
+        .enlarged-title {
+            margin-top: 1rem;
+            color: white;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            font-size: clamp(1rem, 2vw, 1.5rem);
+            text-align: center;
+            pointer-events: none;
+            user-select: none;
+            max-width: 90%;
+            text-shadow: 0 0 5px rgba(0,0,0,0.7);
         }
 
         /* Dim other thumbnails when one is hovered */
@@ -175,11 +196,16 @@
                 grid-template-columns: repeat(2, 1fr);
                 grid-auto-rows: calc(50vw - 15px);
                 height: auto;
-                min-height: calc(100vh - 120px); /* Adjust for nav height */
+                min-height: calc(100vh - 120px);
             }
             .enlarged-container {
                 left: 0;
                 width: 100%;
+                height: auto;
+                padding-bottom: 2rem;
+            }
+            .enlarged-image {
+                max-height: 60vh;
             }
         }
 
@@ -205,12 +231,13 @@
 
     <!-- Gallery Section -->
     <div class="gallery">
-        <!-- Images will be added here by JavaScript -->
+        <!-- Images injected by JS -->
     </div>
 
-    <!-- Container for enlarged image -->
+    <!-- Container for enlarged image and title -->
     <div class="enlarged-container">
         <img class="enlarged-image" src="" alt="" />
+        <div class="enlarged-title"></div>
     </div>
 
     <script>
@@ -239,6 +266,7 @@
 
         const gallery = document.querySelector(".gallery");
         const enlargedImage = document.querySelector(".enlarged-image");
+        const enlargedTitle = document.querySelector(".enlarged-title");
 
         galleryData.forEach(({ title, src }) => {
           const item = document.createElement("div");
@@ -256,17 +284,18 @@
           item.appendChild(titleDiv);
           gallery.appendChild(item);
 
-          // Hover handlers to show enlarged image & dim others
           item.addEventListener("mouseenter", () => {
             enlargedImage.src = src;
             enlargedImage.alt = title;
             enlargedImage.style.opacity = "1";
+            enlargedTitle.textContent = title;
             gallery.classList.add("dimmed");
             item.classList.add("active");
           });
 
           item.addEventListener("mouseleave", () => {
             enlargedImage.style.opacity = "0";
+            enlargedTitle.textContent = "";
             gallery.classList.remove("dimmed");
             item.classList.remove("active");
           });
