@@ -284,20 +284,26 @@
           item.appendChild(titleDiv);
           gallery.appendChild(item);
 
-          item.addEventListener("mouseenter", () => {
-            enlargedImage.src = src;
-            enlargedImage.alt = title;
-            enlargedImage.style.opacity = "1";
-            enlargedTitle.textContent = title;
-            gallery.classList.add("dimmed");
-            item.classList.add("active");
-          });
+const enlargedContainer = document.querySelector(".enlarged-container");
 
-          item.addEventListener("mouseleave", () => {
-            enlargedImage.style.opacity = "0";
-            enlargedTitle.textContent = "";
-            gallery.classList.remove("dimmed");
-            item.classList.remove("active");
+item.addEventListener("mouseenter", () => {
+  enlargedImage.src = src;
+  enlargedImage.alt = title;
+  enlargedImage.style.opacity = "1";
+  enlargedTitle.textContent = title;
+  gallery.classList.add("dimmed");
+  item.classList.add("active");
+  enlargedContainer.style.opacity = "1";
+});
+
+item.addEventListener("mouseleave", () => {
+  enlargedImage.style.opacity = "0";
+  enlargedTitle.textContent = "";
+  gallery.classList.remove("dimmed");
+  item.classList.remove("active");
+  enlargedContainer.style.opacity = "0";
+});
+
           });
         });
     </script>
