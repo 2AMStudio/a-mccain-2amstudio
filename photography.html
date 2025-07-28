@@ -289,19 +289,18 @@ const enlargedContainer = document.querySelector(".enlarged-container");
 item.addEventListener("mouseenter", () => {
   enlargedImage.src = src;
   enlargedImage.alt = title;
-  enlargedImage.style.opacity = "1";
   enlargedTitle.textContent = title;
   gallery.classList.add("dimmed");
   item.classList.add("active");
-  enlargedContainer.style.opacity = "1";
+  enlargedContainer.classList.add("active");
 });
 
 item.addEventListener("mouseleave", () => {
-  enlargedImage.style.opacity = "0";
+  enlargedImage.src = "";
   enlargedTitle.textContent = "";
   gallery.classList.remove("dimmed");
   item.classList.remove("active");
-  enlargedContainer.style.opacity = "0";
+  enlargedContainer.classList.remove("active");
 });
 
           });
