@@ -13,6 +13,9 @@
       display: flex;
       overflow-x: hidden;
       background: #61503c;
+      user-select: none;
+      -webkit-user-select: none;
+      -ms-user-select: none;
     }
 
     nav {
@@ -81,6 +84,7 @@
       overflow-y: auto;
       background: #fff;
       position: relative;
+      cursor: pointer;
     }
 
     .gallery-item {
@@ -88,9 +92,8 @@
       overflow: hidden;
       border-radius: 4px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      transition: all 0.3s ease;
       background: transparent;
-      cursor: pointer;
+      user-select: none;
     }
 
     .gallery-item img {
@@ -98,6 +101,7 @@
       height: 100%;
       object-fit: cover;
       transition: all 0.3s ease;
+      pointer-events: none;
     }
 
     .image-title {
@@ -112,15 +116,11 @@
       font-weight: 600;
       font-size: 1rem;
       text-align: center;
-      opacity: 0;
-      transition: opacity 0.3s ease;
       pointer-events: none;
+      user-select: none;
     }
 
-    .gallery-item:hover .image-title {
-      opacity: 1;
-    }
-
+    /* Modal / Enlarged container */
     .enlarged-container {
       position: fixed;
       top: 0;
@@ -131,13 +131,15 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
+      background: rgba(0,0,0,0.75);
       opacity: 0;
       pointer-events: none;
-      z-index: 5;
+      z-index: 10;
       padding: 1rem;
       box-sizing: border-box;
-      background: rgba(0,0,0,0.4);
-      transition: opacity 0.3s ease;
+      user-select: none;
+      touch-action: none;
+      overflow: hidden;
     }
 
     .enlarged-container.active {
@@ -149,9 +151,18 @@
       max-width: 90%;
       max-height: 80%;
       object-fit: contain;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
       border-radius: 8px;
       background: white;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+      transition: transform 0.3s ease;
+      transform-origin: center center;
+      will-change: transform;
+      position: relative;
+      left: 0;
+      top: 0;
     }
 
     .enlarged-title {
@@ -163,10 +174,68 @@
       text-align: center;
       max-width: 90%;
       text-shadow: 0 0 5px rgba(0,0,0,0.7);
+      user-select: none;
     }
 
-    .gallery.dimmed .gallery-item:not(.active) {
-      opacity: 0.3;
+    /* Navigation buttons inside modal */
+    .nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,0.7);
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      font-size: 24px;
+      font-weight: bold;
+      color: #333;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.3s ease;
+      z-index: 20;
+    }
+
+    .nav-btn:hover {
+      background: rgba(255,255,255,0.9);
+    }
+
+    .nav-btn:active {
+      background: rgba(255,255,255,1);
+    }
+
+    #prevBtn {
+      left: 5%;
+    }
+
+    #nextBtn {
+      right: 5%;
+    }
+
+    #closeBtn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: rgba(255,255,255,0.7);
+      border: none;
+      border-radius: 50%;
+      width: 35px;
+      height: 35px;
+      font-size: 22px;
+      font-weight: bold;
+      color: #333;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.3s ease;
+      z-index: 20;
+    }
+
+    #closeBtn:hover {
+      background: rgba(255,255,255,0.9);
+    }
+
+    #closeBtn:active {
+      background: rgba(255,255,255,1);
     }
 
     @media (max-width: 768px) {
@@ -197,11 +266,16 @@
       .enlarged-container {
         left: 0;
         width: 100%;
-        height: auto;
+        height: 100vh;
         padding-bottom: 2rem;
       }
       .enlarged-image {
-        max-height: 60vh;
+        max-height: 70vh;
+      }
+      #prevBtn, #nextBtn {
+        width: 50px;
+        height: 50px;
+        font-size: 28px;
       }
     }
 
@@ -227,8 +301,11 @@
 
   <div class="gallery"></div>
 
-  <div class="enlarged-container">
-    <img class="enlarged-image" src="" alt="">
+  <div class="enlarged-container" aria-modal="true" role="dialog" aria-hidden="true">
+    <button id="closeBtn" aria-label="Close">&times;</button>
+    <button class="nav-btn" id="prevBtn" aria-label="Previous Image">&#10094;</button>
+    <img class="enlarged-image" src="" alt="" />
+    <button class="nav-btn" id="nextBtn" aria-label="Next Image">&#10095;</button>
     <div class="enlarged-title"></div>
   </div>
 
@@ -253,15 +330,32 @@
     { title: "255 km/h", src: "20230912-NIHON_0073.png" },
     { title: "Speed Limit", src: "CM1_2088.png" },
     { title: "Renewal", src: "20230912-JAPAN_0212.png" },
-    { title: "A-Spire", src: "CM1_2627.png" },
+    { title: "A-Spire", src: "CM1_2627.png" }
   ];
 
   const gallery = document.querySelector(".gallery");
-  const enlargedContainer = document.getElementById("enlargedContainer");
-  const enlargedImage = document.getElementById("enlargedImage");
-  const enlargedTitle = document.getElementById("enlargedTitle");
+  const enlargedContainer = document.querySelector(".enlarged-container");
+  const enlargedImage = document.querySelector(".enlarged-image");
+  const enlargedTitle = document.querySelector(".enlarged-title");
+  const prevBtn = document.getElementById("prevBtn");
+  const nextBtn = document.getElementById("nextBtn");
+  const closeBtn = document.getElementById("closeBtn");
 
-  galleryData.forEach(({ title, src }) => {
+  let currentIndex = 0;
+  let scale = 1;
+  let lastScale = 1;
+  let posX = 0;
+  let posY = 0;
+  let lastX = 0;
+  let lastY = 0;
+  let isDragging = false;
+  let startX = 0;
+  let startY = 0;
+  let pinchStartDist = 0;
+  let pinchStartScale = 1;
+
+  // Create gallery items
+  galleryData.forEach(({title, src}, i) => {
     const item = document.createElement("div");
     item.className = "gallery-item";
 
@@ -277,30 +371,153 @@
     item.appendChild(titleDiv);
     gallery.appendChild(item);
 
-    // Show enlarged on hover
-    item.addEventListener("mouseover", () => {
-      enlargedImage.src = src;
-      enlargedImage.alt = title;
-      enlargedTitle.textContent = title;
-      enlargedContainer.classList.remove("hidden");
+    item.addEventListener("click", () => {
+      openModal(i);
     });
   });
 
-  // Keep image visible while hovering over enlargedContainer
-  enlargedContainer.addEventListener("mouseover", () => {
-    enlargedContainer.classList.remove("hidden");
+  function openModal(index) {
+    currentIndex = index;
+    updateModal();
+    enlargedContainer.classList.add("active");
+    enlargedContainer.setAttribute("aria-hidden", "false");
+    resetTransform();
+  }
+
+  function closeModal() {
+    enlargedContainer.classList.remove("active");
+    enlargedContainer.setAttribute("aria-hidden", "true");
+    resetTransform();
+  }
+
+  function updateModal() {
+    const {title, src} = galleryData[currentIndex];
+    enlargedImage.src = src;
+    enlargedImage.alt = title;
+    enlargedTitle.textContent = title;
+  }
+
+  function showNext() {
+    currentIndex = (currentIndex + 1) % galleryData.length;
+    updateModal();
+    resetTransform();
+  }
+
+  function showPrev() {
+    currentIndex = (currentIndex - 1 + galleryData.length) % galleryData.length;
+    updateModal();
+    resetTransform();
+  }
+
+  // Reset transform and position
+  function resetTransform() {
+    scale = 1;
+    lastScale = 1;
+    posX = 0;
+    posY = 0;
+    lastX = 0;
+    lastY = 0;
+    updateTransform();
+  }
+
+  function updateTransform() {
+    enlargedImage.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
+  }
+
+  // Drag functionality
+  enlargedImage.addEventListener("mousedown", (e) => {
+    e.preventDefault();
+    isDragging = true;
+    startX = e.clientX - lastX;
+    startY = e.clientY - lastY;
+    enlargedImage.style.cursor = "grabbing";
   });
 
-  // Hide when mouse leaves both item and enlarged image
-  document.addEventListener("mousemove", (e) => {
-    const isHoveringGalleryItem = e.target.closest(".gallery-item");
-    const isHoveringEnlarged = e.target.closest("#enlargedContainer");
-    if (!isHoveringGalleryItem && !isHoveringEnlarged) {
-      enlargedContainer.classList.add("hidden");
+  window.addEventListener("mousemove", (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    posX = e.clientX - startX;
+    posY = e.clientY - startY;
+    lastX = posX;
+    lastY = posY;
+    updateTransform();
+  });
+
+  window.addEventListener("mouseup", (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    isDragging = false;
+    enlargedImage.style.cursor = "grab";
+  });
+
+  // Touch drag and pinch zoom support
+  enlargedImage.addEventListener("touchstart", (e) => {
+    e.preventDefault();
+    if (e.touches.length === 1) {
+      // Drag start
+      isDragging = true;
+      startX = e.touches[0].clientX - lastX;
+      startY = e.touches[0].clientY - lastY;
+    } else if (e.touches.length === 2) {
+      // Pinch start
+      isDragging = false;
+      pinchStartDist = getDistance(e.touches[0], e.touches[1]);
+      pinchStartScale = scale;
+    }
+  }, {passive: false});
+
+  enlargedImage.addEventListener("touchmove", (e) => {
+    e.preventDefault();
+    if (e.touches.length === 1 && isDragging) {
+      posX = e.touches[0].clientX - startX;
+      posY = e.touches[0].clientY - startY;
+      lastX = posX;
+      lastY = posY;
+      updateTransform();
+    } else if (e.touches.length === 2) {
+      // Pinch zoom
+      const newDist = getDistance(e.touches[0], e.touches[1]);
+      const scaleFactor = newDist / pinchStartDist;
+      scale = Math.min(Math.max(pinchStartScale * scaleFactor, 1), 5); // limit scale 1x-5x
+      updateTransform();
+    }
+  }, {passive: false});
+
+  enlargedImage.addEventListener("touchend", (e) => {
+    if (e.touches.length === 0) {
+      isDragging = false;
+      lastX = posX;
+      lastY = posY;
+      lastScale = scale;
     }
   });
-</script>
 
+  function getDistance(touch1, touch2) {
+    const dx = touch2.clientX - touch1.clientX;
+    const dy = touch2.clientY - touch1.clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+
+  // Buttons
+  prevBtn.addEventListener("click", showPrev);
+  nextBtn.addEventListener("click", showNext);
+  closeBtn.addEventListener("click", closeModal);
+
+  // Close modal on background click (not on image or buttons)
+  enlargedContainer.addEventListener("click", (e) => {
+    if (e.target === enlargedContainer) {
+      closeModal();
+    }
+  });
+
+  // Keyboard navigation inside modal
+  window.addEventListener("keydown", (e) => {
+    if (!enlargedContainer.classList.contains("active")) return;
+    if (e.key === "ArrowRight") showNext();
+    else if (e.key === "ArrowLeft") showPrev();
+    else if (e.key === "Escape") closeModal();
+  });
+</script>
 
 </body>
 </html>
