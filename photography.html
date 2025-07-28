@@ -1,310 +1,300 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600&display=swap" rel="stylesheet" />
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Interactive Image Gallery</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            display: flex;
-            overflow-x: hidden;
-            background: #61503c;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Interactive Image Gallery</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      overflow-x: hidden;
+      background: #61503c;
+    }
 
-        /* Navigation Bar */
-        nav {
-            width: 33.33%;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-evenly;
-            align-items: center;
-            background: transparent;
-            z-index: 2;
-        }
+    nav {
+      width: 33.33%;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      align-items: center;
+      background: transparent;
+      z-index: 2;
+    }
 
-        .nav-buttons {
-            list-style: none;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-evenly;
-            padding: 0;
-            margin: 0;
-        }
+    .nav-buttons {
+      list-style: none;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      padding: 0;
+      margin: 0;
+    }
 
-        .nav-buttons li {
-            height: 20vh;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+    .nav-buttons li {
+      height: 20vh;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
 
-        .nav-buttons li a {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-decoration: none;
-            color: white;
-            font-weight: bold;
-            font-size: clamp(1rem, 2.5vw, 2.5rem);
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(12px) brightness(1.2);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            border-radius: 10px;
-            transition: all 0.3s ease;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
-        }
+    .nav-buttons li a {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-decoration: none;
+      color: white;
+      font-weight: bold;
+      font-size: clamp(1rem, 2.5vw, 2.5rem);
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px) brightness(1.2);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 10px;
+      transition: all 0.3s ease;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+    }
 
-        .nav-buttons li a:hover {
-            background: rgba(255, 255, 255, 0.25);
-            transform: scale(1.03);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-        }
+    .nav-buttons li a:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: scale(1.03);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
 
-        /* Gallery Section */
-        .gallery {
-            width: 66.66%;
-            height: 100vh;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            grid-auto-rows: calc(25vh - 15px);
-            gap: 10px;
-            padding: 10px;
-            box-sizing: border-box;
-            overflow-y: auto;
-            background: #fff;
-            position: relative;
-        }
+    .gallery {
+      width: 66.66%;
+      height: 100vh;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-auto-rows: calc(25vh - 15px);
+      gap: 10px;
+      padding: 10px;
+      box-sizing: border-box;
+      overflow-y: auto;
+      background: #fff;
+      position: relative;
+    }
 
-        .gallery-item {
-            position: relative;
-            overflow: hidden;
-            border-radius: 4px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-            background: transparent;
-            cursor: pointer;
-        }
+    .gallery-item {
+      position: relative;
+      overflow: hidden;
+      border-radius: 4px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      background: transparent;
+      cursor: pointer;
+    }
 
-        .gallery-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: all 0.3s ease;
-        }
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: all 0.3s ease;
+    }
 
-        .image-title {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            padding: 8px;
-            background: rgba(0, 0, 0, 0.5);
-            color: white;
-            font-family: 'Rajdhani', sans-serif;
-            font-weight: 600;
-            font-size: 1rem;
-            text-align: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-        }
+    .image-title {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      padding: 8px;
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 600;
+      font-size: 1rem;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
 
-        .gallery-item:hover .image-title {
-            opacity: 1;
-        }
+    .gallery-item:hover .image-title {
+      opacity: 1;
+    }
 
-        /* Enlarged image container */
-        .enlarged-container {
-            position: fixed;
-            top: 0;
-            left: 33.33%;
-            width: 66.66%;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 50;
-            pointer-events: none;
-            padding: 1rem;
-            box-sizing: border-box;
-            background: rgba(0,0,0,0.3);
-        }
+    .enlarged-container {
+      position: fixed;
+      top: 0;
+      left: 33.33%;
+      width: 66.66%;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 5;
+      padding: 1rem;
+      box-sizing: border-box;
+      background: rgba(0,0,0,0.4);
+      transition: opacity 0.3s ease;
+    }
 
-        .enlarged-image {
-            max-width: 90%;
-            max-height: 80%;
-            object-fit: contain;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            user-select: none;
-            pointer-events: none;
-            border-radius: 8px;
-            background: white;
-        }
+    .enlarged-container.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
 
-        .enlarged-title {
-            margin-top: 1rem;
-            color: white;
-            font-family: 'Rajdhani', sans-serif;
-            font-weight: 600;
-            font-size: clamp(1rem, 2vw, 1.5rem);
-            text-align: center;
-            pointer-events: none;
-            user-select: none;
-            max-width: 90%;
-            text-shadow: 0 0 5px rgba(0,0,0,0.7);
-        }
+    .enlarged-image {
+      max-width: 90%;
+      max-height: 80%;
+      object-fit: contain;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      border-radius: 8px;
+      background: white;
+    }
 
-        /* Dim other thumbnails when one is hovered */
-        .gallery.dimmed .gallery-item:not(.active) {
-            opacity: 0.3;
-            transition: opacity 0.3s ease;
-        }
+    .enlarged-title {
+      margin-top: 1rem;
+      color: white;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 600;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      text-align: center;
+      max-width: 90%;
+      text-shadow: 0 0 5px rgba(0,0,0,0.7);
+    }
 
-        @media (max-width: 768px) {
-            body {
-                flex-direction: column;
-            }
-            nav, .gallery {
-                width: 100%;
-                height: auto;
-            }
-            .nav-buttons {
-                flex-direction: row;
-                flex-wrap: wrap;
-                height: auto;
-                padding: 10px;
-            }
-            .nav-buttons li {
-                height: 60px;
-                padding: 5px;
-                flex: 1 0 45%;
-            }
-            .gallery {
-                grid-template-columns: repeat(2, 1fr);
-                grid-auto-rows: calc(50vw - 15px);
-                height: auto;
-                min-height: calc(100vh - 120px);
-            }
-            .enlarged-container {
-                left: 0;
-                width: 100%;
-                height: auto;
-                padding-bottom: 2rem;
-            }
-            .enlarged-image {
-                max-height: 60vh;
-            }
-        }
+    .gallery.dimmed .gallery-item:not(.active) {
+      opacity: 0.3;
+    }
 
-        @media (min-width: 769px) and (max-width: 1024px) {
-            .gallery {
-                grid-template-columns: repeat(3, 1fr);
-                grid-auto-rows: calc(33.33vh - 15px);
-            }
-        }
-    </style>
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+      nav, .gallery {
+        width: 100%;
+        height: auto;
+      }
+      .nav-buttons {
+        flex-direction: row;
+        flex-wrap: wrap;
+        height: auto;
+        padding: 10px;
+      }
+      .nav-buttons li {
+        height: 60px;
+        padding: 5px;
+        flex: 1 0 45%;
+      }
+      .gallery {
+        grid-template-columns: repeat(2, 1fr);
+        grid-auto-rows: calc(50vw - 15px);
+        height: auto;
+        min-height: calc(100vh - 120px);
+      }
+      .enlarged-container {
+        left: 0;
+        width: 100%;
+        height: auto;
+        padding-bottom: 2rem;
+      }
+      .enlarged-image {
+        max-height: 60vh;
+      }
+    }
+
+    @media (min-width: 769px) and (max-width: 1024px) {
+      .gallery {
+        grid-template-columns: repeat(3, 1fr);
+        grid-auto-rows: calc(33.33vh - 15px);
+      }
+    }
+  </style>
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <nav>
-        <ul class="nav-buttons">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="recentnews.html">Recent News</a></li>
-            <li><a href="photography.html">Photography</a></li>
-            <li><a href="pastprojects.html">Past Projects</a></li>
-            <li><a href="morefromme.html">More From Me</a></li>
-        </ul>
-    </nav>
 
-    <!-- Gallery Section -->
-    <div class="gallery">
-        <!-- Images injected by JS -->
-    </div>
+  <nav>
+    <ul class="nav-buttons">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="recentnews.html">Recent News</a></li>
+      <li><a href="photography.html">Photography</a></li>
+      <li><a href="pastprojects.html">Past Projects</a></li>
+      <li><a href="morefromme.html">More From Me</a></li>
+    </ul>
+  </nav>
 
-    <!-- Container for enlarged image and title -->
-    <div class="enlarged-container">
-        <img class="enlarged-image" src="" alt="" />
-        <div class="enlarged-title"></div>
-    </div>
+  <div class="gallery"></div>
 
-    <script>
-        const galleryData = [
-          { title: "Monotony", src: "CM1_1305_1.PNG" },
-          { title: "Greatness is my Purpose", src: "CM1_3452.png" },
-          { title: "Labour", src: "CM1_1755.png" },
-          { title: "Homerton Great Hall", src: "CM1_3181.jpeg" },
-          { title: "Homerton Great Hall", src: "CM1_3199.jpeg" },
-          { title: "Onwards", src: "CM1_1768.png" },
-          { title: "Promotional Material", src: "JAPAN_0184.JPG" },
-          { title: "Embrace", src: "IMG_0322.JPG" },
-          { title: "Urban Idol", src: "JAPAN_0045.JPG" },
-          { title: "Ingress", src: "CM1_2078.png" },
-          { title: "Focal Point", src: "CM1_2092-2.png" },
-          { title: "Social Alignment", src: "20230909-IMG_0283.jpg" },
-          { title: "Throwntogetherness", src: "CM1_1743.png" },
-          { title: "Rectilinear", src: "20230909-IMG_0329Adjudicated.png" },
-          { title: "Follow the Leader", src: "CM1_2312.png" },
-          { title: "Temporal Insignificance", src: "SAM_1118.png" },
-          { title: "255 km/h", src: "20230912-NIHON_0073.png" },
-          { title: "Speed Limit", src: "CM1_2088.png" },
-          { title: "Renewal", src: "20230912-JAPAN_0212.png" },
-          { title: "A-Spire", src: "CM1_2627.png" },
-        ];
+  <div class="enlarged-container">
+    <img class="enlarged-image" src="" alt="">
+    <div class="enlarged-title"></div>
+  </div>
 
-        const gallery = document.querySelector(".gallery");
-        const enlargedImage = document.querySelector(".enlarged-image");
-        const enlargedTitle = document.querySelector(".enlarged-title");
+  <script>
+    const galleryData = [
+      { title: "Monotony", src: "CM1_1305_1.PNG" },
+      { title: "Greatness is my Purpose", src: "CM1_3452.png" },
+      { title: "Labour", src: "CM1_1755.png" },
+      { title: "Homerton Great Hall", src: "CM1_3181.jpeg" },
+      { title: "Homerton Great Hall", src: "CM1_3199.jpeg" },
+      { title: "Onwards", src: "CM1_1768.png" },
+      { title: "Promotional Material", src: "JAPAN_0184.JPG" },
+      { title: "Embrace", src: "IMG_0322.JPG" },
+      { title: "Urban Idol", src: "JAPAN_0045.JPG" },
+      { title: "Ingress", src: "CM1_2078.png" },
+      { title: "Focal Point", src: "CM1_2092-2.png" },
+      { title: "Social Alignment", src: "20230909-IMG_0283.jpg" },
+      { title: "Throwntogetherness", src: "CM1_1743.png" },
+      { title: "Rectilinear", src: "20230909-IMG_0329Adjudicated.png" },
+      { title: "Follow the Leader", src: "CM1_2312.png" },
+      { title: "Temporal Insignificance", src: "SAM_1118.png" },
+      { title: "255 km/h", src: "20230912-NIHON_0073.png" },
+      { title: "Speed Limit", src: "CM1_2088.png" },
+      { title: "Renewal", src: "20230912-JAPAN_0212.png" },
+      { title: "A-Spire", src: "CM1_2627.png" }
+    ];
 
-        galleryData.forEach(({ title, src }) => {
-          const item = document.createElement("div");
-          item.className = "gallery-item";
+    const gallery = document.querySelector(".gallery");
+    const enlargedContainer = document.querySelector(".enlarged-container");
+    const enlargedImage = document.querySelector(".enlarged-image");
+    const enlargedTitle = document.querySelector(".enlarged-title");
 
-          const img = document.createElement("img");
-          img.src = src;
-          img.alt = title;
+    galleryData.forEach(({ title, src }) => {
+      const item = document.createElement("div");
+      item.className = "gallery-item";
 
-          const titleDiv = document.createElement("div");
-          titleDiv.className = "image-title";
-          titleDiv.textContent = title;
+      const img = document.createElement("img");
+      img.src = src;
+      img.alt = title;
 
-          item.appendChild(img);
-          item.appendChild(titleDiv);
-          gallery.appendChild(item);
+      const titleDiv = document.createElement("div");
+      titleDiv.className = "image-title";
+      titleDiv.textContent = title;
 
-const enlargedContainer = document.querySelector(".enlarged-container");
+      item.appendChild(img);
+      item.appendChild(titleDiv);
+      gallery.appendChild(item);
 
-item.addEventListener("mouseenter", () => {
-  enlargedImage.src = src;
-  enlargedImage.alt = title;
-  enlargedTitle.textContent = title;
-  gallery.classList.add("dimmed");
-  item.classList.add("active");
-  enlargedContainer.classList.add("active");
-});
+      item.addEventListener("mouseenter", () => {
+        enlargedImage.src = src;
+        enlargedImage.alt = title;
+        enlargedTitle.textContent = title;
+        gallery.classList.add("dimmed");
+        item.classList.add("active");
+        enlargedContainer.classList.add("active");
+      });
 
-item.addEventListener("mouseleave", () => {
-  enlargedImage.src = "";
-  enlargedTitle.textContent = "";
-  gallery.classList.remove("dimmed");
-  item.classList.remove("active");
-  enlargedContainer.classList.remove("active");
-});
+      item.addEventListener("mouseleave", () => {
+        enlargedImage.src = "";
+        enlargedTitle.textContent = "";
+        gallery.classList.remove("dimmed");
+        item.classList.remove("active");
+        enlargedContainer.classList.remove("active");
+      });
+    });
+  </script>
 
-          });
-        });
-    </script>
 </body>
 </html>
