@@ -232,69 +232,75 @@
     <div class="enlarged-title"></div>
   </div>
 
-  <script>
-    const galleryData = [
-      { title: "Monotony", src: "CM1_1305_1.PNG" },
-      { title: "Greatness is my Purpose", src: "CM1_3452.png" },
-      { title: "Labour", src: "CM1_1755.png" },
-      { title: "Homerton Great Hall", src: "CM1_3181.jpeg" },
-      { title: "Homerton Great Hall", src: "CM1_3199.jpeg" },
-      { title: "Onwards", src: "CM1_1768.png" },
-      { title: "Promotional Material", src: "JAPAN_0184.JPG" },
-      { title: "Embrace", src: "IMG_0322.JPG" },
-      { title: "Urban Idol", src: "JAPAN_0045.JPG" },
-      { title: "Ingress", src: "CM1_2078.png" },
-      { title: "Focal Point", src: "CM1_2092-2.png" },
-      { title: "Social Alignment", src: "20230909-IMG_0283.jpg" },
-      { title: "Throwntogetherness", src: "CM1_1743.png" },
-      { title: "Rectilinear", src: "20230909-IMG_0329Adjudicated.png" },
-      { title: "Follow the Leader", src: "CM1_2312.png" },
-      { title: "Temporal Insignificance", src: "SAM_1118.png" },
-      { title: "255 km/h", src: "20230912-NIHON_0073.png" },
-      { title: "Speed Limit", src: "CM1_2088.png" },
-      { title: "Renewal", src: "20230912-JAPAN_0212.png" },
-      { title: "A-Spire", src: "CM1_2627.png" }
-    ];
+<script>
+  const galleryData = [
+    { title: "Monotony", src: "CM1_1305_1.PNG" },
+    { title: "Greatness is my Purpose", src: "CM1_3452.png" },
+    { title: "Labour", src: "CM1_1755.png" },
+    { title: "Homerton Great Hall", src: "CM1_3181.jpeg" },
+    { title: "Homerton Great Hall", src: "CM1_3199.jpeg" },
+    { title: "Onwards", src: "CM1_1768.png" },
+    { title: "Promotional Material", src: "JAPAN_0184.JPG" },
+    { title: "Embrace", src: "IMG_0322.JPG" },
+    { title: "Urban Idol", src: "JAPAN_0045.JPG" },
+    { title: "Ingress", src: "CM1_2078.png" },
+    { title: "Focal Point", src: "CM1_2092-2.png" },
+    { title: "Social Alignment", src: "20230909-IMG_0283.jpg" },
+    { title: "Throwntogetherness", src: "CM1_1743.png" },
+    { title: "Rectilinear", src: "20230909-IMG_0329Adjudicated.png" },
+    { title: "Follow the Leader", src: "CM1_2312.png" },
+    { title: "Temporal Insignificance", src: "SAM_1118.png" },
+    { title: "255 km/h", src: "20230912-NIHON_0073.png" },
+    { title: "Speed Limit", src: "CM1_2088.png" },
+    { title: "Renewal", src: "20230912-JAPAN_0212.png" },
+    { title: "A-Spire", src: "CM1_2627.png" },
+  ];
 
-    const gallery = document.querySelector(".gallery");
-    const enlargedContainer = document.querySelector(".enlarged-container");
-    const enlargedImage = document.querySelector(".enlarged-image");
-    const enlargedTitle = document.querySelector(".enlarged-title");
+  const gallery = document.querySelector(".gallery");
+  const enlargedContainer = document.getElementById("enlargedContainer");
+  const enlargedImage = document.getElementById("enlargedImage");
+  const enlargedTitle = document.getElementById("enlargedTitle");
 
-    galleryData.forEach(({ title, src }) => {
-      const item = document.createElement("div");
-      item.className = "gallery-item";
+  galleryData.forEach(({ title, src }) => {
+    const item = document.createElement("div");
+    item.className = "gallery-item";
 
-      const img = document.createElement("img");
-      img.src = src;
-      img.alt = title;
+    const img = document.createElement("img");
+    img.src = src;
+    img.alt = title;
 
-      const titleDiv = document.createElement("div");
-      titleDiv.className = "image-title";
-      titleDiv.textContent = title;
+    const titleDiv = document.createElement("div");
+    titleDiv.className = "image-title";
+    titleDiv.textContent = title;
 
-      item.appendChild(img);
-      item.appendChild(titleDiv);
-      gallery.appendChild(item);
+    item.appendChild(img);
+    item.appendChild(titleDiv);
+    gallery.appendChild(item);
 
-      item.addEventListener("mouseenter", () => {
-        enlargedImage.src = src;
-        enlargedImage.alt = title;
-        enlargedTitle.textContent = title;
-        gallery.classList.add("dimmed");
-        item.classList.add("active");
-        enlargedContainer.classList.add("active");
-      });
-
-      item.addEventListener("mouseleave", () => {
-        enlargedImage.src = "";
-        enlargedTitle.textContent = "";
-        gallery.classList.remove("dimmed");
-        item.classList.remove("active");
-        enlargedContainer.classList.remove("active");
-      });
+    // Show enlarged on hover
+    item.addEventListener("mouseover", () => {
+      enlargedImage.src = src;
+      enlargedImage.alt = title;
+      enlargedTitle.textContent = title;
+      enlargedContainer.classList.remove("hidden");
     });
-  </script>
+  });
+
+  // Keep image visible while hovering over enlargedContainer
+  enlargedContainer.addEventListener("mouseover", () => {
+    enlargedContainer.classList.remove("hidden");
+  });
+
+  // Hide when mouse leaves both item and enlarged image
+  document.addEventListener("mousemove", (e) => {
+    const isHoveringGalleryItem = e.target.closest(".gallery-item");
+    const isHoveringEnlarged = e.target.closest("#enlargedContainer");
+    if (!isHoveringGalleryItem && !isHoveringEnlarged) {
+      enlargedContainer.classList.add("hidden");
+    }
+  });
+</script>
+
 
 </body>
 </html>
