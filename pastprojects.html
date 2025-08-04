@@ -9,8 +9,15 @@
       margin: 0;
       font-family: Arial, sans-serif;
       overflow: hidden;
+      display: flex;
+      background: #61503c;
+      user-select: none;
+      -webkit-user-select: none;
+      -ms-user-select: none;
     }
-        nav {
+
+    /* Left Navigation Styles */
+    nav {
       width: 33.33%;
       height: 100vh;
       display: flex;
@@ -63,7 +70,7 @@
       transform: scale(1.03);
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
     }
-    
+
     /* Thumbnail Gallery Styles - Updated for vertical right alignment */
     #thumbnails {
       position: absolute;
@@ -140,8 +147,8 @@
     #canvas-container {
       position: fixed;
       top: 0;
-      left: 0;
-      width: 100%;
+      left: 33.33%;
+      width: 66.66%;
       height: 100%;
     }
     
@@ -168,9 +175,70 @@
       font-size: 2em;
       text-align: center;
     }
+
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+      
+      nav {
+        width: 100%;
+        height: auto;
+      }
+      
+      .nav-buttons {
+        flex-direction: row;
+        flex-wrap: wrap;
+        height: auto;
+        padding: 10px;
+      }
+      
+      .nav-buttons li {
+        height: 60px;
+        padding: 5px;
+        flex: 1 0 45%;
+      }
+      
+      #canvas-container {
+        left: 0;
+        width: 100%;
+        height: calc(100vh - 120px);
+      }
+      
+      #thumbnails {
+        top: auto;
+        bottom: 10px;
+        right: 10px;
+        transform: none;
+        flex-direction: row;
+        max-height: 100px;
+        max-width: 90%;
+        overflow-x: auto;
+        overflow-y: hidden;
+      }
+      
+      #gallery-controls {
+        flex-direction: row;
+      }
+      
+      .thumbnail {
+        width: 60px;
+        height: 60px;
+      }
+    }
   </style>
 </head>
 <body>
+  <!-- Left Navigation Panel -->
+  <nav>
+    <ul class="nav-buttons">
+      <li><a href="#" id="nav-intro">Intro View</a></li>
+      <li><a href="#" id="nav-overview">Overview</a></li>
+      <li><a href="#" id="nav-detail">Detail View</a></li>
+      <li><a href="#" id="nav-orbit">Orbit Mode</a></li>
+    </ul>
+  </nav>
+
   <!-- Three.js will render here -->
   <div id="canvas-container"></div>
   
@@ -649,6 +717,29 @@
 
     const cameraRig = new CameraRig(camera, controls);
     cameraRig.transitionTo('INTRO');
+
+    // ======================
+    // LEFT NAVIGATION BUTTONS
+    // ======================
+    document.getElementById('nav-intro').addEventListener('click', (e) => {
+      e.preventDefault();
+      cameraRig.transitionTo('INTRO');
+    });
+
+    document.getElementById('nav-overview').addEventListener('click', (e) => {
+      e.preventDefault();
+      cameraRig.transitionTo('OVERVIEW');
+    });
+
+    document.getElementById('nav-detail').addEventListener('click', (e) => {
+      e.preventDefault();
+      cameraRig.transitionTo('DETAIL_VIEW');
+    });
+
+    document.getElementById('nav-orbit').addEventListener('click', (e) => {
+      e.preventDefault();
+      cameraRig.startOrbiting();
+    });
 
     // ======================
     // EVENT HANDLERS
