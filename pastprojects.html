@@ -11,23 +11,38 @@
       overflow: hidden;
     }
     
-    /* Thumbnail Gallery Styles */
+    /* Thumbnail Gallery Styles - Updated for vertical right alignment */
     #thumbnails {
       position: absolute;
-      bottom: 20px;
-      left: 0;
-      right: 0;
+      top: 50%;
+      right: 20px;
+      transform: translateY(-50%);
       display: flex;
-      justify-content: center;
+      flex-direction: column;
+      align-items: center;
       z-index: 100;
       gap: 10px;
       padding: 10px;
       background: rgba(0,0,0,0.5);
       backdrop-filter: blur(5px);
       border-radius: 10px;
-      max-width: 90%;
-      margin: 0 auto;
-      overflow-x: auto;
+      max-height: 90vh;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,0.3) transparent;
+    }
+    
+    #thumbnails::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    #thumbnails::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    #thumbnails::-webkit-scrollbar-thumb {
+      background-color: rgba(255,255,255,0.3);
+      border-radius: 3px;
     }
     
     .thumbnail {
@@ -46,8 +61,10 @@
     
     #gallery-controls {
       display: flex;
+      flex-direction: column;
       align-items: center;
       gap: 10px;
+      width: 100%;
     }
     
     .nav-btn {
@@ -58,6 +75,8 @@
       border-radius: 4px;
       cursor: pointer;
       transition: background 0.3s;
+      width: 100%;
+      text-align: center;
     }
     
     .nav-btn:hover {
@@ -102,23 +121,23 @@
   <!-- Three.js will render here -->
   <div id="canvas-container"></div>
   
-  <!-- Thumbnail Gallery -->
+  <!-- Thumbnail Gallery - Updated structure for vertical layout -->
   <div id="thumbnails">
     <div id="gallery-controls">
-      <button id="prev-btn" class="nav-btn">❮ Previous</button>
+      <button id="prev-btn" class="nav-btn">▲ Previous</button>
+      <img src="assets/images/Background2.png" class="thumbnail" draggable="true">
+      <img src="assets/images/Slide1.PNG" class="thumbnail" draggable="true">
+      <img src="assets/images/Slide2.PNG" class="thumbnail" draggable="true">
+      <img src="assets/images/Slide3.PNG" class="thumbnail" draggable="true">
+      <img src="assets/images/Slide4.PNG" class="thumbnail" draggable="true">
+      <img src="assets/images/Slide5.PNG" class="thumbnail" draggable="true">
+      <img src="assets/images/Slide6.PNG" class="thumbnail" draggable="true">
+      <img src="assets/images/Slide7.PNG" class="thumbnail" draggable="true">
+      <img src="assets/images/Slide8.PNG" class="thumbnail" draggable="true">
+      <img src="assets/images/Slide9.PNG" class="thumbnail" draggable="true">
+      <img src="assets/images/Slide10.PNG" class="thumbnail" draggable="true">
+      <button id="next-btn" class="nav-btn">▼ Next</button>
     </div>
-    <img src="assets/images/Background2.png" class="thumbnail" draggable="true">
-    <img src="assets/images/Slide1.PNG" class="thumbnail" draggable="true">
-    <img src="assets/images/Slide2.PNG" class="thumbnail" draggable="true">
-    <img src="assets/images/Slide3.PNG" class="thumbnail" draggable="true">
-    <img src="assets/images/Slide4.PNG" class="thumbnail" draggable="true">
-    <img src="assets/images/Slide5.PNG" class="thumbnail" draggable="true">
-    <img src="assets/images/Slide6.PNG" class="thumbnail" draggable="true">
-    <img src="assets/images/Slide7.PNG" class="thumbnail" draggable="true">
-    <img src="assets/images/Slide8.PNG" class="thumbnail" draggable="true">
-    <img src="assets/images/Slide9.PNG" class="thumbnail" draggable="true">
-    <img src="assets/images/Slide10.PNG" class="thumbnail" draggable="true">
-    <button id="next-btn" class="nav-btn">Next ❯</button>
   </div>
 
   <!-- Drop Zone -->
@@ -417,7 +436,7 @@
     });
 
     // ======================
-    // THUMBNAIL GALLERY INTERACTION
+    // THUMBNAIL GALLERY INTERACTION - UPDATED FOR VERTICAL LAYOUT
     // ======================
     const thumbnails = document.querySelectorAll('.thumbnail');
     const dropZone = document.querySelector('.drop-zone');
@@ -430,19 +449,44 @@
       thumb.addEventListener('click', () => {
         currentThumbnailIndex = index;
         loadImageToScreen(thumb.src);
+        updateActiveThumbnail();
       });
     });
 
-    // Navigation buttons
+    // Navigation buttons - updated for vertical layout
     prevBtn.addEventListener('click', () => {
-      currentThumbnailIndex = (currentThumbnailIndex - 1 + thumbnails.length) % thumbnails.length;
+      if (currentThumbnailIndex > 0) {
+        currentThumbnailIndex--;
+      } else {
+        currentThumbnailIndex = thumbnails.length - 1;
+      }
       loadImageToScreen(thumbnails[currentThumbnailIndex].src);
+      updateActiveThumbnail();
     });
 
     nextBtn.addEventListener('click', () => {
-      currentThumbnailIndex = (currentThumbnailIndex + 1) % thumbnails.length;
+      if (currentThumbnailIndex < thumbnails.length - 1) {
+        currentThumbnailIndex++;
+      } else {
+        currentThumbnailIndex = 0;
+      }
       loadImageToScreen(thumbnails[currentThumbnailIndex].src);
+      updateActiveThumbnail();
     });
+
+    function updateActiveThumbnail() {
+      thumbnails.forEach((thumb, index) => {
+        if (index === currentThumbnailIndex) {
+          thumb.style.borderColor = '#0066cc';
+          thumb.style.transform = 'scale(1.1)';
+          // Scroll into view
+          thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        } else {
+          thumb.style.borderColor = 'transparent';
+          thumb.style.transform = 'scale(1)';
+        }
+      });
+    }
 
     function loadImageToScreen(imageUrl) {
       if (!screenQuad) {
@@ -464,8 +508,13 @@
         screenQuad.material.needsUpdate = true;
         
         cameraRig.transitionTo('OVERVIEW');
+      }, undefined, (error) => {
+        console.error('Error loading image:', error);
       });
     }
+
+    // Initialize active thumbnail
+    updateActiveThumbnail();
 
     // ======================
     // DRAG AND DROP
@@ -541,6 +590,9 @@
     const controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.screenSpacePanning = true;
+    controls.maxPolarAngle = Math.PI * 0.9;
+    controls.minDistance = 1;
+    controls.maxDistance = 15;
 
     const cameraRig = new CameraRig(camera, controls);
     cameraRig.transitionTo('INTRO');
