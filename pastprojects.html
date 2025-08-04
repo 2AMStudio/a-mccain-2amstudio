@@ -1,137 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Glass Navigation Portfolio</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Arial', sans-serif;
-    }
-
-    html, body {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-    }
-
-    #video-background {
-      position: fixed;
-      top: 0;
-      right: 0;
-      width: auto;
-      height: 100vh;
-      object-fit: contain;
-      z-index: -1;
-    }
-
-    body {
-      display: flex;
-      flex-direction: row;
-    }
-
-    nav {
-      width: 33.33%;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-evenly;
-      align-items: center;
-      background: transparent;
-      z-index: 2;
-    }
-
-    .nav-buttons {
-      list-style: none;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-evenly;
-    }
-
-    .nav-buttons li {
-      height: 20vh; /* 1/5 of screen height */
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .nav-buttons li a {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-decoration: none;
-      color: white;
-      font-weight: bold;
-      font-size: clamp(1rem, 2.5vw, 2.5rem);
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(12px) brightness(1.2);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      border-radius: 10px;
-      transition: all 0.3s ease;
-      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
-    }
-
-    .nav-buttons li a:hover {
-      background: rgba(255, 255, 255, 0.25);
-      transform: scale(1.03);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-    }
-
-    main {
-      width: 66.67%;
-      height: 100vh;
-      padding: 3rem;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      background: none;
-      backdrop-filter: none;
-      z-index: 1;
-    }
-
-    h1 {
-      font-size: clamp(2rem, 4vw, 4rem);
-      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
-      margin-bottom: 1rem;
-    }
-
-    p {
-      font-size: clamp(1rem, 1.5vw, 1.5rem);
-      line-height: 1.6;
-      max-width: 90%;
-      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
-    }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Lightbox</title>
+  <link rel="stylesheet" href="styles.css"> <!-- Optional -->
 </head>
 <body>
-  <video autoplay muted loop playsinline id="video-background">
-    <source src="ArmadWay1.mp4" type="video/mp4" />
-    Your browser does not support HTML5 video.
-  </video>
+  
+  <!-- Container for thumbnails -->
+  <div id="thumbnails">
+    <div id="gallery-controls">
+  <button id="prev-btn" class="nav-btn">❮ Previous</button>
+  </div>
+    <img src="assets/images/Background2.png" class="thumbnail" draggable="true">
+    <img src="assets\images\Slide1.PNG" class="thumbnail" draggable="true">
+    <img src="assets\images\Slide2.PNG" class="thumbnail" draggable="true">
+    <img src="assets\images\Slide3.PNG" class="thumbnail" draggable="true">
+    <img src="assets\images\Slide4.PNG" class="thumbnail" draggable="true">
+    <img src="assets\images\Slide5.PNG" class="thumbnail" draggable="true">
+    <img src="assets\images\Slide6.PNG" class="thumbnail" draggable="true">
+    <img src="assets\images\Slide7.PNG" class="thumbnail" draggable="true">
+    <img src="assets\images\Slide8.PNG" class="thumbnail" draggable="true">
+    <img src="assets\images\Slide9.PNG" class="thumbnail" draggable="true">
+    <img src="assets\images\Slide10.PNG" class="thumbnail" draggable="true">
+      <button id="next-btn" class="nav-btn">Next ❯</button>
+</div>
 
-  <nav>
-    <ul class="nav-buttons">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="recentnews.html">Recent News</a></li>
-      <li><a href="photography.html">Photography</a></li>
-      <li><a href="pastprojects.html">Past Projects</a></li>
-      <li><a href="morefromme.html">More From Me</a></li>
-    </ul>
-  </nav>
+  </div>
 
-  <main>
-    <h1>Architecture Portfolio</h1>
-    <p>Welcome to my portfolio website.</p>
-    <p>The video background provides a dynamic and immersive setting for this content, while the navigation on the left remains clear and interactive through its glassmorphic styling.</p>
-  </main>
+  <!-- Three.js canvas will be injected here -->
+  <script type="module" src="main.js"></script>
+  <script type="module">
+
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.module.js';
+
+  </script>
 </body>
 </html>
