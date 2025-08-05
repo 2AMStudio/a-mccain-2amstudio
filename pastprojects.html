@@ -232,11 +232,10 @@
   <!-- Left Navigation Panel -->
   <nav>
     <ul class="nav-buttons">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="recentnews.html">Recent News</a></li>
-      <li><a href="photography.html">Photography</a></li>
-      <li><a href="pastprojects.html">Past Projects</a></li>
-      <li><a href="morefromme.html">More From Me</a></li>
+      <li><a href="#" id="nav-intro">Intro View</a></li>
+      <li><a href="#" id="nav-overview">Overview</a></li>
+      <li><a href="#" id="nav-detail">Detail View</a></li>
+      <li><a href="#" id="nav-orbit">Orbit Mode</a></li>
     </ul>
   </nav>
 
@@ -357,7 +356,7 @@
       transitionTo(presetName, duration = 2) {
         const preset = CAMERA_PRESETS[presetName];
         if (!preset) {
-          console.warn(Camera preset "${presetName}" not found.);
+          console.warn(`Camera preset "${presetName}" not found.`);
           return;
         }
 
@@ -507,7 +506,7 @@
         if (child.isLight) {
           child.intensity *= 1.5;
           child.castShadow = true;
-          console.log(Light found: ${child.name}, child);
+          console.log(`Light found: ${child.name}`, child);
         }
       });
 
