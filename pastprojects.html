@@ -91,20 +91,20 @@
       scrollbar-width: thin;
       scrollbar-color: rgba(255,255,255,0.3) transparent;
     }
-    
+
     #thumbnails::-webkit-scrollbar {
       width: 6px;
     }
-    
+
     #thumbnails::-webkit-scrollbar-track {
       background: transparent;
     }
-    
+
     #thumbnails::-webkit-scrollbar-thumb {
       background-color: rgba(255,255,255,0.3);
       border-radius: 3px;
     }
-    
+
     .thumbnail {
       width: 80px;
       height: 80px;
@@ -113,12 +113,12 @@
       border: 2px solid transparent;
       transition: all 0.3s ease;
     }
-    
+
     .thumbnail:hover {
       border-color: #0066cc;
       transform: scale(1.1);
     }
-    
+
     #gallery-controls {
       display: flex;
       flex-direction: column;
@@ -126,7 +126,7 @@
       gap: 10px;
       width: 100%;
     }
-    
+
     .nav-btn {
       padding: 8px 12px;
       background: rgba(255,255,255,0.2);
@@ -138,12 +138,19 @@
       width: 100%;
       text-align: center;
     }
-    
+
     .nav-btn:hover {
       background: rgba(255,255,255,0.4);
     }
-    
+
     /* Three.js Canvas */
+    #canvas-container {
+      position: fixed;
+      top: 0;
+      left: 33.33%;
+      width: 66.66%;
+      height: 100%;
+    }
 #canvas-container {
   position: fixed;
   top: 0;
@@ -152,7 +159,7 @@
   height: 100%;
   z-index: 0; /* ensures it’s behind nav/UI */
 }
-    
+
     /* Drop Zone */
     .drop-zone {
       position: fixed;
@@ -166,7 +173,7 @@
       pointer-events: none;
       border: 4px dashed white;
     }
-    
+
     .drop-zone div {
       position: absolute;
       top: 50%;
@@ -181,25 +188,25 @@
       body {
         flex-direction: column;
       }
-      
+
       nav {
         width: 100%;
         height: auto;
       }
-      
+
       .nav-buttons {
         flex-direction: row;
         flex-wrap: wrap;
         height: auto;
         padding: 10px;
       }
-      
+
       .nav-buttons li {
         height: 60px;
         padding: 5px;
         flex: 1 0 45%;
       }
-      
+
 #canvas-container {
   position: fixed; /* or absolute if inside another wrapper */
   top: 0;
@@ -209,7 +216,7 @@
   overflow: hidden; /* ensures no scrollbars from Three.js */
   z-index: 0; 
       }
-      
+
       #thumbnails {
         top: auto;
         bottom: 10px;
@@ -221,11 +228,11 @@
         overflow-x: auto;
         overflow-y: hidden;
       }
-      
+
       #gallery-controls {
         flex-direction: row;
       }
-      
+
       .thumbnail {
         width: 60px;
         height: 60px;
@@ -237,17 +244,16 @@
   <!-- Left Navigation Panel -->
   <nav>
     <ul class="nav-buttons">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="recentnews.html">Recent News</a></li>
-      <li><a href="photography.html">Photography</a></li>
-      <li><a href="pastprojects.html">Past Projects</a></li>
-      <li><a href="morefromme.html">More From Me</a></li>
+      <li><a href="#" id="nav-intro">Intro View</a></li>
+      <li><a href="#" id="nav-overview">Overview</a></li>
+      <li><a href="#" id="nav-detail">Detail View</a></li>
+      <li><a href="#" id="nav-orbit">Orbit Mode</a></li>
     </ul>
   </nav>
 
   <!-- Three.js will render here -->
   <div id="canvas-container"></div>
-  
+
   <!-- Thumbnail Gallery - Updated structure for vertical layout -->
   <div id="thumbnails">
     <div id="gallery-controls">
@@ -435,27 +441,27 @@
     // ======================
     function createScreenQuad() {
       const geometry = new THREE.BufferGeometry();
-      
+
       const vertices = new Float32Array([
         SCREEN_ANCHORS[2].x, SCREEN_ANCHORS[2].y, SCREEN_ANCHORS[2].z,
         SCREEN_ANCHORS[0].x, SCREEN_ANCHORS[0].y, SCREEN_ANCHORS[0].z,
         SCREEN_ANCHORS[3].x, SCREEN_ANCHORS[3].y, SCREEN_ANCHORS[3].z,
         SCREEN_ANCHORS[1].x, SCREEN_ANCHORS[1].y, SCREEN_ANCHORS[1].z
       ]);
-      
+
       const uvs = new Float32Array([
         0, 1,
         1, 1,
         0, 0,
         1, 0
       ]);
-      
+
       const indices = new Uint16Array([0, 1, 2, 1, 3, 2]);
-      
+
       geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
       geometry.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
       geometry.setIndex(new THREE.BufferAttribute(indices, 1));
-      
+
       const material = new THREE.MeshBasicMaterial({
         color: 0xffffff,
         side: THREE.DoubleSide,
@@ -464,7 +470,7 @@
         toneMapped: false,
         premultipliedAlpha: false
       });
-      
+
       screenQuad = new THREE.Mesh(geometry, material);
       screenQuad.renderOrder = 999;
       scene.add(screenQuad);
@@ -519,7 +525,7 @@
       gltf.scene.traverse((child) => {
         if (child.isMesh && child.name === 'PNGApplicationScreen') {
           screenMesh = child;
-          
+
           screenMaterial = new THREE.MeshBasicMaterial({
             color: 0x000000,
             transparent: true,
@@ -527,7 +533,7 @@
             side: THREE.DoubleSide,
             toneMapped: false
           });
-          
+
           screenMesh.material = screenMaterial;
           screenMesh.renderOrder = 998;
         }
@@ -535,7 +541,7 @@
         if (child.isMesh) {
           child.castShadow = true;
           child.receiveShadow = true;
-          
+
           if (child.material.emissiveMap) {
             child.material.emissiveIntensity = 1.0;
             child.material.emissiveMap.encoding = THREE.sRGBEncoding;
@@ -546,7 +552,7 @@
       deskModel.position.set(0, -1, 0);
       scene.add(deskModel);
       createScreenQuad();
-      
+
       // Load default screen texture
       if (ASSETS.DEFAULT_SCREEN_TEXTURE) {
         currentImageTexture = new THREE.TextureLoader().load(ASSETS.DEFAULT_SCREEN_TEXTURE, (tex) => {
@@ -624,16 +630,16 @@
       const loader = new THREE.TextureLoader();
       loader.load(imageUrl, (texture) => {
         if (currentImageTexture) currentImageTexture.dispose();
-        
+
         currentImageTexture = texture;
         currentImageTexture.encoding = THREE.sRGBEncoding;
         currentImageTexture.anisotropy = renderer.capabilities.getMaxAnisotropy();
         currentImageTexture.minFilter = THREE.LinearFilter;
         currentImageTexture.magFilter = THREE.LinearFilter;
-        
+
         screenQuad.material.map = currentImageTexture;
         screenQuad.material.needsUpdate = true;
-        
+
         cameraRig.transitionTo('OVERVIEW');
       }, undefined, (error) => {
         console.error('Error loading image:', error);
@@ -663,7 +669,7 @@
       e.preventDefault();
       e.stopPropagation();
       dropZone.style.display = 'none';
-      
+
       if (!screenQuad) {
         console.warn('Screen quad not initialized yet');
         return;
@@ -685,7 +691,7 @@
         const img = new Image();
         img.onload = () => {
           if (currentImageTexture) currentImageTexture.dispose();
-          
+
           currentImageTexture = new THREE.Texture(img);
           currentImageTexture.encoding = THREE.sRGBEncoding;
           currentImageTexture.anisotropy = renderer.capabilities.getMaxAnisotropy();
@@ -696,7 +702,7 @@
           screenQuad.material.map = currentImageTexture;
           screenQuad.material.toneMapped = false;
           screenQuad.material.needsUpdate = true;
-          
+
           cameraRig.transitionTo('OVERVIEW');
         };
         img.onerror = () => console.error('Failed to load dropped image');
@@ -723,6 +729,29 @@
 
     const cameraRig = new CameraRig(camera, controls);
     cameraRig.transitionTo('INTRO');
+
+    // ======================
+    // LEFT NAVIGATION BUTTONS
+    // ======================
+    document.getElementById('nav-intro').addEventListener('click', (e) => {
+      e.preventDefault();
+      cameraRig.transitionTo('INTRO');
+    });
+
+    document.getElementById('nav-overview').addEventListener('click', (e) => {
+      e.preventDefault();
+      cameraRig.transitionTo('OVERVIEW');
+    });
+
+    document.getElementById('nav-detail').addEventListener('click', (e) => {
+      e.preventDefault();
+      cameraRig.transitionTo('DETAIL_VIEW');
+    });
+
+    document.getElementById('nav-orbit').addEventListener('click', (e) => {
+      e.preventDefault();
+      cameraRig.startOrbiting();
+    });
 
     // ======================
     // EVENT HANDLERS
@@ -767,10 +796,10 @@
     // ======================
     function setupScreenDebug() {
       if (!screenQuad) return;
-      
+
       debugHelpers.forEach(helper => scene.remove(helper));
       debugHelpers = [];
-      
+
       const wireframe = new THREE.LineSegments(
         new THREE.EdgesGeometry(screenQuad.geometry),
         new THREE.LineBasicMaterial({ color: 0x00ff00, linewidth: 2 })
@@ -778,7 +807,7 @@
       wireframe.position.copy(screenQuad.position);
       scene.add(wireframe);
       debugHelpers.push(wireframe);
-      
+
       SCREEN_ANCHORS.forEach((point, i) => {
         const sphere = new THREE.Mesh(
           new THREE.SphereGeometry(0.01, 16, 16),
