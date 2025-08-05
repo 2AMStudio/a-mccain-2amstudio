@@ -725,29 +725,6 @@
     cameraRig.transitionTo('INTRO');
 
     // ======================
-    // LEFT NAVIGATION BUTTONS
-    // ======================
-    document.getElementById('nav-intro').addEventListener('click', (e) => {
-      e.preventDefault();
-      cameraRig.transitionTo('INTRO');
-    });
-
-    document.getElementById('nav-overview').addEventListener('click', (e) => {
-      e.preventDefault();
-      cameraRig.transitionTo('OVERVIEW');
-    });
-
-    document.getElementById('nav-detail').addEventListener('click', (e) => {
-      e.preventDefault();
-      cameraRig.transitionTo('DETAIL_VIEW');
-    });
-
-    document.getElementById('nav-orbit').addEventListener('click', (e) => {
-      e.preventDefault();
-      cameraRig.startOrbiting();
-    });
-
-    // ======================
     // EVENT HANDLERS
     // ======================
     window.addEventListener('resize', () => {
