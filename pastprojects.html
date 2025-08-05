@@ -151,14 +151,14 @@
       width: 66.66%;
       height: 100%;
     }
-#canvas-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0; /* ensures it’s behind nav/UI */
-}
+    #canvas-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0; /* ensures it's behind nav/UI */
+    }
 
     /* Drop Zone */
     .drop-zone {
@@ -207,14 +207,14 @@
         flex: 1 0 45%;
       }
 
-#canvas-container {
-  position: fixed; /* or absolute if inside another wrapper */
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden; /* ensures no scrollbars from Three.js */
-  z-index: 0; 
+      #canvas-container {
+        position: fixed; /* or absolute if inside another wrapper */
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden; /* ensures no scrollbars from Three.js */
+        z-index: 0; 
       }
 
       #thumbnails {
@@ -259,6 +259,7 @@
   <div id="thumbnails">
     <div id="gallery-controls">
       <button id="prev-btn" class="nav-btn">▲ Previous</button>
+      <img src="A1 DSCM 632 Prints_converted.png" class="thumbnail" draggable="true">
       <img src="assets/images/Background2.png" class="thumbnail" draggable="true">
       <img src="assets/images/Slide1.PNG" class="thumbnail" draggable="true">
       <img src="assets/images/Slide2.PNG" class="thumbnail" draggable="true">
@@ -330,6 +331,25 @@
     let screenQuad = null;
 
     // ======================
+    // SCREEN NORMAL CALCULATION
+    // ======================
+    function calculateScreenNormal() {
+      // Get three points from the screen quad to form two vectors
+      const p0 = new THREE.Vector3(SCREEN_ANCHORS[2].x, SCREEN_ANCHORS[2].y, SCREEN_ANCHORS[2].z);
+      const p1 = new THREE.Vector3(SCREEN_ANCHORS[0].x, SCREEN_ANCHORS[0].y, SCREEN_ANCHORS[0].z);
+      const p2 = new THREE.Vector3(SCREEN_ANCHORS[3].x, SCREEN_ANCHORS[3].y, SCREEN_ANCHORS[3].z);
+
+      // Create two vectors in the plane of the screen
+      const v1 = new THREE.Vector3().subVectors(p1, p0);
+      const v2 = new THREE.Vector3().subVectors(p2, p0);
+
+      // Calculate the normal vector (cross product)
+      const normal = new THREE.Vector3().crossVectors(v1, v2).normalize();
+
+      return normal;
+    }
+
+    // ======================
     // CAMERA PRESETS
     // ======================
     const CAMERA_PRESETS = {
@@ -352,6 +372,14 @@
         radius: 5,
         height: -0.3,
         speed: 0.002
+      },
+      SCREEN_NORMAL: {
+        distance: 1.5, // Distance from screen center
+        fov: 45
+      },
+      SCREEN_OPPOSITE: {
+        distance: 1.5, // Distance from screen center
+        fov: 45
       }
     };
 
@@ -392,6 +420,86 @@
           }, '<0.2')
           .to(this.camera, {
             fov: preset.fov || 50,
+            duration: duration * 0.7,
+            onUpdate: () => this.camera.updateProjectionMatrix()
+          }, '<');
+      }
+
+      transitionToScreenNormal(duration = 2) {
+        const preset = CAMERA_PRESETS.SCREEN_NORMAL;
+        const normal = calculateScreenNormal();
+        
+        // Calculate screen center point
+        const screenCenter = new THREE.Vector3();
+        SCREEN_ANCHORS.forEach(point => {
+          screenCenter.add(new THREE.Vector3(point.x, point.y, point.z));
+        });
+        screenCenter.divideScalar(SCREEN_ANCHORS.length);
+
+        // Position camera along normal vector at specified distance
+        const cameraPosition = new THREE.Vector3().copy(normal)
+          .multiplyScalar(preset.distance)
+          .add(screenCenter);
+
+        this.isOrbiting = false;
+        this.controls.autoRotate = false;
+
+        gsap.timeline()
+          .to(this.camera.position, {
+            x: cameraPosition.x,
+            y: cameraPosition.y,
+            z: cameraPosition.z,
+            duration,
+            ease: 'sine.inOut'
+          })
+          .to(this.controls.target, {
+            x: screenCenter.x,
+            y: screenCenter.y,
+            z: screenCenter.z,
+            duration: duration * 0.9
+          }, '<0.2')
+          .to(this.camera, {
+            fov: preset.fov || 45,
+            duration: duration * 0.7,
+            onUpdate: () => this.camera.updateProjectionMatrix()
+          }, '<');
+      }
+
+      transitionToScreenOpposite(duration = 2) {
+        const preset = CAMERA_PRESETS.SCREEN_OPPOSITE;
+        const normal = calculateScreenNormal();
+        
+        // Calculate screen center point
+        const screenCenter = new THREE.Vector3();
+        SCREEN_ANCHORS.forEach(point => {
+          screenCenter.add(new THREE.Vector3(point.x, point.y, point.z));
+        });
+        screenCenter.divideScalar(SCREEN_ANCHORS.length);
+
+        // Position camera along the opposite normal vector at specified distance
+        const cameraPosition = new THREE.Vector3().copy(normal)
+          .multiplyScalar(-preset.distance) // Negative distance for opposite side
+          .add(screenCenter);
+
+        this.isOrbiting = false;
+        this.controls.autoRotate = false;
+
+        gsap.timeline()
+          .to(this.camera.position, {
+            x: cameraPosition.x,
+            y: cameraPosition.y,
+            z: cameraPosition.z,
+            duration,
+            ease: 'sine.inOut'
+          })
+          .to(this.controls.target, {
+            x: screenCenter.x,
+            y: screenCenter.y,
+            z: screenCenter.z,
+            duration: duration * 0.9
+          }, '<0.2')
+          .to(this.camera, {
+            fov: preset.fov || 45,
             duration: duration * 0.7,
             onUpdate: () => this.camera.updateProjectionMatrix()
           }, '<');
@@ -490,7 +598,7 @@
     directionalLight.shadow.mapSize.height = 2048;
     scene.add(directionalLight);
 
-    screenFillLight = new THREE.RectAreaLight(0xffffff, 0, 3, 3);
+    screenFillLight = new THREE.RectAreaLight(0xffffff, 3, 3, 3); // Always on with intensity 3
     screenFillLight.position.set(0, 5, 0.2);
     screenFillLight.rotation.x = -Math.PI / 2;
     scene.add(screenFillLight);
@@ -736,7 +844,7 @@
     // ======================
     document.getElementById('nav-intro').addEventListener('click', (e) => {
       e.preventDefault();
-         window.location.href = 'index.html';
+      window.location.href = 'index.html';
     });
 
     document.getElementById('nav-overview').addEventListener('click', (e) => {
@@ -754,7 +862,7 @@
       window.location.href = 'pastprojects.html';
     });
 
-      document.getElementById('nav-orbit2').addEventListener('click', (e) => {
+    document.getElementById('nav-orbit2').addEventListener('click', (e) => {
       e.preventDefault();
       window.location.href = 'morefromme.html';
     });
@@ -773,6 +881,8 @@
         case '1': cameraRig.transitionTo('INTRO'); break;
         case '2': cameraRig.transitionTo('OVERVIEW'); break;
         case '3': cameraRig.transitionTo('DETAIL_VIEW'); break;
+        case '4': cameraRig.transitionToScreenNormal(); break;
+        case '5': cameraRig.transitionToScreenOpposite(); break;
         case 'o': cameraRig.startOrbiting(); break;
         case 'r': // Reset screen texture
           if (screenQuad.material) {
@@ -789,10 +899,6 @@
           } else {
             setupScreenDebug();
           }
-          break;
-        case 'l': // Toggle rectangle area light
-          screenFillLight.intensity = screenFillLight.intensity > 0 ? 0 : 3;
-          console.log('Rectangle area light intensity:', screenFillLight.intensity);
           break;
       }
     });
