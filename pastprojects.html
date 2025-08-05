@@ -245,9 +245,10 @@
   <nav>
     <ul class="nav-buttons">
       <li><a href="#" id="nav-intro">Homepage</a></li>
-      <li><a href="#" id="nav-overview">Overview</a></li>
-      <li><a href="#" id="nav-detail">Detail View</a></li>
-      <li><a href="#" id="nav-orbit">Orbit Mode</a></li>
+      <li><a href="#" id="nav-overview">Recent News</a></li>
+      <li><a href="#" id="nav-detail">Photography</a></li>
+      <li><a href="#" id="nav-orbit">Past Projects</a></li>
+      <li><a href="#" id="nav-orbit2">More From Me</a></li>
     </ul>
   </nav>
 
@@ -740,17 +741,22 @@
 
     document.getElementById('nav-overview').addEventListener('click', (e) => {
       e.preventDefault();
-      cameraRig.transitionTo('OVERVIEW');
+      window.location.href = 'recentnews.html';
     });
 
     document.getElementById('nav-detail').addEventListener('click', (e) => {
       e.preventDefault();
-      cameraRig.transitionTo('DETAIL_VIEW');
+      window.location.href = 'photography.html';
     });
 
     document.getElementById('nav-orbit').addEventListener('click', (e) => {
       e.preventDefault();
-      cameraRig.startOrbiting();
+      window.location.href = 'pastprojects.html';
+    });
+
+      document.getElementById('nav-orbit2').addEventListener('click', (e) => {
+      e.preventDefault();
+      window.location.href = 'morefromme.html';
     });
 
     // ======================
