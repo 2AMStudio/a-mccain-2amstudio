@@ -244,7 +244,7 @@
   <!-- Left Navigation Panel -->
   <nav>
     <ul class="nav-buttons">
-      <li><a href="#" id="nav-intro">Intro View</a></li>
+      <li><a href="#" id="nav-intro">Homepage</a></li>
       <li><a href="#" id="nav-overview">Overview</a></li>
       <li><a href="#" id="nav-detail">Detail View</a></li>
       <li><a href="#" id="nav-orbit">Orbit Mode</a></li>
@@ -735,7 +735,7 @@
     // ======================
     document.getElementById('nav-intro').addEventListener('click', (e) => {
       e.preventDefault();
-      cameraRig.transitionTo('INTRO');
+         window.location.href = 'index.html';
     });
 
     document.getElementById('nav-overview').addEventListener('click', (e) => {
