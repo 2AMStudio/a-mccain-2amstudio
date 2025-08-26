@@ -71,7 +71,7 @@
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
     }
 
-    /* Thumbnail Gallery Styles - Updated for vertical right alignment */
+    /* Thumbnail Gallery Styles */
     #thumbnails {
       position: absolute;
       top: 50%;
@@ -119,6 +119,21 @@
       transform: scale(1.1);
     }
 
+    .video-thumbnail {
+      position: relative;
+    }
+
+    .video-thumbnail::after {
+      content: '▶';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 24px;
+      color: white;
+      text-shadow: 0 0 5px rgba(0,0,0,0.8);
+    }
+
     #gallery-controls {
       display: flex;
       flex-direction: column;
@@ -147,17 +162,10 @@
     #canvas-container {
       position: fixed;
       top: 0;
-      left: 33.33%;
-      width: 66.66%;
-      height: 100%;
-    }
-    #canvas-container {
-      position: fixed;
-      top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      z-index: 0; /* ensures it's behind nav/UI */
+      z-index: 0;
     }
 
     /* Drop Zone */
@@ -184,6 +192,46 @@
       text-align: center;
     }
 
+    /* Video Controls */
+    #video-controls {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+      padding: 10px;
+      background: rgba(0,0,0,0.7);
+      border-radius: 5px;
+      z-index: 101;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    #video-controls.visible {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .video-btn {
+      padding: 8px 12px;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .video-btn:hover {
+      background: rgba(255,255,255,0.4);
+    }
+
+    .video-btn.active {
+      background: rgba(0,102,204,0.7);
+    }
+
     @media (max-width: 768px) {
       body {
         flex-direction: column;
@@ -208,12 +256,12 @@
       }
 
       #canvas-container {
-        position: fixed; /* or absolute if inside another wrapper */
+        position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        overflow: hidden; /* ensures no scrollbars from Three.js */
+        overflow: hidden;
         z-index: 0; 
       }
 
@@ -237,6 +285,10 @@
         width: 60px;
         height: 60px;
       }
+
+      #video-controls {
+        bottom: 120px;
+      }
     }
   </style>
 </head>
@@ -255,29 +307,39 @@
   <!-- Three.js will render here -->
   <div id="canvas-container"></div>
 
-  <!-- Thumbnail Gallery - Updated structure for vertical layout -->
+  <!-- Thumbnail Gallery with videos -->
   <div id="thumbnails">
     <div id="gallery-controls">
       <button id="prev-btn" class="nav-btn">▲ Previous</button>
-      <img src="A1 DSCM 632 Prints_converted.png" class="thumbnail" draggable="true">
-      <img src="assets/images/Background2.png" class="thumbnail" draggable="true">
-      <img src="assets/images/Slide1.PNG" class="thumbnail" draggable="true">
-      <img src="assets/images/Slide2.PNG" class="thumbnail" draggable="true">
-      <img src="assets/images/Slide3.PNG" class="thumbnail" draggable="true">
-      <img src="assets/images/Slide4.PNG" class="thumbnail" draggable="true">
-      <img src="assets/images/Slide5.PNG" class="thumbnail" draggable="true">
-      <img src="assets/images/Slide6.PNG" class="thumbnail" draggable="true">
-      <img src="assets/images/Slide7.PNG" class="thumbnail" draggable="true">
-      <img src="assets/images/Slide8.PNG" class="thumbnail" draggable="true">
-      <img src="assets/images/Slide9.PNG" class="thumbnail" draggable="true">
-      <img src="assets/images/Slide10.PNG" class="thumbnail" draggable="true">
+      <img src="A1 DSCM 632 Prints_converted.png" class="thumbnail" draggable="true" data-type="image">
+      <img src="assets/images/Background2.png" class="thumbnail" draggable="true" data-type="image">
+      <img src="assets/images/Slide1.PNG" class="thumbnail" draggable="true" data-type="image">
+      <img src="assets/images/Slide2.PNG" class="thumbnail" draggable="true" data-type="image">
+      <img src="assets/images/Slide3.PNG" class="thumbnail" draggable="true" data-type="image">
+      <img src="assets/images/Slide4.PNG" class="thumbnail" draggable="true" data-type="image">
+      <img src="assets/images/Slide5.PNG" class="thumbnail" draggable="true" data-type="image">
+      <img src="assets/images/Slide6.PNG" class="thumbnail" draggable="true" data-type="image">
+      <img src="assets/images/Slide7.PNG" class="thumbnail" draggable="true" data-type="image">
+      <img src="assets/images/Slide8.PNG" class="thumbnail" draggable="true" data-type="image">
+      <img src="assets/images/Slide9.PNG" class="thumbnail" draggable="true" data-type="image">
+      <img src="assets/images/Slide10.PNG" class="thumbnail" draggable="true" data-type="image">
+      <!-- Video thumbnails -->
+      <img src="assets/videos/design-process-poster.jpg" class="thumbnail video-thumbnail" draggable="true" data-type="video" data-src="0001-0702.mp4">
+      <img src="assets/videos/project-showcase-poster.jpg" class="thumbnail video-thumbnail" draggable="true" data-type="video" data-src="Sequence 01_3_3.mp4">
       <button id="next-btn" class="nav-btn">▼ Next</button>
     </div>
   </div>
 
+  <!-- Video Controls -->
+  <div id="video-controls">
+    <button id="mute-btn" class="video-btn">Mute</button>
+    <button id="autoplay-btn" class="video-btn active">Autoplay</button>
+    <button id="loop-btn" class="video-btn active">Loop</button>
+  </div>
+
   <!-- Drop Zone -->
   <div class="drop-zone">
-    <div>Drop PNG Image Here<br><span style="font-size: 0.6em;">(PNG or JPG files only)</span></div>
+    <div>Drop PNG/JPEG Image or MP4 Video Here<br><span style="font-size: 0.6em;">(PNG, JPG, or MP4 files only)</span></div>
   </div>
 
   <!-- CDN Imports -->
@@ -324,11 +386,20 @@
     let screenMesh = null;
     let screenMaterial = null;
     const allowedImageTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+    const allowedVideoTypes = ['video/mp4', 'video/webm', 'video/ogg'];
     let debugHelpers = [];
     let screenFillLight;
     let currentImageTexture = null;
+    let currentVideoTexture = null;
     let screenPlane = null;
     let screenQuad = null;
+    let videoElement = null;
+    let isVideoPlaying = false;
+    let videoSettings = {
+      muted: false,
+      autoplay: true,
+      loop: true
+    };
 
     // ======================
     // SCREEN NORMAL CALCULATION
@@ -586,6 +657,39 @@
     }
 
     // ======================
+    // VIDEO TEXTURE SETUP
+    // ======================
+    function createVideoElement() {
+      if (videoElement) {
+        videoElement.pause();
+        document.body.removeChild(videoElement);
+      }
+      
+      videoElement = document.createElement('video');
+      videoElement.style.display = 'none';
+      videoElement.crossOrigin = 'anonymous';
+      videoElement.playsInline = true;
+      document.body.appendChild(videoElement);
+      
+      // Apply video settings
+      videoElement.muted = videoSettings.muted;
+      videoElement.loop = videoSettings.loop;
+      videoElement.autoplay = videoSettings.autoplay;
+      
+      return videoElement;
+    }
+
+    function createVideoTexture(video) {
+      const texture = new THREE.VideoTexture(video);
+      texture.encoding = THREE.sRGBEncoding;
+      texture.minFilter = THREE.LinearFilter;
+      texture.magFilter = THREE.LinearFilter;
+      texture.generateMipmaps = false;
+      
+      return texture;
+    }
+
+    // ======================
     // LIGHTING
     // ======================
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
@@ -678,31 +782,53 @@
     });
 
     // ======================
-    // THUMBNAIL GALLERY INTERACTION - UPDATED FOR VERTICAL LAYOUT
+    // THUMBNAIL GALLERY INTERACTION
     // ======================
     const thumbnails = document.querySelectorAll('.thumbnail');
     const dropZone = document.querySelector('.drop-zone');
     const prevBtn = document.getElementById('prev-btn');
     const nextBtn = document.getElementById('next-btn');
+    const videoControls = document.getElementById('video-controls');
+    const muteBtn = document.getElementById('mute-btn');
+    const autoplayBtn = document.getElementById('autoplay-btn');
+    const loopBtn = document.getElementById('loop-btn');
     let currentThumbnailIndex = 0;
 
     // Handle thumbnail clicks
     thumbnails.forEach((thumb, index) => {
       thumb.addEventListener('click', () => {
         currentThumbnailIndex = index;
-        loadImageToScreen(thumb.src);
+        const mediaType = thumb.getAttribute('data-type');
+        
+        if (mediaType === 'video') {
+          const videoSrc = thumb.getAttribute('data-src');
+          loadVideoToScreen(videoSrc);
+        } else {
+          loadImageToScreen(thumb.src);
+        }
+        
         updateActiveThumbnail();
       });
     });
 
-    // Navigation buttons - updated for vertical layout
+    // Navigation buttons
     prevBtn.addEventListener('click', () => {
       if (currentThumbnailIndex > 0) {
         currentThumbnailIndex--;
       } else {
         currentThumbnailIndex = thumbnails.length - 1;
       }
-      loadImageToScreen(thumbnails[currentThumbnailIndex].src);
+      
+      const thumb = thumbnails[currentThumbnailIndex];
+      const mediaType = thumb.getAttribute('data-type');
+      
+      if (mediaType === 'video') {
+        const videoSrc = thumb.getAttribute('data-src');
+        loadVideoToScreen(videoSrc);
+      } else {
+        loadImageToScreen(thumb.src);
+      }
+      
       updateActiveThumbnail();
     });
 
@@ -712,8 +838,47 @@
       } else {
         currentThumbnailIndex = 0;
       }
-      loadImageToScreen(thumbnails[currentThumbnailIndex].src);
+      
+      const thumb = thumbnails[currentThumbnailIndex];
+      const mediaType = thumb.getAttribute('data-type');
+      
+      if (mediaType === 'video') {
+        const videoSrc = thumb.getAttribute('data-src');
+        loadVideoToScreen(videoSrc);
+      } else {
+        loadImageToScreen(thumb.src);
+      }
+      
       updateActiveThumbnail();
+    });
+
+    // Video control buttons
+    muteBtn.addEventListener('click', () => {
+      videoSettings.muted = !videoSettings.muted;
+      if (videoElement) {
+        videoElement.muted = videoSettings.muted;
+      }
+      muteBtn.classList.toggle('active', videoSettings.muted);
+      muteBtn.textContent = videoSettings.muted ? 'Unmute' : 'Mute';
+    });
+
+    autoplayBtn.addEventListener('click', () => {
+      videoSettings.autoplay = !videoSettings.autoplay;
+      if (videoElement) {
+        videoElement.autoplay = videoSettings.autoplay;
+        if (videoSettings.autoplay && !isVideoPlaying) {
+          videoElement.play().catch(e => console.error('Video play failed:', e));
+        }
+      }
+      autoplayBtn.classList.toggle('active', videoSettings.autoplay);
+    });
+
+    loopBtn.addEventListener('click', () => {
+      videoSettings.loop = !videoSettings.loop;
+      if (videoElement) {
+        videoElement.loop = videoSettings.loop;
+      }
+      loopBtn.classList.toggle('active', videoSettings.loop);
     });
 
     function updateActiveThumbnail() {
@@ -736,9 +901,22 @@
         return;
       }
 
+      // Stop any playing video
+      if (videoElement) {
+        videoElement.pause();
+        isVideoPlaying = false;
+      }
+      
+      // Hide video controls
+      videoControls.classList.remove('visible');
+
       const loader = new THREE.TextureLoader();
       loader.load(imageUrl, (texture) => {
         if (currentImageTexture) currentImageTexture.dispose();
+        if (currentVideoTexture) {
+          currentVideoTexture.dispose();
+          currentVideoTexture = null;
+        }
 
         currentImageTexture = texture;
         currentImageTexture.encoding = THREE.sRGBEncoding;
@@ -752,6 +930,50 @@
         cameraRig.transitionTo('OVERVIEW');
       }, undefined, (error) => {
         console.error('Error loading image:', error);
+      });
+    }
+
+    function loadVideoToScreen(videoUrl) {
+      if (!screenQuad) {
+        console.warn('Screen quad not ready yet');
+        return;
+      }
+
+      // Show video controls
+      videoControls.classList.add('visible');
+
+      // Create video element
+      const video = createVideoElement();
+      video.src = videoUrl;
+      
+      video.addEventListener('loadeddata', () => {
+        if (currentImageTexture) currentImageTexture.dispose();
+        if (currentVideoTexture) currentVideoTexture.dispose();
+
+        currentVideoTexture = createVideoTexture(video);
+        
+        screenQuad.material.map = currentVideoTexture;
+        screenQuad.material.needsUpdate = true;
+
+        // Play video if autoplay is enabled
+        if (videoSettings.autoplay) {
+          video.play().then(() => {
+            isVideoPlaying = true;
+          }).catch(e => {
+            console.error('Video autoplay failed:', e);
+            isVideoPlaying = false;
+          });
+        }
+
+        cameraRig.transitionTo('OVERVIEW');
+      });
+
+      video.addEventListener('error', (e) => {
+        console.error('Error loading video:', e);
+        // Fall back to default image
+        if (ASSETS.DEFAULT_SCREEN_TEXTURE) {
+          loadImageToScreen(ASSETS.DEFAULT_SCREEN_TEXTURE);
+        }
       });
     }
 
@@ -784,38 +1006,52 @@
         return;
       }
 
-      const files = Array.from(e.dataTransfer.files).filter(file => 
-        allowedImageTypes.includes(file.type)
-      );
+      const files = Array.from(e.dataTransfer.files);
+      const imageFiles = files.filter(file => allowedImageTypes.includes(file.type));
+      const videoFiles = files.filter(file => allowedVideoTypes.includes(file.type));
 
-      if (files.length === 0) {
-        console.warn('No valid image files dropped');
+      if (imageFiles.length === 0 && videoFiles.length === 0) {
+        console.warn('No valid image or video files dropped');
         return;
       }
 
-      const file = files[0];
+      const file = imageFiles.length > 0 ? imageFiles[0] : videoFiles[0];
       const reader = new FileReader();
 
       reader.onload = (event) => {
-        const img = new Image();
-        img.onload = () => {
-          if (currentImageTexture) currentImageTexture.dispose();
+        if (allowedImageTypes.includes(file.type)) {
+          // Handle image file
+          const img = new Image();
+          img.onload = () => {
+            if (currentImageTexture) currentImageTexture.dispose();
+            if (currentVideoTexture) {
+              currentVideoTexture.dispose();
+              currentVideoTexture = null;
+            }
+            
+            // Hide video controls for images
+            videoControls.classList.remove('visible');
 
-          currentImageTexture = new THREE.Texture(img);
-          currentImageTexture.encoding = THREE.sRGBEncoding;
-          currentImageTexture.anisotropy = renderer.capabilities.getMaxAnisotropy();
-          currentImageTexture.minFilter = THREE.LinearFilter;
-          currentImageTexture.magFilter = THREE.LinearFilter;
-          currentImageTexture.needsUpdate = true;
+            currentImageTexture = new THREE.Texture(img);
+            currentImageTexture.encoding = THREE.sRGBEncoding;
+            currentImageTexture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+            currentImageTexture.minFilter = THREE.LinearFilter;
+            currentImageTexture.magFilter = THREE.LinearFilter;
+            currentImageTexture.needsUpdate = true;
 
-          screenQuad.material.map = currentImageTexture;
-          screenQuad.material.toneMapped = false;
-          screenQuad.material.needsUpdate = true;
+            screenQuad.material.map = currentImageTexture;
+            screenQuad.material.toneMapped = false;
+            screenQuad.material.needsUpdate = true;
 
-          cameraRig.transitionTo('OVERVIEW');
-        };
-        img.onerror = () => console.error('Failed to load dropped image');
-        img.src = event.target.result;
+            cameraRig.transitionTo('OVERVIEW');
+          };
+          img.onerror = () => console.error('Failed to load dropped image');
+          img.src = event.target.result;
+        } else if (allowedVideoTypes.includes(file.type)) {
+          // Handle video file
+          const videoUrl = URL.createObjectURL(file);
+          loadVideoToScreen(videoUrl);
+        }
       };
 
       reader.onerror = () => console.error('Failed to read dropped file');
@@ -887,9 +1123,19 @@
         case 'r': // Reset screen texture
           if (screenQuad.material) {
             if (currentImageTexture) currentImageTexture.dispose();
+            if (currentVideoTexture) currentVideoTexture.dispose();
             screenQuad.material.map = null;
             screenQuad.material.color.set(0x000000);
             screenQuad.material.needsUpdate = true;
+            
+            // Hide video controls
+            videoControls.classList.remove('visible');
+            
+            // Stop any playing video
+            if (videoElement) {
+              videoElement.pause();
+              isVideoPlaying = false;
+            }
           }
           break;
         case 'd': // Toggle debug helpers
@@ -898,6 +1144,14 @@
             debugHelpers = [];
           } else {
             setupScreenDebug();
+          }
+          break;
+        case 'm': // Toggle mute
+          if (videoElement) {
+            videoSettings.muted = !videoSettings.muted;
+            videoElement.muted = videoSettings.muted;
+            muteBtn.classList.toggle('active', videoSettings.muted);
+            muteBtn.textContent = videoSettings.muted ? 'Unmute' : 'Mute';
           }
           break;
       }
