@@ -16,59 +16,102 @@
       -ms-user-select: none;
     }
 
-    /* Left Navigation Styles */
+    /* Left Navigation Styles - UPDATED */
     nav {
-      width: 33.33%;
+      position: fixed;
+      left: 0;
+      top: 0;
       height: 100vh;
+      width: auto;
       display: flex;
       flex-direction: column;
-      justify-content: space-evenly;
-      align-items: center;
+      justify-content: center;
+      align-items: flex-start;
       background: transparent;
       z-index: 2;
+      padding: 10px 0;
     }
 
     .nav-buttons {
       list-style: none;
-      width: 100%;
-      height: 100%;
+      width: auto;
+      height: auto;
       display: flex;
       flex-direction: column;
-      justify-content: space-evenly;
+      justify-content: center;
       padding: 0;
       margin: 0;
+      gap: 15px;
     }
 
     .nav-buttons li {
-      height: 20vh;
-      width: 100%;
+      height: 240px;
+      width: 240px;
       display: flex;
       justify-content: center;
       align-items: center;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
     .nav-buttons li a {
       width: 100%;
       height: 100%;
       display: flex;
-      justify-content: center;
+      justify-content: flex-start;
       align-items: center;
       text-decoration: none;
       color: white;
       font-weight: bold;
-      font-size: clamp(1rem, 2.5vw, 2.5rem);
+      font-size: 1rem;
       background: rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(12px) brightness(1.2);
       border: 1px solid rgba(255, 255, 255, 0.25);
       border-radius: 10px;
-      transition: all 0.3s ease;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .nav-buttons li a .button-content {
+      display: flex;
+      align-items: center;
+      width: 180px;
+      transition: opacity 0.3s ease;
+    }
+
+    .nav-buttons li a .icon {
+      min-width: 60px;
+      height: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 24px;
+      transition: all 0.3s ease;
+    }
+
+    .nav-buttons li a .text {
+      white-space: nowrap;
+      opacity: 0;
+      width: 0;
+      transition: all 0.3s ease;
+      padding-right: 15px;
     }
 
     .nav-buttons li a:hover {
+      width: 180px;
       background: rgba(255, 255, 255, 0.25);
       transform: scale(1.03);
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .nav-buttons li a:hover .text {
+      opacity: 1;
+      width: 120px;
+    }
+
+    .nav-buttons li a:hover .icon {
+      transform: scale(0.9);
     }
 
     /* Thumbnail Gallery Styles */
@@ -240,6 +283,8 @@
       nav {
         width: 100%;
         height: auto;
+        position: relative;
+        justify-content: flex-start;
       }
 
       .nav-buttons {
@@ -247,12 +292,23 @@
         flex-wrap: wrap;
         height: auto;
         padding: 10px;
+        gap: 10px;
+        justify-content: center;
       }
 
       .nav-buttons li {
         height: 60px;
-        padding: 5px;
-        flex: 1 0 45%;
+        width: 60px;
+        padding: 0;
+        flex: 0 0 auto;
+      }
+
+      .nav-buttons li a {
+        width: 60px;
+      }
+
+      .nav-buttons li a:hover {
+        width: 180px;
       }
 
       #canvas-container {
@@ -293,14 +349,49 @@
   </style>
 </head>
 <body>
-  <!-- Left Navigation Panel -->
+  <!-- Left Navigation Panel - UPDATED -->
   <nav>
     <ul class="nav-buttons">
-      <li><a href="#" id="nav-intro">Homepage</a></li>
-      <li><a href="#" id="nav-overview">Recent News</a></li>
-      <li><a href="#" id="nav-detail">Photography</a></li>
-      <li><a href="#" id="nav-orbit">Past Projects</a></li>
-      <li><a href="#" id="nav-orbit2">More From Me</a></li>
+      <li>
+        <a href="#" id="nav-intro">
+          <div class="button-content">
+            <div class="icon">🏠</div>
+            <div class="text">Homepage</div>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a href="#" id="nav-overview">
+          <div class="button-content">
+            <div class="icon">📰</div>
+            <div class="text">Recent News</div>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a href="#" id="nav-detail">
+          <div class="button-content">
+            <div class="icon">📸</div>
+            <div class="text">Photography</div>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a href="#" id="nav-orbit">
+          <div class="button-content">
+            <div class="icon">📂</div>
+            <div class="text">Past Projects</div>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a href="#" id="nav-orbit2">
+          <div class="button-content">
+            <div class="icon">➕</div>
+            <div class="text">More From Me</div>
+          </div>
+        </a>
+      </li>
     </ul>
   </nav>
 
@@ -312,19 +403,19 @@
     <div id="gallery-controls">
       <button id="prev-btn" class="nav-btn">▲ Previous</button>
       <img src="A1 DSCM 632 Prints_converted.png" class="thumbnail" draggable="true" data-type="image">
-      <img src="assets/images/Background2.png" class="thumbnail" draggable="true" data-type="image">
+      <img src="Portfolio\IntentImagery2.png" class="thumbnail" draggable="true" data-type="image">
       <img src="assets/images/Slide1.PNG" class="thumbnail" draggable="true" data-type="image">
-      <img src="assets/images/Slide2.PNG" class="thumbnail" draggable="true" data-type="image">
-      <img src="assets/images/Slide3.PNG" class="thumbnail" draggable="true" data-type="image">
-      <img src="assets/images/Slide4.PNG" class="thumbnail" draggable="true" data-type="image">
-      <img src="assets/images/Slide5.PNG" class="thumbnail" draggable="true" data-type="image">
+      <img src="Portfolio\Placemaking.png" class="thumbnail" draggable="true" data-type="image">
+      <img src="Portfolio\Roundel.png" class="thumbnail" draggable="true" data-type="image">
+      <img src="Portfolio\Wall.png" class="thumbnail" draggable="true" data-type="image">
+      <img src="Portfolio\Floorplans621.png" class="thumbnail" draggable="true" data-type="image">
       <img src="assets/images/Slide6.PNG" class="thumbnail" draggable="true" data-type="image">
       <img src="assets/images/Slide7.PNG" class="thumbnail" draggable="true" data-type="image">
       <img src="assets/images/Slide8.PNG" class="thumbnail" draggable="true" data-type="image">
       <img src="assets/images/Slide9.PNG" class="thumbnail" draggable="true" data-type="image">
       <img src="assets/images/Slide10.PNG" class="thumbnail" draggable="true" data-type="image">
       <!-- Video thumbnails -->
-      <img src="assets/videos/design-process-poster.jpg" class="thumbnail video-thumbnail" draggable="true" data-type="video" data-src="0001-0702.mp4">
+      <img src="0709.png" class="thumbnail video-thumbnail" draggable="true" data-type="video" data-src="0001-0900.mp4">
       <img src="assets/videos/project-showcase-poster.jpg" class="thumbnail video-thumbnail" draggable="true" data-type="video" data-src="Sequence 01_3_3.mp4">
       <button id="next-btn" class="nav-btn">▼ Next</button>
     </div>
@@ -1185,7 +1276,7 @@
       });
     }
 
-    // ======================
+    // ======================a
     // ANIMATION LOOP
     // ======================
     function animate() {
