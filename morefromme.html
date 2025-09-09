@@ -154,38 +154,6 @@
             font-size: 1.1rem;
         }
         
-        /* Architectural Approach section */
-        .arch-approach {
-            background: #f0f7ff;
-            border-left: 4px solid #4a6580;
-        }
-        
-        .approach-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            margin-top: 20px;
-        }
-        
-        .approach-item {
-            padding: 20px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
-        }
-        
-        .approach-item h3 {
-            color: #2c3e50;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .approach-item h3 i {
-            color: #4a6580;
-        }
-        
         /* Education section */
         .timeline {
             position: relative;
@@ -235,6 +203,28 @@
         .timeline-subtitle {
             color: #7f8c8d;
             margin-bottom: 10px;
+        }
+        
+        /* Qualifications section */
+        .qualifications-list {
+            list-style: none;
+        }
+        
+        .qualifications-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #eaecef;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .qualifications-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .qualifications-list i {
+            color: #4fc3f7;
+            margin-right: 15px;
+            margin-top: 5px;
         }
         
         /* Work experience section */
@@ -361,7 +351,7 @@
                 flex-wrap: wrap;
             }
             
-            .skills-grid, .approach-grid {
+            .skills-grid {
                 grid-template-columns: 1fr;
             }
         }
@@ -403,7 +393,7 @@
             
             <div class="profile-info">
                 <h1>Albert McCain</h1>
-                <p class="tagline">Architecture Student | Spatial Theorist | Conference Design Specialist</p>
+                <p class="tagline">Architecture Student & Conference Support Professional</p>
                 
                 <div class="contact-info">
                     <div class="contact-item">
@@ -435,47 +425,10 @@
         <section class="section">
             <h2 class="section-title">Professional Summary</h2>
             <p class="summary">
-                First year Architecture undergraduate at University of Plymouth with professional experience in conference support and event coordination. 
-                Combines architectural training with practical skills in spatial analysis, financial modeling, and client relations. 
-                Research focuses on the socio-spatial dynamics of conference environments and their evolution in response to changing societal needs.
+                Part 1 Architecture graduate from the  University of Plymouth with professional experience in conference support and event coordination. 
+                Combines architectural training with practical skills in financial analysis, client relations, and operational management. 
+                Proven ability to integrate design thinking with business solutions to enhance spatial experiences and operational efficiency.
             </p>
-        </section>
-        
-        <section class="section arch-approach">
-            <h2 class="section-title">Architectural Approach & Research Focus</h2>
-            <p class="summary">
-                My work explores the intersection of spatial design, social dynamics, and functional adaptability in conference environments. 
-                Drawing from frameworks including Lefebvre's spatial triad and Foucault's heterotopias, I examine how designed spaces mediate authority, 
-                facilitate collaboration, and adapt to changing conditions.
-            </p>
-            
-            <div class="approach-grid">
-                <div class="approach-item">
-                    <h3><i class="fas fa-building"></i> Double-Design for Durable Architecture</h3>
-                    <p>Developing architectural solutions that balance immediate functionality with long-term adaptability, creating spaces that remain relevant through changing social and technological contexts.</p>
-                </div>
-                
-                <div class="approach-item">
-                    <h3><i class="fas fa-vector-square"></i> Long-life Fabric & Function</h3>
-                    <p>Focusing on creating spatial frameworks that democratize access and use, ensuring environments serve diverse communities and adapt to evolving needs without requiring complete reconstruction.</p>
-                </div>
-                
-                <div class="approach-item">
-                    <h3><i class="fas fa-users"></i> Event Coordination in Architectural Ethos</h3>
-                    <p>Integrating event design principles into architectural practice, recognizing that spaces must facilitate human interaction, knowledge exchange, and collaborative experiences.</p>
-                </div>
-                
-                <div class="approach-item">
-                    <h3><i class="fas fa-sync-alt"></i> Adaptive Hybrid Spaces</h3>
-                    <p>Designing environments that seamlessly integrate physical and digital experiences, creating inclusive platforms for global collaboration that transcend traditional spatial limitations.</p>
-                </div>
-            </div>
-            
-            <div style="margin-top: 25px; padding: 20px; background: #e8f4fc; border-radius: 8px;">
-                <h3 style="color: #2c3e50; margin-bottom: 15px;">Research Insights: Post-Pandemic Conference Spaces</h3>
-                <p>My research examines how conference centers mediated authority and facilitated collaboration during the COVID-19 pandemic. The study reveals the duality of these spaces as sites of both institutional control and unplanned creativity, highlighting how spatial arrangements directly influence idea flow and hierarchy navigation.</p>
-                <p>This work argues for reimagining knowledge exchange environments through inclusive, adaptable design approaches that incorporate emerging technologies like VR and biophilic design while promoting genuine global connectivity.</p>
-            </div>
         </section>
         
         <section class="section">
@@ -488,13 +441,12 @@
                 </div>
                 <div class="job-company">University of Cambridge Homerton Conference Centre</div>
                 <ul class="job-responsibilities">
-                    <li>Conduct financial data analysis using Excel to optimize conference center operations and profitability</li>
-                    <li>Create integrated reports overlaying financial data with architectural drawings to visualize space utilization</li>
+                    <li>Conduct financial data analysis using Excel to optimise conference center operations and profitability</li>
+                    <li>Create integrated reports overlaying financial data with architectural drawings to visualize space utilisation</li>
                     <li>Design client-facing promotional materials and brochures to enhance marketing efforts</li>
-                    <li>Develop occupancy reports to identify sales performance gaps and implement improvement strategies</li>
+                    <li>Develop occupancy reports to identify sales performance shortfalls and implement improvement strategies</li>
                     <li>Coordinate event logistics with attention to spatial requirements and participant flow</li>
                     <li>Collaborate with facilities team to ensure architectural elements support event needs</li>
-                    <li>Apply spatial theory frameworks to improve functionality and user experience of conference environments</li>
                 </ul>
             </div>
             
@@ -511,6 +463,19 @@
                     <li>Managed facility opening and closing procedures with attention to safety protocols</li>
                 </ul>
             </div>
+            
+            <div class="job">
+                <div class="job-header">
+                    <div class="job-title">Lifeguard and Leisure Assistant</div>
+                    <div class="job-date">Oct 2019 – Jun 2022</div>
+                </div>
+                <div class="job-company">Colchester Leisure World, Colchester</div>
+                <ul class="job-responsibilities">
+                    <li>Provided safety supervision across diverse aquatic environments including leisure pools and diving facilities</li>
+                    <li>Supported specialized programming for diverse user groups including swimmers with disabilities</li>
+                    <li>Performed facility setup and maintenance with attention to spatial organization</li>
+                </ul>
+            </div>
         </section>
         
         <section class="section">
@@ -520,7 +485,6 @@
                     <div class="timeline-date">2022 - 2025</div>
                     <div class="timeline-title">BA (Hons) Architecture</div>
                     <div class="timeline-subtitle">University of Plymouth</div>
-                    <p><em>Dissertation: "Double-Design for Durable Architecture: Long-life Fabric and Function for the Democratisation of Space"</em></p>
                 </div>
                 
                 <div class="timeline-item">
@@ -542,7 +506,6 @@
                         <div class="skill-item">Excel Reporting</div>
                         <div class="skill-item">Architectural Drawing</div>
                         <div class="skill-item">Brochure Design</div>
-                        <div class="skill-item">Spatial Analysis</div>
                     </div>
                 </div>
                 
@@ -554,31 +517,16 @@
                         <div class="skill-item">Operational Management</div>
                         <div class="skill-item">Space Utilization</div>
                         <div class="skill-item">Safety Protocols</div>
-                        <div class="skill-item">Research Methodology</div>
                     </div>
                 </div>
                 
                 <div class="skill-category">
-                    <h4>Theoretical Frameworks</h4>
+                    <h4>Certifications</h4>
                     <div class="skill-items">
-                        <div class="skill-item">Lefebvre's Spatial Triad</div>
-                        <div class="skill-item">Foucault's Heterotopias</div>
-                        <div class="skill-item">Massey's Throwntogetherness</div>
-                        <div class="skill-item">Adaptive Reuse</div>
-                        <div class="skill-item">Hybrid Space Design</div>
+                        <div class="skill-item">National Pool Lifeguard Qualification</div>
+                        <div class="skill-item">Automated External Defibrillator (AED)</div>
                     </div>
                 </div>
-            </div>
-        </section>
-        
-        <section class="section">
-            <h2 class="section-title">Research & Publications</h2>
-            <div class="job">
-                <div class="job-header">
-                    <div class="job-title">Double-Design for Durable Architecture: Long-life Fabric and Function for the Democratisation of Space</div>
-                    <div class="job-date">2024</div>
-                </div>
-                <p>This dissertation examines the socio-spatial reality of conference centres through the lens of the COVID-19 pandemic, using Lefebvre's spatial triad, Massey's 'throwntogetherness', and Foucault's theory of heterotopias as central frameworks. The research traces how these spaces have mediated authority and facilitated collaboration to adapt to rapidly changing conditions, revealing the duality of conference centres as places of institutional control and sites of unplanned creativity.</p>
             </div>
         </section>
         
@@ -599,15 +547,11 @@
                 </div>
                 <div class="interest-item">
                     <i class="fas fa-plane"></i>
-                    <span>Solo Travel (8 countries)</span>
-                </div>
-                <div class="interest-item">
-                    <i class="fas fa-book"></i>
-                    <span>Spatial Theory</span>
+                    <span>Solo Travel</span>
                 </div>
                 <div class="interest-item">
                     <i class="fas fa-drafting-compass"></i>
-                    <span>Adaptive Reuse</span>
+                    <span>Architectural Design</span>
                 </div>
             </div>
         </section>

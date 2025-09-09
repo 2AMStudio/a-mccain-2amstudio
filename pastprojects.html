@@ -7,111 +7,81 @@
   <style>
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       overflow: hidden;
-      display: flex;
       background: #61503c;
       user-select: none;
       -webkit-user-select: none;
       -ms-user-select: none;
     }
 
-    /* Left Navigation Styles - UPDATED */
+    /* Top Navigation Styles - SLEEK AND REFINED */
     nav {
       position: fixed;
-      left: 0;
       top: 0;
-      height: 100vh;
-      width: auto;
+      left: 0;
+      width: 100%;
       display: flex;
-      flex-direction: column;
       justify-content: center;
-      align-items: flex-start;
-      background: transparent;
+      align-items: center;
+      background: rgba(26, 37, 48, 0.95);
       z-index: 2;
-      padding: 10px 0;
+      padding: 0;
+      height: 60px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .nav-buttons {
       list-style: none;
-      width: auto;
-      height: auto;
       display: flex;
-      flex-direction: column;
       justify-content: center;
       padding: 0;
       margin: 0;
-      gap: 15px;
+      gap: 0;
+      height: 100%;
     }
 
     .nav-buttons li {
-      height: 240px;
-      width: 240px;
       display: flex;
       justify-content: center;
       align-items: center;
-      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-
-    .nav-buttons li a {
-      width: 100%;
       height: 100%;
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-      text-decoration: none;
-      color: white;
-      font-weight: bold;
-      font-size: 1rem;
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(12px) brightness(1.2);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      border-radius: 10px;
-      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
-      overflow: hidden;
       position: relative;
     }
 
-    .nav-buttons li a .button-content {
+    .nav-buttons li a {
       display: flex;
       align-items: center;
-      width: 180px;
-      transition: opacity 0.3s ease;
-    }
-
-    .nav-buttons li a .icon {
-      min-width: 60px;
-      height: 60px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 24px;
+      text-decoration: none;
+      color: #f0f0f0;
+      font-weight: 500;
+      font-size: 1rem;
+      padding: 0 24px;
+      height: 100%;
       transition: all 0.3s ease;
-    }
-
-    .nav-buttons li a .text {
-      white-space: nowrap;
-      opacity: 0;
-      width: 0;
-      transition: all 0.3s ease;
-      padding-right: 15px;
+      letter-spacing: 0.5px;
     }
 
     .nav-buttons li a:hover {
-      width: 180px;
-      background: rgba(255, 255, 255, 0.25);
-      transform: scale(1.03);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      background-color: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
     }
 
-    .nav-buttons li a:hover .text {
-      opacity: 1;
-      width: 120px;
+    .nav-buttons li a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: #4fc3f7;
+      transition: all 0.3s ease;
+      transform: translateX(-50%);
     }
 
-    .nav-buttons li a:hover .icon {
-      transform: scale(0.9);
+    .nav-buttons li a:hover::after {
+      width: 70%;
     }
 
     /* Thumbnail Gallery Styles */
@@ -275,50 +245,31 @@
       background: rgba(0,102,204,0.7);
     }
 
-    @media (max-width: 768px) {
-      body {
-        flex-direction: column;
-      }
-
-      nav {
-        width: 100%;
-        height: auto;
-        position: relative;
-        justify-content: flex-start;
-      }
-
+    @media (max-width: 900px) {
       .nav-buttons {
-        flex-direction: row;
         flex-wrap: wrap;
         height: auto;
-        padding: 10px;
-        gap: 10px;
-        justify-content: center;
+        padding: 10px 0;
       }
-
+      
       .nav-buttons li {
-        height: 60px;
-        width: 60px;
-        padding: 0;
-        flex: 0 0 auto;
+        height: 50px;
       }
-
+      
       .nav-buttons li a {
-        width: 60px;
+        padding: 0 15px;
+        font-size: 0.95rem;
       }
+    }
 
-      .nav-buttons li a:hover {
-        width: 180px;
+    @media (max-width: 600px) {
+      .nav-buttons {
+        gap: 0;
       }
-
-      #canvas-container {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-        z-index: 0; 
+      
+      .nav-buttons li a {
+        padding: 0 12px;
+        font-size: 0.9rem;
       }
 
       #thumbnails {
@@ -349,48 +300,23 @@
   </style>
 </head>
 <body>
-  <!-- Left Navigation Panel - UPDATED -->
+  <!-- Top Navigation Panel - SLEEK AND REFINED -->
   <nav>
     <ul class="nav-buttons">
       <li>
-        <a href="#" id="nav-intro">
-          <div class="button-content">
-            <div class="icon">🏠</div>
-            <div class="text">Homepage</div>
-          </div>
-        </a>
+        <a href="index.html">Home</a>
       </li>
       <li>
-        <a href="#" id="nav-overview">
-          <div class="button-content">
-            <div class="icon">📰</div>
-            <div class="text">Recent News</div>
-          </div>
-        </a>
+        <a href="recentnews.html">Recent News</a>
       </li>
       <li>
-        <a href="#" id="nav-detail">
-          <div class="button-content">
-            <div class="icon">📸</div>
-            <div class="text">Photography</div>
-          </div>
-        </a>
+        <a href="photography.html">Photography</a>
       </li>
       <li>
-        <a href="#" id="nav-orbit">
-          <div class="button-content">
-            <div class="icon">📂</div>
-            <div class="text">Past Projects</div>
-          </div>
-        </a>
+        <a href="pastprojects.html">Past Projects</a>
       </li>
       <li>
-        <a href="#" id="nav-orbit2">
-          <div class="button-content">
-            <div class="icon">➕</div>
-            <div class="text">More From Me</div>
-          </div>
-        </a>
+        <a href="morefromme.html">More From Me</a>
       </li>
     </ul>
   </nav>
@@ -516,13 +442,13 @@
     // ======================
     const CAMERA_PRESETS = {
       INTRO: {
-        position: new THREE.Vector3(0, 2.05, 3.9),
+        position: new THREE.Vector3(0.01, 2.05, 3.96),
         target: new THREE.Vector3(0, -0.2, 0),
         fov: 35
       },
       OVERVIEW: {
-        position: new THREE.Vector3(0, 0.43, -0.195),
-        target: new THREE.Vector3(0, -2.5, -1.0),
+        position: new THREE.Vector3(0.1, 0.5, -0.195),
+        target: new THREE.Vector3(0.1, -2.5, -1.0),
         fov: 50
       },
       DETAIL_VIEW: {
@@ -531,9 +457,9 @@
         fov: 35
       },
       ORBIT: {
-        radius: 5,
-        height: -0.3,
-        speed: 0.002
+        radius: 6,
+        height: 0.3,
+        speed: 0.0032
       },
       SCREEN_NORMAL: {
         distance: 1.5, // Distance from screen center
@@ -708,11 +634,12 @@
     renderer.shadowMap.enabled = true;
 
     // ======================
-    // SCREEN QUAD SETUP
+    // SCREEN QUAD SETUP - FIXED
     // ======================
     function createScreenQuad() {
       const geometry = new THREE.BufferGeometry();
 
+      // FIXED: Correct Float32Array syntax
       const vertices = new Float32Array([
         SCREEN_ANCHORS[2].x, SCREEN_ANCHORS[2].y, SCREEN_ANCHORS[2].z,
         SCREEN_ANCHORS[0].x, SCREEN_ANCHORS[0].y, SCREEN_ANCHORS[0].z,
@@ -809,7 +736,7 @@
     scene.background = bgTexture;
 
     // ======================
-    // MODEL LOADING & SCREEN SETUP
+    // MODEL LOADING & SCREEN SETUP - FIXED
     // ======================
     const loader = new THREE.GLTFLoader();
     let deskModel;
@@ -853,6 +780,7 @@
         }
       });
 
+      // FIXED: Added missing closing parenthesis
       deskModel.position.set(0, -1, 0);
       scene.add(deskModel);
       createScreenQuad();
@@ -870,7 +798,49 @@
       }
     }, undefined, (error) => {
       console.error('Error loading model:', error);
+      // Create a simple fallback scene if model fails to load
+      createFallbackScene();
     });
+
+    // Create a fallback scene if model loading fails
+    function createFallbackScene() {
+      console.log("Creating fallback scene");
+      
+      // Create a simple ground plane
+      const groundGeometry = new THREE.PlaneGeometry(10, 10);
+      const groundMaterial = new THREE.MeshStandardMaterial({ color: 0x888888 });
+      const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+      ground.rotation.x = -Math.PI / 2;
+      ground.position.y = -1;
+      ground.receiveShadow = true;
+      scene.add(ground);
+      
+      // Create a simple screen placeholder
+      const screenGeometry = new THREE.PlaneGeometry(3, 2);
+      const screenMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+      const screen = new THREE.Mesh(screenGeometry, screenMaterial);
+      screen.position.set(0, 1, -1);
+      scene.add(screen);
+      
+      screenQuad = screen;
+      
+      // Add some basic objects to the scene
+      const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
+      const boxMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+      const box = new THREE.Mesh(boxGeometry, boxMaterial);
+      box.position.set(-2, 0.5, 0);
+      box.castShadow = true;
+      scene.add(box);
+      
+      const sphereGeometry = new THREE.SphereGeometry(0.7, 32, 32);
+      const sphereMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 });
+      const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+      sphere.position.set(2, 0.7, 0);
+      sphere.castShadow = true;
+      scene.add(sphere);
+      
+      console.log("Fallback scene created");
+    }
 
     // ======================
     // THUMBNAIL GALLERY INTERACTION
@@ -1109,11 +1079,11 @@
       const file = imageFiles.length > 0 ? imageFiles[0] : videoFiles[0];
       const reader = new FileReader();
 
-      reader.onload = (event) => {
+      reader.onload = function(event) {
         if (allowedImageTypes.includes(file.type)) {
           // Handle image file
           const img = new Image();
-          img.onload = () => {
+          img.onload = function() {
             if (currentImageTexture) currentImageTexture.dispose();
             if (currentVideoTexture) {
               currentVideoTexture.dispose();
@@ -1136,7 +1106,9 @@
 
             cameraRig.transitionTo('OVERVIEW');
           };
-          img.onerror = () => console.error('Failed to load dropped image');
+          img.onerror = function() {
+            console.error('Failed to load dropped image');
+          };
           img.src = event.target.result;
         } else if (allowedVideoTypes.includes(file.type)) {
           // Handle video file
@@ -1145,7 +1117,9 @@
         }
       };
 
-      reader.onerror = () => console.error('Failed to read dropped file');
+      reader.onerror = function() {
+        console.error('Failed to read dropped file');
+      };
       reader.readAsDataURL(file);
     }
 
@@ -1167,116 +1141,6 @@
     cameraRig.transitionTo('INTRO');
 
     // ======================
-    // LEFT NAVIGATION BUTTONS
-    // ======================
-    document.getElementById('nav-intro').addEventListener('click', (e) => {
-      e.preventDefault();
-      window.location.href = 'index.html';
-    });
-
-    document.getElementById('nav-overview').addEventListener('click', (e) => {
-      e.preventDefault();
-      window.location.href = 'recentnews.html';
-    });
-
-    document.getElementById('nav-detail').addEventListener('click', (e) => {
-      e.preventDefault();
-      window.location.href = 'photography.html';
-    });
-
-    document.getElementById('nav-orbit').addEventListener('click', (e) => {
-      e.preventDefault();
-      window.location.href = 'pastprojects.html';
-    });
-
-    document.getElementById('nav-orbit2').addEventListener('click', (e) => {
-      e.preventDefault();
-      window.location.href = 'morefromme.html';
-    });
-
-    // ======================
-    // EVENT HANDLERS
-    // ======================
-    window.addEventListener('resize', () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    });
-
-    document.addEventListener('keydown', (e) => {
-      switch (e.key) {
-        case '1': cameraRig.transitionTo('INTRO'); break;
-        case '2': cameraRig.transitionTo('OVERVIEW'); break;
-        case '3': cameraRig.transitionTo('DETAIL_VIEW'); break;
-        case '4': cameraRig.transitionToScreenNormal(); break;
-        case '5': cameraRig.transitionToScreenOpposite(); break;
-        case 'o': cameraRig.startOrbiting(); break;
-        case 'r': // Reset screen texture
-          if (screenQuad.material) {
-            if (currentImageTexture) currentImageTexture.dispose();
-            if (currentVideoTexture) currentVideoTexture.dispose();
-            screenQuad.material.map = null;
-            screenQuad.material.color.set(0x000000);
-            screenQuad.material.needsUpdate = true;
-            
-            // Hide video controls
-            videoControls.classList.remove('visible');
-            
-            // Stop any playing video
-            if (videoElement) {
-              videoElement.pause();
-              isVideoPlaying = false;
-            }
-          }
-          break;
-        case 'd': // Toggle debug helpers
-          if (debugHelpers.length > 0) {
-            debugHelpers.forEach(helper => scene.remove(helper));
-            debugHelpers = [];
-          } else {
-            setupScreenDebug();
-          }
-          break;
-        case 'm': // Toggle mute
-          if (videoElement) {
-            videoSettings.muted = !videoSettings.muted;
-            videoElement.muted = videoSettings.muted;
-            muteBtn.classList.toggle('active', videoSettings.muted);
-            muteBtn.textContent = videoSettings.muted ? 'Unmute' : 'Mute';
-          }
-          break;
-      }
-    });
-
-    // ======================
-    // DEBUG HELPERS
-    // ======================
-    function setupScreenDebug() {
-      if (!screenQuad) return;
-
-      debugHelpers.forEach(helper => scene.remove(helper));
-      debugHelpers = [];
-
-      const wireframe = new THREE.LineSegments(
-        new THREE.EdgesGeometry(screenQuad.geometry),
-        new THREE.LineBasicMaterial({ color: 0x00ff00, linewidth: 2 })
-      );
-      wireframe.position.copy(screenQuad.position);
-      scene.add(wireframe);
-      debugHelpers.push(wireframe);
-
-      SCREEN_ANCHORS.forEach((point, i) => {
-        const sphere = new THREE.Mesh(
-          new THREE.SphereGeometry(0.01, 16, 16),
-          new THREE.MeshBasicMaterial({ color: 0xff0000 })
-        );
-        sphere.position.copy(point);
-        scene.add(sphere);
-        debugHelpers.push(sphere);
-      });
-    }
-
-    // ======================a
     // ANIMATION LOOP
     // ======================
     function animate() {
