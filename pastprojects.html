@@ -328,20 +328,19 @@
   <div id="thumbnails">
     <div id="gallery-controls">
       <button id="prev-btn" class="nav-btn">▲ Previous</button>
-      <img src="A1 DSCM 632 Prints_converted.png" class="thumbnail" draggable="true" data-type="image">
       <img src="images\IntentImagery.jpg" class="thumbnail" draggable="true" data-type="image">
-      <img src="assets/images/Slide1.PNG" class="thumbnail" draggable="true" data-type="image">
       <img src="Portfolio\Placemaking.png" class="thumbnail" draggable="true" data-type="image">
-      <img src="Portfolio\Roundel.png" class="thumbnail" draggable="true" data-type="image">
-      <img src="Portfolio\Wall.png" class="thumbnail" draggable="true" data-type="image">
+      <img src="0709.png" class="thumbnail video-thumbnail" draggable="true" data-type="video" data-src="0001-0900.mp4">
       <img src="Portfolio\Floorplans621.png" class="thumbnail" draggable="true" data-type="image">
       <img src="assets/images/Slide6.PNG" class="thumbnail" draggable="true" data-type="image">
       <img src="assets/images/Slide7.PNG" class="thumbnail" draggable="true" data-type="image">
       <img src="assets/images/Slide8.PNG" class="thumbnail" draggable="true" data-type="image">
       <img src="assets/images/Slide9.PNG" class="thumbnail" draggable="true" data-type="image">
       <img src="assets/images/Slide10.PNG" class="thumbnail" draggable="true" data-type="image">
+      <img src="Portfolio\Roundel.png" class="thumbnail" draggable="true" data-type="image">
+      <img src="Portfolio\Wall.png" class="thumbnail" draggable="true" data-type="image">
+      <img src="assets/images/Slide1.PNG" class="thumbnail" draggable="true" data-type="image">
       <!-- Video thumbnails -->
-      <img src="0709.png" class="thumbnail video-thumbnail" draggable="true" data-type="video" data-src="0001-0900.mp4">
       <img src="assets/videos/project-showcase-poster.jpg" class="thumbnail video-thumbnail" draggable="true" data-type="video" data-src="Sequence 01_3_3.mp4">
       <button id="next-btn" class="nav-btn">▼ Next</button>
     </div>
@@ -411,9 +410,10 @@
     let screenPlane = null;
     let screenQuad = null;
     let videoElement = null;
+    
     let isVideoPlaying = false;
     let videoSettings = {
-      muted: false,
+      muted: true,
       autoplay: true,
       loop: true
     };
