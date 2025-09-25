@@ -351,10 +351,10 @@
 
       // The four corners as Vector3
       const corners = [
-        new THREE.Vector3(1.5401631593704224, 24.624095916748047, -0.7683853507041931),
-        new THREE.Vector3(2.6548852920532227, 4.309113502502441, -0.7683762907981873),
-        new THREE.Vector3(15.63243293762207, 25.397361755371094, -0.7683875560760498),
-        new THREE.Vector3(16.74715805053711, 5.0823869705200195, -0.7683782577514648)
+        new THREE.Vector3(1.5401631593704224, 24.624095916748047, -0.783853507041931),
+        new THREE.Vector3(2.6548852920532227, 4.309113502502441, -0.783762907981873),
+        new THREE.Vector3(15.63243293762207, 25.397361755371094, -0.783875560760498),
+        new THREE.Vector3(16.74715805053711, 5.0823869705200195, -0.783782577514648)
       ];
 
       // We’ll make two triangles: (0,1,2) and (2,1,3)
@@ -370,7 +370,7 @@
       geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
 
       // UV coordinates for mapping the video; we assume you want full video mapped.
-      // We map corner0 → uv(0,1), corner1 → uv(0,0), corner2 → uv(1,1), corner3 → uv(1,0)
+      // We map corner0 → uv(1,0), corner1 → uv(1,1), corner2 → uv(0,0), corner3 → uv(0,1)
       const uvs = new Float32Array([
         0, 1,
         0, 0,
