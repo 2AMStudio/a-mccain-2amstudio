@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>3D Project Viewer with Interactive Models</title>
@@ -182,12 +182,14 @@
     // Initialize area light support
     THREE.RectAreaLightUniformsLib.init();
 
+    // Asset paths (you can change VIDEO to Sequence_03)
     const ASSETS = {
       MODEL: 'assets/models/PinBoard.glb',
       BACKGROUND: 'assets/images/BackgroundRotating.png',
-      VIDEO: 'Sequence_03.mp4'  // change as needed
+      VIDEO: 'Sequence_03.mp4'
     };
 
+    // Screen quad geometry (without original UV)
     const SCREEN_GEOMETRY_DATA = {
       uuid: 'screen-quad-geom',
       type: 'BufferGeometry',
@@ -238,22 +240,26 @@
     animate();
 
     function init() {
+      // Scene
       scene = new THREE.Scene();
 
+      // Camera
       camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 1000);
       camera.position.set(0, 5, 12);
       camera.lookAt(0, 0, 0);
 
+      // Renderer
       renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
       renderer.domElement.id = 'threejs-canvas';
       renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.shadowMap.enabled = true;
       renderer.physicallyCorrectLights = true;
       renderer.outputEncoding = THREE.sRGBEncoding;
       renderer.toneMapping = THREE.ReinhardToneMapping;
       renderer.toneMappingExposure = 1.2;
-      renderer.shadowMap.enabled = true;
       document.getElementById('canvas-container').appendChild(renderer.domElement);
 
+      // Controls
       controls = new THREE.OrbitControls(camera, renderer.domElement);
       controls.enableDamping = true;
       controls.screenSpacePanning = true;
@@ -261,17 +267,21 @@
       controls.minDistance = 1;
       controls.maxDistance = 50;
 
+      // Lighting
       addLighting();
+
+      // Load assets
       loadBackground();
       loadModel();
 
-      window.addEventListener('resize', onWindowResize, false);
-      window.addEventListener('mousemove', onMouseMove, false);
+      // Events
+      window.addEventListener('resize', onWindowResize);
+      window.addEventListener('mousemove', onMouseMove);
     }
 
     function addLighting() {
-      const amb = new THREE.AmbientLight(0xffffff, 0.3);
-      scene.add(amb);
+      const ambient = new THREE.AmbientLight(0xffffff, 0.3);
+      scene.add(ambient);
 
       const dir = new THREE.DirectionalLight(0xffffff, 1.5);
       dir.position.set(5, 10, 7);
@@ -293,17 +303,17 @@
     }
 
     function loadBackground() {
-      const texLoader = new THREE.TextureLoader();
-      texLoader.load(
+      const loader = new THREE.TextureLoader();
+      loader.load(
         ASSETS.BACKGROUND,
-        (tex) => {
-          tex.encoding = THREE.sRGBEncoding;
-          scene.background = tex;
+        (texture) => {
+          texture.encoding = THREE.sRGBEncoding;
+          scene.background = texture;
           assetLoaded();
         },
         undefined,
         (err) => {
-          console.warn('Background load failed', err);
+          console.warn('Failed to load background', err);
           scene.background = new THREE.Color(0x61503c);
           assetLoaded();
         }
@@ -322,16 +332,16 @@
           setupInteractiveModels(model);
 
           createScreenQuad();
+
           fitCameraToScene();
 
           assetLoaded();
         },
         (xhr) => {
-          // optional progress
-          // console.log((xhr.loaded / xhr.total * 100).toFixed(1) + '% model loaded');
+          // progress if needed
         },
         (err) => {
-          console.error('Model load failed, creating fallback', err);
+          console.error('Model load error, using fallback', err);
           createFallbackScene();
           createScreenQuad();
           fitCameraToScene();
@@ -352,13 +362,13 @@
       board.castShadow = true;
       board.receiveShadow = true;
       scene.add(board);
-      // Even in fallback, no placeholder floating models
     }
 
     function createScreenQuad() {
       const loader = new THREE.BufferGeometryLoader();
       const geometry = loader.parse(SCREEN_GEOMETRY_DATA);
-      // override UVs with correct mapping
+
+      // override / assign UVs
       const uvArray = new Float32Array([0, 1, 1, 1, 0, 0, 1, 0]);
       geometry.setAttribute('uv', new THREE.BufferAttribute(uvArray, 2));
 
@@ -370,8 +380,8 @@
         opacity: 1.0,
         toneMapped: false
       });
+
       screenQuad = new THREE.Mesh(geometry, mat);
-      // ensure it draws over other elements if needed
       screenQuad.renderOrder = 999;
       scene.add(screenQuad);
 
@@ -405,6 +415,7 @@
 
     function loadVideoToScreen(videoUrl) {
       if (!screenQuad) return;
+
       const vid = createVideoElement();
       vid.src = videoUrl;
 
@@ -417,10 +428,10 @@
         vid.play().then(() => {
           assetLoaded();
         }).catch((e) => {
-          console.warn('Video autoplay blocked, waiting for user interaction', e);
-          document.addEventListener('click', function onClickPlay() {
+          console.warn('Video autoplay failed, waiting for click', e);
+          document.addEventListener('click', function playOnClick() {
             vid.play().then(() => {
-              document.removeEventListener('click', onClickPlay);
+              document.removeEventListener('click', playOnClick);
             });
           }, { once: true });
           assetLoaded();
@@ -437,20 +448,14 @@
       interactiveModels = [];
       modelSpotlights = [];
 
-      const meshes = [];
       root.traverse((child) => {
         if (child.isMesh) {
-          meshes.push(child);
+          setupModelInteraction(child);
         }
-      });
-
-      meshes.forEach((mesh) => {
-        setupModelInteraction(mesh);
       });
     }
 
     function setupModelInteraction(mesh) {
-      // store originals
       mesh.userData.originalScale = mesh.scale.clone();
       mesh.userData.originalRotation = mesh.rotation.clone();
       mesh.userData.isHovered = false;
@@ -461,7 +466,10 @@
       interactiveModels.push(mesh);
 
       const spot = new THREE.SpotLight(0xffffff, 0);
-      spot.position.copy(mesh.getWorldPosition(new THREE.Vector3()));
+      // Use mesh world position
+      const worldPos = new THREE.Vector3();
+      mesh.getWorldPosition(worldPos);
+      spot.position.copy(worldPos);
       spot.position.y += 1;
       spot.angle = Math.PI / 6;
       spot.penumbra = 0.5;
@@ -472,6 +480,7 @@
 
       scene.add(spot);
       scene.add(spot.target);
+
       modelSpotlights.push(spot);
     }
 
@@ -546,17 +555,17 @@
       raycaster.setFromCamera(mouse, camera);
       const intersects = raycaster.intersectObjects(interactiveModels, false);
 
-      let intersectedIdx = -1;
+      let hoverIdx = -1;
       if (intersects.length > 0) {
         const obj = intersects[0].object;
-        intersectedIdx = interactiveModels.indexOf(obj);
-        if (intersectedIdx >= 0 && !obj.userData.isHovered) {
-          onModelHover(intersectedIdx);
+        hoverIdx = interactiveModels.indexOf(obj);
+        if (hoverIdx >= 0 && !obj.userData.isHovered) {
+          onModelHover(hoverIdx);
         }
       }
 
       interactiveModels.forEach((m, i) => {
-        if (m.userData.isHovered && i !== intersectedIdx) {
+        if (m.userData.isHovered && i !== hoverIdx) {
           onModelLeave(i);
         }
       });
