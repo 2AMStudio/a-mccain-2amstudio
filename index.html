@@ -193,7 +193,6 @@
     let modelSpotlights = [];
     let raycaster = new THREE.Raycaster();
     let mouse = new THREE.Vector2();
-    let clock = new THREE.Clock();
     let hoveredModel = null;
 
     init();
@@ -204,7 +203,6 @@
 
       camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 1000);
       camera.position.set(0, 5, 12);
-      camera.lookAt(0, 0, 0);
 
       renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
       renderer.setSize(window.innerWidth, window.innerHeight);
@@ -261,13 +259,13 @@
         (texture) => {
           texture.encoding = THREE.sRGBEncoding;
           scene.background = texture;
-          hideLoading();
+          // Keep loading indicator until model is loaded
         },
         undefined,
         (err) => {
           console.warn('Failed to load background', err);
           scene.background = new THREE.Color(0x61503c);
-          hideLoading();
+          // Keep loading indicator until model is loaded
         }
       );
     }
@@ -281,11 +279,12 @@
           model.position.set(0, -1, 0);
           scene.add(model);
           setupInteractiveModels(model);
+          hideLoading();
         },
         undefined,
         (err) => {
           console.error('Model load error:', err);
-          // Optional fallback code here
+          hideLoading();
         }
       );
     }
@@ -294,8 +293,10 @@
       interactiveModels = [];
       modelSpotlights = [];
 
-      const allowedNames = ['Mesh_0004', 'Mesh_0007', 'Mesh_0001', 'Mesh_0002', 'obj1', 'Mesh_0003',];
+      // Ensure allowed names match exactly
+      const allowedNames = ['Mesh_0001', 'Mesh_0002', 'Mesh_0003', 'Mesh_0004', 'Mesh_0007', 'obj1'];
 
+      // Traverse to find meshes matching allowed names
       root.traverse((child) => {
         if (child.isMesh && allowedNames.includes(child.name)) {
           setupModelInteraction(child);
@@ -304,6 +305,10 @@
     }
 
     function setupModelInteraction(mesh) {
+      // Fix: reset any transformations and ensure the mesh cast and receive shadows are set properly
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+
       mesh.userData = {
         originalScale: mesh.scale.clone(),
         isHovered: false,
@@ -311,10 +316,13 @@
       };
       interactiveModels.push(mesh);
 
-      // Add a spotlight for this mesh
+      // Add a spotlight for this mesh, offset relative to mesh's world position (not local)
+      const worldPos = new THREE.Vector3();
+      mesh.getWorldPosition(worldPos);
       const spotlight = new THREE.SpotLight(0xffffff, 1, 10, Math.PI / 8, 0.5, 1);
-      spotlight.position.copy(mesh.position.clone().add(new THREE.Vector3(0, 3, 1)));
-      spotlight.target = mesh;
+      spotlight.position.copy(worldPos.clone().add(new THREE.Vector3(0, 3, 1)));
+      spotlight.target.position.copy(worldPos);
+      spotlight.target.updateMatrixWorld();
       spotlight.castShadow = true;
       spotlight.shadow.mapSize.width = 1024;
       spotlight.shadow.mapSize.height = 1024;
