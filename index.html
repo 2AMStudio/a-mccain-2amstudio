@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>3D Project Viewer with Interactive Models</title>
   <style>
     body {
@@ -172,7 +172,7 @@
     <strong>Interactive Models:</strong> Hover over the floating models to see them enlarge and rotate.
   </div>
 
-  <!-- Required Libraries -->
+  <!-- Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/GLTFLoader.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.min.js"></script>
@@ -188,51 +188,13 @@
       VIDEO: 'Sequence_03.mp4'
     };
 
-    const SCREEN_GEOMETRY_DATA = {
-      uuid: 'screen-quad-geom',
-      type: 'BufferGeometry',
-      data: {
-        attributes: {
-          position: {
-            itemSize: 3,
-            type: 'Float32Array',
-            array: [
-              0.436884, -0.386720, -13.324480,
-              0.801882, -0.484518, -6.438044,
-              5.051152, -1.623110, -13.586604,
-              5.416150, -1.720908, -6.700171
-            ],
-            normalized: false
-          },
-          normal: {
-            itemSize: 3,
-            type: 'Float32Array',
-            array: [
-              -0.2588077, -0.9659288, 0,
-              -0.2588077, -0.9659288, 0,
-              -0.2588077, -0.9659288, 0,
-              -0.2588077, -0.9659288, 0
-            ],
-            normalized: false
-          }
-        },
-        index: {
-          type: 'Uint16Array',
-          array: [0, 2, 3, 0, 3, 1]
-        }
-      }
-    };
-
     let scene, camera, renderer, controls;
-    let screenQuad = null;
-    let videoElement = null;
-    let currentVideoTexture = null;
     let interactiveModels = [];
     let modelSpotlights = [];
     let raycaster = new THREE.Raycaster();
     let mouse = new THREE.Vector2();
-    let assetsLoaded = 0;
-    const totalAssets = 3;
+    let clock = new THREE.Clock();
+    let hoveredModel = null;
 
     init();
     animate();
@@ -245,13 +207,13 @@
       camera.lookAt(0, 0, 0);
 
       renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
-      renderer.domElement.id = 'threejs-canvas';
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.shadowMap.enabled = true;
       renderer.physicallyCorrectLights = true;
       renderer.outputEncoding = THREE.sRGBEncoding;
       renderer.toneMapping = THREE.ReinhardToneMapping;
       renderer.toneMappingExposure = 1.2;
+
       document.getElementById('canvas-container').appendChild(renderer.domElement);
 
       controls = new THREE.OrbitControls(camera, renderer.domElement);
@@ -273,12 +235,12 @@
       const ambient = new THREE.AmbientLight(0xffffff, 0.3);
       scene.add(ambient);
 
-      const dir = new THREE.DirectionalLight(0xffffff, 1.5);
-      dir.position.set(5, 10, 7);
-      dir.castShadow = true;
-      dir.shadow.mapSize.width = 2048;
-      dir.shadow.mapSize.height = 2048;
-      scene.add(dir);
+      const directional = new THREE.DirectionalLight(0xffffff, 1.5);
+      directional.position.set(5, 10, 7);
+      directional.castShadow = true;
+      directional.shadow.mapSize.width = 2048;
+      directional.shadow.mapSize.height = 2048;
+      scene.add(directional);
 
       const screenFill = new THREE.RectAreaLight(0xffffff, 3, 3, 3);
       screenFill.position.set(0, 5, 0.2);
@@ -299,13 +261,13 @@
         (texture) => {
           texture.encoding = THREE.sRGBEncoding;
           scene.background = texture;
-          assetLoaded();
+          hideLoading();
         },
         undefined,
         (err) => {
           console.warn('Failed to load background', err);
           scene.background = new THREE.Color(0x61503c);
-          assetLoaded();
+          hideLoading();
         }
       );
     }
@@ -316,20 +278,14 @@
         ASSETS.MODEL,
         (gltf) => {
           const model = gltf.scene;
-          scene.add(model);
           model.position.set(0, -1, 0);
+          scene.add(model);
           setupInteractiveModels(model);
-          createScreenQuad();
-          fitCameraToScene();
-          assetLoaded();
         },
         undefined,
         (err) => {
-          console.error('Model load error, using fallback', err);
-          createFallbackScene();
-          createScreenQuad();
-          fitCameraToScene();
-          assetLoaded();
+          console.error('Model load error:', err);
+          // Optional fallback code here
         }
       );
     }
@@ -347,9 +303,117 @@
       });
     }
 
-    // (The rest of the script is unchanged, continues with setupModelInteraction, onMouseMove, etc...)
+    function setupModelInteraction(mesh) {
+      mesh.userData = {
+        originalScale: mesh.scale.clone(),
+        isHovered: false,
+        rotationSpeed: 0.8 + Math.random() * 0.4,
+      };
+      interactiveModels.push(mesh);
 
+      // Add a spotlight for this mesh
+      const spotlight = new THREE.SpotLight(0xffffff, 1, 10, Math.PI / 8, 0.5, 1);
+      spotlight.position.copy(mesh.position.clone().add(new THREE.Vector3(0, 3, 1)));
+      spotlight.target = mesh;
+      spotlight.castShadow = true;
+      spotlight.shadow.mapSize.width = 1024;
+      spotlight.shadow.mapSize.height = 1024;
+      scene.add(spotlight);
+      scene.add(spotlight.target);
+      modelSpotlights.push(spotlight);
+    }
+
+    function onMouseMove(event) {
+      // Normalize mouse coords to -1 to 1
+      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      controls.update();
+
+      // Raycast for hover detection
+      raycaster.setFromCamera(mouse, camera);
+      const intersects = raycaster.intersectObjects(interactiveModels, false);
+
+      if (intersects.length > 0) {
+        const intersected = intersects[0].object;
+        if (hoveredModel !== intersected) {
+          if (hoveredModel) {
+            resetModelHover(hoveredModel);
+          }
+          hoveredModel = intersected;
+          applyModelHover(hoveredModel);
+        }
+      } else {
+        if (hoveredModel) {
+          resetModelHover(hoveredModel);
+          hoveredModel = null;
+        }
+      }
+
+      // Animate interactive models rotation if hovered
+      interactiveModels.forEach((mesh) => {
+        if (mesh.userData.isHovered) {
+          mesh.rotation.y += 0.01 * mesh.userData.rotationSpeed;
+        }
+      });
+
+      renderer.render(scene, camera);
+    }
+
+    function applyModelHover(mesh) {
+      mesh.userData.isHovered = true;
+
+      gsap.to(mesh.scale, {
+        x: mesh.userData.originalScale.x * 1.2,
+        y: mesh.userData.originalScale.y * 1.2,
+        z: mesh.userData.originalScale.z * 1.2,
+        duration: 0.5,
+        ease: "power2.out"
+      });
+
+      // Find spotlight for this mesh and increase intensity
+      const idx = interactiveModels.indexOf(mesh);
+      if (idx !== -1 && modelSpotlights[idx]) {
+        gsap.to(modelSpotlights[idx], {
+          intensity: 2,
+          duration: 0.5,
+          ease: "power2.out"
+        });
+      }
+    }
+
+    function resetModelHover(mesh) {
+      mesh.userData.isHovered = false;
+
+      gsap.to(mesh.scale, {
+        x: mesh.userData.originalScale.x,
+        y: mesh.userData.originalScale.y,
+        z: mesh.userData.originalScale.z,
+        duration: 0.5,
+        ease: "power2.out"
+      });
+
+      // Find spotlight for this mesh and decrease intensity
+      const idx = interactiveModels.indexOf(mesh);
+      if (idx !== -1 && modelSpotlights[idx]) {
+        gsap.to(modelSpotlights[idx], {
+          intensity: 1,
+          duration: 0.5,
+          ease: "power2.out"
+        });
+      }
+    }
+
+    function hideLoading() {
+      const loading = document.getElementById('loading-indicator');
+      if (loading) {
+        loading.style.display = 'none';
+      }
+    }
   </script>
 </body>
 </html>
-
