@@ -169,7 +169,7 @@
   <div id="canvas-container"></div>
 
   <div id="floating-models-info">
-    <strong>Interactive Models:</strong> Hover over the floating models to see them enlarge and rotate.
+    <strong>Interactive Models:</strong> Hover over the floating models to see them enlarge and rotate. Linked models will react together.
   </div>
 
   <!-- Libraries -->
@@ -188,12 +188,18 @@
       VIDEO: 'Sequence 01_3_3.mp4'
     };
 
+    // Define linked groups - exactly as requested
+    const linkedGroups = [
+        ['obj1002_3', 'obj1002_1', 'obj1001'],  // Group 1
+        ['Mesh_0005', 'Mesh_0003']               // Group 2
+    ];
+
     let scene, camera, renderer, controls;
-    let interactiveModels = [];
+    let interactiveObjects = []; // Changed from interactiveModels to handle both meshes and groups
     let modelSpotlights = [];
     let raycaster = new THREE.Raycaster();
     let mouse = new THREE.Vector2();
-    let hoveredModel = null;
+    let hoveredObject = null;
 
     // Video screen related
     let video, videoTexture, videoMesh;
@@ -227,7 +233,7 @@
       addLighting();
       loadBackground();
       loadModel();
-      setupVideoScreen();  // set up the video plane
+      setupVideoScreen();
 
       window.addEventListener('resize', onWindowResize);
       window.addEventListener('mousemove', onMouseMove);
@@ -238,14 +244,14 @@
       scene.add(ambient);
 
       const directional = new THREE.DirectionalLight(0xffffff, 1.5);
-      directional.position.set(5, 10, 7);
+      directional.position.set(0, 10, -7);
       directional.castShadow = true;
       directional.shadow.mapSize.width = 2048;
       directional.shadow.mapSize.height = 2048;
       scene.add(directional);
 
       const screenFill = new THREE.RectAreaLight(0xffffff, 3, 3, 3);
-      screenFill.position.set(0, 5, 0.2);
+      screenFill.position.set(0, 25, -6);
       screenFill.rotation.x = -Math.PI / 2;
       scene.add(screenFill);
     }
@@ -280,7 +286,7 @@
           const model = gltf.scene;
           model.position.set(0, -1, 0);
           scene.add(model);
-          setupInteractiveModels(model);
+          setupInteractiveObjects(model);
           hideLoading();
         },
         undefined,
@@ -291,32 +297,71 @@
       );
     }
 
-    function setupInteractiveModels(root) {
-      interactiveModels = [];
+    function setupInteractiveObjects(root) {
+      interactiveObjects = [];
       modelSpotlights = [];
 
-      const allowedNames = ['Mesh_0001', 'Mesh_0002', 'Mesh_0003', 'Mesh_0004', 'Mesh_0007', 'obj1_4', 'Mesh_0003_2', 'Mesh_0003_1'];
+      // All allowed object names including the new obj1002_3
+      const allowedNames = ['Mesh_0001', 'Mesh_0002', 'Mesh_0003', 'Mesh_0004', 'Mesh_0007', 'obj1002_3', 'obj1002_1', 'Mesh_0003_2', 'Mesh_0003_1', 'obj1001', 'Mesh_0005'];
 
+      // Create a map for quick group lookup
+      const objectToGroupMap = {};
+      linkedGroups.forEach((group, groupIndex) => {
+          group.forEach(objectName => {
+              objectToGroupMap[objectName] = groupIndex;
+          });
+      });
+
+      // First pass: find groups and meshes by name
       root.traverse((child) => {
-        if (child.isMesh && allowedNames.includes(child.name)) {
-          setupModelInteraction(child);
+        if (allowedNames.includes(child.name)) {
+          setupObjectInteraction(child, objectToGroupMap[child.name]);
+        }
+      });
+
+      // Second pass: for groups, make sure all child meshes are interactive
+      interactiveObjects.forEach(obj => {
+        if (obj.isGroup || obj.isObject3D) {
+          // Enable interaction for all child meshes of groups
+          obj.traverse((child) => {
+            if (child.isMesh) {
+              child.userData.isPartOfGroup = true;
+              child.userData.parentGroup = obj;
+            }
+          });
         }
       });
     }
 
-    function setupModelInteraction(mesh) {
-      mesh.castShadow = true;
-      mesh.receiveShadow = true;
+    function setupObjectInteraction(obj, groupId) {
+      // Set up shadows for the object and its children
+      if (obj.isMesh) {
+        obj.castShadow = true;
+        obj.receiveShadow = true;
+      } else if (obj.isGroup) {
+        obj.traverse((child) => {
+          if (child.isMesh) {
+            child.castShadow = true;
+            child.receiveShadow = true;
+          }
+        });
+      }
 
-      mesh.userData = {
-        originalScale: mesh.scale.clone(),
+      obj.userData = {
+        originalScale: obj.scale.clone(),
+        originalPosition: obj.position.clone(),
         isHovered: false,
         rotationSpeed: 0.8 + Math.random() * 0.4,
+        groupId: groupId !== undefined ? groupId : -1, // -1 means no group
+        isLinked: groupId !== undefined,
+        isGroup: obj.isGroup || (obj.children && obj.children.length > 0)
       };
-      interactiveModels.push(mesh);
+      
+      interactiveObjects.push(obj);
 
+      // Create spotlight for this object
       const worldPos = new THREE.Vector3();
-      mesh.getWorldPosition(worldPos);
+      obj.getWorldPosition(worldPos);
       const spotlight = new THREE.SpotLight(0xffffff, 1, 10, Math.PI / 8, 0.5, 1);
       spotlight.position.copy(worldPos.clone().add(new THREE.Vector3(0, 3, 1)));
       spotlight.target.position.copy(worldPos);
@@ -327,6 +372,78 @@
       scene.add(spotlight);
       scene.add(spotlight.target);
       modelSpotlights.push(spotlight);
+    }
+
+    function getObjectsInGroup(groupId) {
+      return interactiveObjects.filter(obj => obj.userData.groupId === groupId);
+    }
+
+    function applyGroupHover(mainObject) {
+      if (mainObject.userData.groupId === -1) {
+        // Not in a group, just affect this object
+        applyObjectHover(mainObject);
+        return;
+      }
+
+      const groupObjects = getObjectsInGroup(mainObject.userData.groupId);
+      groupObjects.forEach(obj => {
+        applyObjectHover(obj);
+      });
+    }
+
+    function resetGroupHover(mainObject) {
+      if (mainObject.userData.groupId === -1) {
+        // Not in a group, just reset this object
+        resetObjectHover(mainObject);
+        return;
+      }
+
+      const groupObjects = getObjectsInGroup(mainObject.userData.groupId);
+      groupObjects.forEach(obj => {
+        resetObjectHover(obj);
+      });
+    }
+
+    function applyObjectHover(obj) {
+      obj.userData.isHovered = true;
+
+      gsap.to(obj.scale, {
+        x: obj.userData.originalScale.x * 1.2,
+        y: obj.userData.originalScale.y * 1.2,
+        z: obj.userData.originalScale.z * 1.2,
+        duration: 0.5,
+        ease: "power2.out"
+      });
+
+      const idx = interactiveObjects.indexOf(obj);
+      if (idx !== -1 && modelSpotlights[idx]) {
+        gsap.to(modelSpotlights[idx], {
+          intensity: 2,
+          duration: 0.5,
+          ease: "power2.out"
+        });
+      }
+    }
+
+    function resetObjectHover(obj) {
+      obj.userData.isHovered = false;
+
+      gsap.to(obj.scale, {
+        x: obj.userData.originalScale.x,
+        y: obj.userData.originalScale.y,
+        z: obj.userData.originalScale.z,
+        duration: 0.5,
+        ease: "power2.out"
+      });
+
+      const idx = interactiveObjects.indexOf(obj);
+      if (idx !== -1 && modelSpotlights[idx]) {
+        gsap.to(modelSpotlights[idx], {
+          intensity: 1,
+          duration: 0.5,
+          ease: "power2.out"
+        });
+      }
     }
 
     function setupVideoScreen() {
@@ -351,13 +468,13 @@
 
       // The four corners as Vector3
       const corners = [
-        new THREE.Vector3(1.5401631593704224, 24.624095916748047, -0.783853507041931),
-        new THREE.Vector3(2.6548852920532227, 4.309113502502441, -0.783762907981873),
-        new THREE.Vector3(15.63243293762207, 25.397361755371094, -0.783875560760498),
-        new THREE.Vector3(16.74715805053711, 5.0823869705200195, -0.783782577514648)
+        new THREE.Vector3(1.5401631593704224, 23.624095916748047, -0.783853507041931),
+        new THREE.Vector3(2.6548852920532227, 3.309113502502441, -0.783762907981873),
+        new THREE.Vector3(15.63243293762207, 24.397361755371094, -0.783875560760498),
+        new THREE.Vector3(16.74715805053711, 4.0823869705200195, -0.783782577514648)
       ];
 
-      // We’ll make two triangles: (0,1,2) and (2,1,3)
+      // We'll make two triangles: (0,1,2) and (2,1,3)
       const vertices = new Float32Array([
         corners[0].x, corners[0].y, corners[0].z,
         corners[1].x, corners[1].y, corners[1].z,
@@ -369,16 +486,16 @@
       ]);
       geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
 
-      // UV coordinates for mapping the video; we assume you want full video mapped.
-      // We map corner0 → uv(1,0), corner1 → uv(1,1), corner2 → uv(0,0), corner3 → uv(0,1)
+      // UV coordinates for mapping the video - MIRRORED HORIZONTALLY AND ROTATED 180 DEGREES
+      // This creates both mirror effect and flips top/bottom
       const uvs = new Float32Array([
-        0, 1,
-        0, 0,
-        1, 1,
-
-        1, 1,
-        0, 0,
-        1, 0
+        1, 1,  // Corner 0: mirrored horizontally and flipped vertically (was 0,0)
+        1, 0,  // Corner 1: mirrored horizontally and flipped vertically (was 0,1)
+        0, 1,  // Corner 2: mirrored horizontally and flipped vertically (was 1,0)
+        
+        0, 1,  // Corner 2: mirrored horizontally and flipped vertically (was 1,0)
+        1, 0,  // Corner 1: mirrored horizontally and flipped vertically (was 0,1)
+        0, 0   // Corner 3: mirrored horizontally and flipped vertically (was 1,1)
       ]);
       geometry.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
 
@@ -408,75 +525,56 @@
 
       controls.update();
 
-      // Raycast for hover detection
+      // Raycast for hover detection - include all child meshes of groups
       raycaster.setFromCamera(mouse, camera);
-      const intersects = raycaster.intersectObjects(interactiveModels, false);
+      
+      // Get all meshes that can be intersected (including children of groups)
+      const allMeshes = [];
+      interactiveObjects.forEach(obj => {
+        if (obj.isMesh) {
+          allMeshes.push(obj);
+        } else if (obj.isGroup) {
+          obj.traverse((child) => {
+            if (child.isMesh) {
+              allMeshes.push(child);
+            }
+          });
+        }
+      });
+
+      const intersects = raycaster.intersectObjects(allMeshes, false);
 
       if (intersects.length > 0) {
-        const intersected = intersects[0].object;
-        if (hoveredModel !== intersected) {
-          if (hoveredModel) {
-            resetModelHover(hoveredModel);
+        const intersectedMesh = intersects[0].object;
+        
+        // Find the parent object (either the mesh itself or its group parent)
+        let intersectedObject = intersectedMesh;
+        if (intersectedMesh.userData.parentGroup) {
+          intersectedObject = intersectedMesh.userData.parentGroup;
+        }
+
+        if (hoveredObject !== intersectedObject) {
+          if (hoveredObject) {
+            resetGroupHover(hoveredObject);
           }
-          hoveredModel = intersected;
-          applyModelHover(hoveredModel);
+          hoveredObject = intersectedObject;
+          applyGroupHover(hoveredObject);
         }
       } else {
-        if (hoveredModel) {
-          resetModelHover(hoveredModel);
-          hoveredModel = null;
+        if (hoveredObject) {
+          resetGroupHover(hoveredObject);
+          hoveredObject = null;
         }
       }
 
-      interactiveModels.forEach((mesh) => {
-        if (mesh.userData.isHovered) {
-          mesh.rotation.y += 0.01 * mesh.userData.rotationSpeed;
+      // Update rotation for all hovered objects (including linked ones)
+      interactiveObjects.forEach((obj) => {
+        if (obj.userData.isHovered) {
+          obj.rotation.y += 0.01 * obj.userData.rotationSpeed;
         }
       });
 
       renderer.render(scene, camera);
-    }
-
-    function applyModelHover(mesh) {
-      mesh.userData.isHovered = true;
-
-      gsap.to(mesh.scale, {
-        x: mesh.userData.originalScale.x * 1.2,
-        y: mesh.userData.originalScale.y * 1.2,
-        z: mesh.userData.originalScale.z * 1.2,
-        duration: 0.5,
-        ease: "power2.out"
-      });
-
-      const idx = interactiveModels.indexOf(mesh);
-      if (idx !== -1 && modelSpotlights[idx]) {
-        gsap.to(modelSpotlights[idx], {
-          intensity: 2,
-          duration: 0.5,
-          ease: "power2.out"
-        });
-      }
-    }
-
-    function resetModelHover(mesh) {
-      mesh.userData.isHovered = false;
-
-      gsap.to(mesh.scale, {
-        x: mesh.userData.originalScale.x,
-        y: mesh.userData.originalScale.y,
-        z: mesh.userData.originalScale.z,
-        duration: 0.5,
-        ease: "power2.out"
-      });
-
-      const idx = interactiveModels.indexOf(mesh);
-      if (idx !== -1 && modelSpotlights[idx]) {
-        gsap.to(modelSpotlights[idx], {
-          intensity: 1,
-          duration: 0.5,
-          ease: "power2.out"
-        });
-      }
     }
 
     function hideLoading() {
