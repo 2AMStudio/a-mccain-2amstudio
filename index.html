@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>3D Project Viewer with Interactive Models</title>
+  <title>3D Project Viewer with Interactive Models + Video Screen</title>
   <style>
     body {
       margin: 0;
@@ -185,7 +185,7 @@
     const ASSETS = {
       MODEL: 'assets/models/PinBoard.glb',
       BACKGROUND: 'assets/images/BackgroundRotating.png',
-      VIDEO: 'Sequence_03.mp4'
+      VIDEO: 'Sequence_01_3_3.mp4'
     };
 
     let scene, camera, renderer, controls;
@@ -194,6 +194,9 @@
     let raycaster = new THREE.Raycaster();
     let mouse = new THREE.Vector2();
     let hoveredModel = null;
+
+    // Video screen related
+    let video, videoTexture, videoMesh;
 
     init();
     animate();
@@ -224,6 +227,7 @@
       addLighting();
       loadBackground();
       loadModel();
+      setupVideoScreen();  // set up the video plane
 
       window.addEventListener('resize', onWindowResize);
       window.addEventListener('mousemove', onMouseMove);
@@ -259,13 +263,11 @@
         (texture) => {
           texture.encoding = THREE.sRGBEncoding;
           scene.background = texture;
-          // Keep loading indicator until model is loaded
         },
         undefined,
         (err) => {
           console.warn('Failed to load background', err);
           scene.background = new THREE.Color(0x61503c);
-          // Keep loading indicator until model is loaded
         }
       );
     }
@@ -293,10 +295,8 @@
       interactiveModels = [];
       modelSpotlights = [];
 
-      // Ensure allowed names match exactly
       const allowedNames = ['Mesh_0001', 'Mesh_0002', 'Mesh_0003', 'Mesh_0004', 'Mesh_0007', 'obj1_4', 'Mesh_0003_2', 'Mesh_0003_1'];
 
-      // Traverse to find meshes matching allowed names
       root.traverse((child) => {
         if (child.isMesh && allowedNames.includes(child.name)) {
           setupModelInteraction(child);
@@ -305,7 +305,6 @@
     }
 
     function setupModelInteraction(mesh) {
-      // Fix: reset any transformations and ensure the mesh cast and receive shadows are set properly
       mesh.castShadow = true;
       mesh.receiveShadow = true;
 
@@ -316,7 +315,6 @@
       };
       interactiveModels.push(mesh);
 
-      // Add a spotlight for this mesh, offset relative to mesh's world position (not local)
       const worldPos = new THREE.Vector3();
       mesh.getWorldPosition(worldPos);
       const spotlight = new THREE.SpotLight(0xffffff, 1, 10, Math.PI / 8, 0.5, 1);
@@ -331,8 +329,76 @@
       modelSpotlights.push(spotlight);
     }
 
+    function setupVideoScreen() {
+      // Create HTML video element
+      video = document.createElement('video');
+      video.src = ASSETS.VIDEO;
+      video.crossOrigin = 'anonymous';
+      video.loop = true;
+      video.muted = true;
+      video.play().catch((e) => {
+        console.warn('Video play error (user gesture maybe needed):', e);
+      });
+
+      // Create video texture
+      videoTexture = new THREE.VideoTexture(video);
+      videoTexture.minFilter = THREE.LinearFilter;
+      videoTexture.magFilter = THREE.LinearFilter;
+      videoTexture.format = THREE.RGBAFormat;
+
+      // We'll build a custom BufferGeometry for the quad, placing vertices matching your specified world corners
+      const geometry = new THREE.BufferGeometry();
+
+      // The four corners as Vector3
+      const corners = [
+        new THREE.Vector3(1.5401631593704224, 24.624095916748047, -0.7683853507041931),
+        new THREE.Vector3(2.6548852920532227, 4.309113502502441, -0.7683762907981873),
+        new THREE.Vector3(15.63243293762207, 25.397361755371094, -0.7683875560760498),
+        new THREE.Vector3(16.74715805053711, 5.0823869705200195, -0.7683782577514648)
+      ];
+
+      // We’ll make two triangles: (0,1,2) and (2,1,3)
+      const vertices = new Float32Array([
+        corners[0].x, corners[0].y, corners[0].z,
+        corners[1].x, corners[1].y, corners[1].z,
+        corners[2].x, corners[2].y, corners[2].z,
+
+        corners[2].x, corners[2].y, corners[2].z,
+        corners[1].x, corners[1].y, corners[1].z,
+        corners[3].x, corners[3].y, corners[3].z
+      ]);
+      geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+
+      // UV coordinates for mapping the video; we assume you want full video mapped.
+      // We map corner0 → uv(0,1), corner1 → uv(0,0), corner2 → uv(1,1), corner3 → uv(1,0)
+      const uvs = new Float32Array([
+        0, 1,
+        0, 0,
+        1, 1,
+
+        1, 1,
+        0, 0,
+        1, 0
+      ]);
+      geometry.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
+
+      geometry.computeVertexNormals();
+
+      const material = new THREE.MeshBasicMaterial({
+        map: videoTexture,
+        side: THREE.DoubleSide,
+        toneMapped: false
+      });
+
+      videoMesh = new THREE.Mesh(geometry, material);
+      // Optionally, disable casting or receiving shadows on the screen
+      videoMesh.castShadow = false;
+      videoMesh.receiveShadow = false;
+
+      scene.add(videoMesh);
+    }
+
     function onMouseMove(event) {
-      // Normalize mouse coords to -1 to 1
       mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
       mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     }
@@ -362,7 +428,6 @@
         }
       }
 
-      // Animate interactive models rotation if hovered
       interactiveModels.forEach((mesh) => {
         if (mesh.userData.isHovered) {
           mesh.rotation.y += 0.01 * mesh.userData.rotationSpeed;
@@ -383,7 +448,6 @@
         ease: "power2.out"
       });
 
-      // Find spotlight for this mesh and increase intensity
       const idx = interactiveModels.indexOf(mesh);
       if (idx !== -1 && modelSpotlights[idx]) {
         gsap.to(modelSpotlights[idx], {
@@ -405,7 +469,6 @@
         ease: "power2.out"
       });
 
-      // Find spotlight for this mesh and decrease intensity
       const idx = interactiveModels.indexOf(mesh);
       if (idx !== -1 && modelSpotlights[idx]) {
         gsap.to(modelSpotlights[idx], {
